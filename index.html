@@ -170,10 +170,15 @@
                 <div class="max-w-2xl mx-auto bg-white/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-orange-200 mb-6">
                     <h3 class="font-bold text-lg mb-2"><i class="fas fa-fingerprint mr-2"></i>Token Address</h3>
                     <div class="flex flex-col md:flex-row items-center justify-between">
-                        <code class="bg-gray-100 px-4 py-2 rounded-lg text-sm md:text-base font-mono break-all">
-                            BLKj7mTgRa9Fg1vCDqZeNaBSjyekF4xpK72fMWikZYmq
-                        </code>
-                        <button onclick="copyTokenAddress()" class="mt-2 md:mt-0 md:ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
+                        <div class="bg-gradient-to-r from-orange-100 to-amber-100 px-6 py-4 rounded-lg w-full md:w-auto mb-4 md:mb-0">
+                            <div class="text-xl font-bold text-center text-gray-800">
+                                🚀 COMING SOON 🚀
+                            </div>
+                            <p class="text-sm text-gray-600 text-center mt-1">
+                                Token address will be revealed after presale
+                            </p>
+                        </div>
+                        <button onclick="copyTokenAddress()" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all shadow-lg hover:shadow-xl font-bold">
                             <i class="fas fa-copy mr-2"></i>Copy
                         </button>
                     </div>
@@ -902,9 +907,9 @@
 
         // =============== COPY TOKEN ADDRESS ===============
         function copyTokenAddress() {
-            const tokenAddress = 'BLKj7mTgRa9Fg1vCDqZeNaBSjyekF4xpK72fMWikZYmq';
-            navigator.clipboard.writeText(tokenAddress).then(() => {
-                showNotification('Token address copied to clipboard!', 'success');
+            const message = "Token address will be revealed after presale completion. Stay tuned! 🚀";
+            navigator.clipboard.writeText(message).then(() => {
+                showNotification('Token address info copied to clipboard!', 'success');
             }).catch(err => {
                 showNotification('Failed to copy address', 'error');
             });
