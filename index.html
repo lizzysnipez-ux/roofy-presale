@@ -13,6 +13,7 @@
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            background: linear-gradient(to bottom, #fffbeb 0%, #fed7aa 100%) !important;
         }
         .gradient-text { background: linear-gradient(to right, #f97316, #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .gradient-bg { background: linear-gradient(135deg, #f97316 0%, #dc2626 100%); }
@@ -70,6 +71,36 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #fed7aa; }
         ::-webkit-scrollbar-thumb { background: #f97316; border-radius: 3px; }
+        
+        /* Token image styling */
+        .token-image-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.1);
+            border: 3px solid #f97316;
+        }
+        
+        .token-image {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            object-fit: cover;
+        }
+        
+        /* Force light theme for Phantom */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(to bottom, #fffbeb 0%, #fed7aa 100%) !important;
+                color: #1f2937 !important;
+            }
+            .bg-white {
+                background-color: white !important;
+            }
+            .text-gray-700, .text-gray-600, .text-gray-500 {
+                color: #4b5563 !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-amber-50 to-orange-50 min-h-screen">
@@ -77,7 +108,8 @@
     <nav class="bg-white/95 backdrop-blur-sm border-b border-orange-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="text-2xl">🦊🦖</div>
+                <!-- Replace this with your token logo -->
+                <img src="https://via.placeholder.com/40x40/f97316/ffffff?text=R" alt="Roofy Logo" class="w-10 h-10 rounded-full">
                 <div>
                     <h1 class="text-xl font-bold gradient-text mobile-hidden">ROOFY</h1>
                     <p class="text-xs text-gray-500 mobile-hidden">The Shiba Dino-Dog</p>
@@ -97,6 +129,7 @@
         <div id="mobileMenuContent" class="md:hidden bg-white border-t border-orange-200 hidden">
             <div class="px-4 py-3 space-y-3">
                 <a href="#presale" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Presale</a>
+                <a href="#token" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Token</a>
                 <a href="#memes" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Memes</a>
                 <a href="#story" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Story</a>
                 <a href="#tokenomics" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Tokenomics</a>
@@ -116,9 +149,14 @@
             </div>
 
             <div class="text-center mb-8">
-                <div class="inline-block bg-white/20 backdrop-blur-sm rounded-full p-3 md:p-4 mb-4">
-                    <div class="text-4xl md:text-6xl animate-bounce">🦊🦖</div>
+                <!-- Hero Token Image -->
+                <div class="token-image-container max-w-md mx-auto mb-6">
+                    <!-- REPLACE THIS IMAGE WITH YOUR TOKEN IMAGE -->
+                    <img src="https://via.placeholder.com/400x200/f97316/ffffff?text=ROOFY+TOKEN+IMAGE" 
+                         alt="Roofy Token" 
+                         class="token-image">
                 </div>
+                
                 <h1 class="text-3xl md:text-5xl lg:text-7xl font-bold mb-4 md:mb-6">
                     Meet <span class="gradient-text">Roofy</span>
                 </h1>
@@ -126,6 +164,19 @@
                     The Shiba Inu who became a dinosaur to make a little girl smile. 
                     Now he lives forever on Solana.
                 </p>
+                
+                <!-- Token Address Display -->
+                <div class="max-w-2xl mx-auto bg-white/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-orange-200 mb-6">
+                    <h3 class="font-bold text-lg mb-2"><i class="fas fa-fingerprint mr-2"></i>Token Address</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-between">
+                        <code class="bg-gray-100 px-4 py-2 rounded-lg text-sm md:text-base font-mono break-all">
+                            BLKj7mTgRa9Fg1vCDqZeNaBSjyekF4xpK72fMWikZYmq
+                        </code>
+                        <button onclick="copyTokenAddress()" class="mt-2 md:mt-0 md:ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
+                            <i class="fas fa-copy mr-2"></i>Copy
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Presale Stats -->
@@ -145,6 +196,104 @@
                 <div class="bg-white rounded-xl md:rounded-2xl p-4 shadow-lg border border-orange-200 text-center">
                     <div class="text-xl md:text-3xl font-bold gradient-text">1K</div>
                     <div class="text-xs md:text-gray-600">Hard Cap (SOL)</div>
+                </div>
+            </div>
+
+            <!-- Token Image Gallery Section -->
+            <div id="token" class="mt-12 md:mt-16">
+                <div class="text-center mb-6 md:mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-3 md:mb-4">🖼️ $ROOFY Token & Art</h2>
+                    <p class="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">Official token images and community artwork</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8">
+                    <!-- Token Logo -->
+                    <div class="token-image-container">
+                        <div class="text-center mb-4">
+                            <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium">
+                                <i class="fas fa-certificate mr-1"></i> Official Logo
+                            </span>
+                        </div>
+                        <!-- REPLACE THIS WITH YOUR LOGO -->
+                        <img src="https://via.placeholder.com/300x300/f97316/ffffff?text=ROOFY+LOGO" 
+                             alt="Roofy Official Logo" 
+                             class="token-image mb-4">
+                        <h3 class="font-bold text-lg text-center mb-2">$ROOFY Logo</h3>
+                        <p class="text-gray-600 text-sm text-center">The official token logo</p>
+                    </div>
+
+                    <!-- Token Art 1 -->
+                    <div class="token-image-container">
+                        <div class="text-center mb-4">
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                                <i class="fas fa-palette mr-1"></i> Community Art
+                            </span>
+                        </div>
+                        <!-- REPLACE THIS WITH YOUR ART 1 -->
+                        <img src="https://via.placeholder.com/300x300/8b5cf6/ffffff?text=ART+1" 
+                             alt="Roofy Art 1" 
+                             class="token-image mb-4">
+                        <h3 class="font-bold text-lg text-center mb-2">Roofy & Lily</h3>
+                        <p class="text-gray-600 text-sm text-center">Shiba dinosaur with little girl</p>
+                    </div>
+
+                    <!-- Token Art 2 -->
+                    <div class="token-image-container">
+                        <div class="text-center mb-4">
+                            <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">
+                                <i class="fas fa-palette mr-1"></i> Community Art
+                            </span>
+                        </div>
+                        <!-- REPLACE THIS WITH YOUR ART 2 -->
+                        <img src="https://via.placeholder.com/300x300/ec4899/ffffff?text=ART+2" 
+                             alt="Roofy Art 2" 
+                             class="token-image mb-4">
+                        <h3 class="font-bold text-lg text-center mb-2">Moon Mission</h3>
+                        <p class="text-gray-600 text-sm text-center">Roofy going to the moon</p>
+                    </div>
+                </div>
+
+                <!-- Image Upload Instructions -->
+                <div class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-6 md:p-8 border border-blue-200">
+                    <h3 class="text-xl md:text-2xl font-bold mb-4 text-center">📁 How to Add Your Images</h3>
+                    <div class="max-w-2xl mx-auto">
+                        <div class="grid md:grid-cols-3 gap-4 md:gap-6">
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-upload text-xl"></i>
+                                </div>
+                                <h4 class="font-bold mb-2">1. Upload Images</h4>
+                                <p class="text-sm text-gray-600">Upload to <a href="https://imgur.com" target="_blank" class="text-blue-600 font-semibold">Imgur</a> or <a href="https://imgbb.com" target="_blank" class="text-blue-600 font-semibold">ImgBB</a></p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-link text-xl"></i>
+                                </div>
+                                <h4 class="font-bold mb-2">2. Get Direct Link</h4>
+                                <p class="text-sm text-gray-600">Copy the direct image URL (ends with .jpg, .png, .gif)</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-code text-xl"></i>
+                                </div>
+                                <h4 class="font-bold mb-2">3. Replace in Code</h4>
+                                <p class="text-sm text-gray-600">Replace placeholder URLs in the code with your image links</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Code Example -->
+                        <div class="mt-6 bg-gray-900 rounded-xl p-4 overflow-x-auto">
+                            <pre class="text-sm text-white"><code>&lt;!-- Replace this URL with your image --&gt;
+&lt;img src="<span class="text-yellow-300">YOUR_IMAGE_URL_HERE</span>" 
+     alt="Roofy Token" 
+     class="token-image"&gt;</code></pre>
+                        </div>
+                        
+                        <p class="text-center text-sm text-gray-600 mt-4">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Look for <code class="bg-gray-100 px-2 py-1 rounded text-xs">REPLACE THIS</code> comments in the code
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -429,7 +578,7 @@
                             </div>
                         </form>
                         
-                        <!-- Success Message (hidden by default) -->
+                        <!-- Success Message -->
                         <div id="formSuccess" class="hidden mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
                             <div class="flex items-center">
                                 <div class="text-green-500 text-xl mr-3">
@@ -442,7 +591,7 @@
                             </div>
                         </div>
                         
-                        <!-- Error Message (hidden by default) -->
+                        <!-- Error Message -->
                         <div id="formError" class="hidden mt-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-200">
                             <div class="flex items-center">
                                 <div class="text-red-500 text-xl mr-3">
@@ -533,7 +682,7 @@
             <div class="grid md:grid-cols-3 gap-6 md:gap-8">
                 <div>
                     <div class="flex items-center mb-4 md:mb-6">
-                        <div class="text-2xl md:text-3xl mr-3">🦊🦖</div>
+                        <img src="https://via.placeholder.com/40x40/f97316/ffffff?text=R" alt="Roofy Logo" class="w-10 h-10 rounded-full mr-3">
                         <div>
                             <h3 class="text-xl md:text-2xl font-bold">$ROOFY</h3>
                             <p class="text-xs text-gray-400">The Shiba Dino-Dog</p>
@@ -548,6 +697,7 @@
                     <h4 class="text-base md:text-lg font-bold mb-3 md:mb-4">Links</h4>
                     <div class="space-y-2">
                         <a href="#presale" class="block text-gray-400 hover:text-white text-sm md:text-base">Presale</a>
+                        <a href="#token" class="block text-gray-400 hover:text-white text-sm md:text-base">Token</a>
                         <a href="#memes" class="block text-gray-400 hover:text-white text-sm md:text-base">Memes</a>
                         <a href="#story" class="block text-gray-400 hover:text-white text-sm md:text-base">Story</a>
                     </div>
@@ -671,6 +821,16 @@
             loadUserMemes();
         });
 
+        // =============== COPY TOKEN ADDRESS ===============
+        function copyTokenAddress() {
+            const tokenAddress = 'BLKj7mTgRa9Fg1vCDqZeNaBSjyekF4xpK72fMWikZYmq';
+            navigator.clipboard.writeText(tokenAddress).then(() => {
+                showNotification('Token address copied to clipboard!', 'success');
+            }).catch(err => {
+                showNotification('Failed to copy address', 'error');
+            });
+        }
+
         // =============== NETLIFY FORM HANDLING ===============
         function setupNetlifyForm() {
             const form = document.getElementById('memeForm');
@@ -725,16 +885,11 @@
         }
 
         function addMemeToGallery(title, description, imageUrl) {
-            // For demo purposes, we'll add it to the gallery
-            // In a real app, you'd fetch submissions from Netlify backend
-            
             const memeGrid = document.getElementById('memeGallery');
             
-            // Create new meme element
             const memeItem = document.createElement('div');
             memeItem.className = 'meme-item bg-white rounded-2xl overflow-hidden shadow-lg border border-orange-200';
             
-            // Try to load image, fallback to emoji if fails
             let imageContent = '<div class="text-4xl mb-3">🦊🦖</div>';
             if (imageUrl && imageUrl.startsWith('http')) {
                 imageContent = `
@@ -757,23 +912,17 @@
                 </div>
             `;
             
-            // Add to gallery (at the beginning)
             memeGrid.prepend(memeItem);
             
-            // Add share functionality
             memeItem.querySelector('.share-meme').addEventListener('click', () => {
                 shareMeme(title);
             });
             
-            // Show notification
             showNotification('Meme added to gallery!', 'success');
-            
-            // Store in localStorage for demo persistence
             storeMemeInLocalStorage(title, description, imageUrl);
         }
 
         function loadUserMemes() {
-            // Load memes from localStorage (for demo only)
             try {
                 const storedMemes = JSON.parse(localStorage.getItem('roofyMemes')) || [];
                 
@@ -797,7 +946,6 @@
                     timestamp: new Date().toISOString()
                 });
                 
-                // Keep only last 20 memes
                 if (storedMemes.length > 20) {
                     storedMemes.pop();
                 }
@@ -809,7 +957,6 @@
         }
 
         function showNotification(message, type = 'info') {
-            // Create notification element
             const notification = document.createElement('div');
             notification.className = `fixed top-4 right-4 p-4 rounded-xl shadow-lg z-50 ${
                 type === 'success' ? 'bg-green-500 text-white' : 
@@ -823,10 +970,8 @@
                 </div>
             `;
             
-            // Add to page
             document.body.appendChild(notification);
             
-            // Remove after 3 seconds
             setTimeout(() => {
                 notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
                 setTimeout(() => {
@@ -837,13 +982,11 @@
 
         // =============== MOBILE WALLET HANDLING ===============
         function showMobileWalletInstructions() {
-            // Mobile users need to use Phantom app browser
             const helpDiv = document.getElementById('mobileWalletHelp');
             if (!helpDiv.classList.contains('hidden')) {
                 const connectBtn = document.getElementById('connectWallet');
                 connectBtn.innerHTML = '<i class="fas fa-external-link-alt mr-2"></i>Open in Phantom';
                 connectBtn.onclick = () => {
-                    // Deep link to Phantom app
                     window.location.href = 'https://phantom.app/ul/browse/' + encodeURIComponent(window.location.href);
                 };
             }
@@ -851,7 +994,6 @@
 
         function handleMobileTransaction() {
             if (isMobile && (!window.solana || !window.solana.isPhantom)) {
-                // Redirect to Phantom app with deep link
                 const amount = document.getElementById('amount').value;
                 const url = `https://phantom.app/ul/sign/${encodeURIComponent(window.location.href)}?amount=${amount}`;
                 window.location.href = url;
@@ -874,7 +1016,6 @@
         async function handleWalletConnect(publicKeyObj) {
             publicKey = publicKeyObj.toString();
             
-            // Update UI
             const shortAddress = publicKey.slice(0, 4) + '...' + publicKey.slice(-4);
             document.getElementById('connectWallet').innerHTML = `<i class="fas fa-wallet mr-2"></i>${shortAddress}`;
             document.getElementById('connectWallet').classList.add('wallet-connected');
@@ -884,7 +1025,6 @@
             document.getElementById('buyButton').disabled = false;
             document.getElementById('buyButtonText').textContent = 'BUY ROOFY TOKENS';
             
-            // Get balance
             try {
                 const balance = await connection.getBalance(publicKeyObj);
                 console.log(`Balance: ${balance / solanaWeb3.LAMPORTS_PER_SOL} SOL`);
@@ -906,10 +1046,8 @@
 
         // =============== EVENT LISTENERS ===============
         function setupEventListeners() {
-            // Connect wallet button
             document.getElementById('connectWallet').addEventListener('click', async () => {
                 if (!wallet && isMobile) {
-                    // Mobile users without Phantom
                     window.open('https://phantom.app', '_blank');
                     return;
                 }
@@ -927,7 +1065,6 @@
                 }
             });
 
-            // Quick amount buttons
             document.querySelectorAll('.quick-amount').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.getElementById('amount').value = btn.dataset.amount;
@@ -935,16 +1072,10 @@
                 });
             });
 
-            // Amount input
             document.getElementById('amount').addEventListener('input', updateTokenCalculation);
-
-            // Referral code input
             document.getElementById('referralCode').addEventListener('input', updateTokenCalculation);
-
-            // Buy button
             document.getElementById('buyButton').addEventListener('click', handlePurchase);
             
-            // Share meme buttons
             document.querySelectorAll('.share-meme').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const memeTitle = e.target.closest('.meme-item').querySelector('h4').textContent;
@@ -958,18 +1089,15 @@
             const amount = parseFloat(document.getElementById('amount').value) || 0;
             const currentTier = getCurrentTier();
             
-            // Update current price display
             document.getElementById('currentPrice').textContent = 
                 `${Math.floor(currentTier.tokensPerSOL).toLocaleString()}K`;
             
             const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
             
-            // Check referral bonus
             const hasReferral = document.getElementById('referralCode').value.trim().length > 0;
             const bonusTokens = hasReferral ? Math.floor(baseTokens * REFERRAL_BONUS) : 0;
             const totalTokens = baseTokens + bonusTokens;
 
-            // Update UI
             document.getElementById('baseTokens').textContent = baseTokens.toLocaleString();
             document.getElementById('totalTokens').textContent = totalTokens.toLocaleString();
             
@@ -990,7 +1118,6 @@
 
             const amount = parseFloat(document.getElementById('amount').value);
             
-            // Validation
             if (isNaN(amount) || amount < MIN_PURCHASE) {
                 alert(`Minimum purchase is ${MIN_PURCHASE} SOL`);
                 return;
@@ -1006,19 +1133,16 @@
                 return;
             }
 
-            // Handle mobile Phantom deep linking
             if (isMobile && (!window.solana || !window.solana.isPhantom)) {
                 if (handleMobileTransaction()) return;
             }
 
-            // Update button state
             const buyButton = document.getElementById('buyButton');
             const originalText = buyButton.innerHTML;
             buyButton.disabled = true;
             buyButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
 
             try {
-                // Create transaction
                 const transaction = new solanaWeb3.Transaction().add(
                     solanaWeb3.SystemProgram.transfer({
                         fromPubkey: new solanaWeb3.PublicKey(publicKey),
@@ -1027,15 +1151,12 @@
                     })
                 );
 
-                // Get recent blockhash
                 const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
                 transaction.recentBlockhash = blockhash;
                 transaction.feePayer = new solanaWeb3.PublicKey(publicKey);
 
-                // Sign and send transaction
                 let signature;
                 if (isMobile && wallet) {
-                    // Use mobile-friendly signing
                     const { signature: sig } = await wallet.signAndSendTransaction(transaction);
                     signature = sig;
                 } else {
@@ -1043,25 +1164,20 @@
                     signature = await connection.sendRawTransaction(signedTransaction.serialize());
                 }
 
-                // Confirm transaction
                 await connection.confirmTransaction({
                     signature,
                     blockhash,
                     lastValidBlockHeight
                 }, 'confirmed');
 
-                // Update UI
                 document.getElementById('transactionStatus').classList.remove('hidden');
                 document.getElementById('txHash').textContent = `TX: ${signature.slice(0, 8)}...`;
                 
-                // Update stats
                 totalRaised += amount;
                 updateStats();
                 
-                // Add to recent purchases
                 addRecentPurchase(amount, signature);
                 
-                // Show success message
                 const currentTier = getCurrentTier();
                 const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
                 const bonus = document.getElementById('referralCode').value.trim() ? 
@@ -1070,7 +1186,6 @@
                 
                 showNotification(`✅ Purchase Successful! ${total.toLocaleString()} ROOFY tokens`, 'success');
 
-                // Reset form
                 document.getElementById('amount').value = '0.1';
                 document.getElementById('referralCode').value = '';
                 updateTokenCalculation();
@@ -1079,12 +1194,10 @@
                 console.error('Transaction error:', err);
                 showNotification(`Transaction failed: ${err.message || 'Please try again'}`, 'error');
                 
-                // Mobile-specific error handling
                 if (isMobile && err.message?.includes('User rejected')) {
                     showNotification('Please approve the transaction in Phantom app', 'error');
                 }
             } finally {
-                // Reset button
                 buyButton.disabled = false;
                 buyButton.innerHTML = originalText;
             }
@@ -1104,12 +1217,10 @@
         }
 
         function simulateLiveStats() {
-            // Simulate initial stats
             totalRaised = 245.67;
             updateStats();
             document.getElementById('totalBuyers').textContent = '124';
             
-            // Simulate live updates
             setInterval(() => {
                 if (Math.random() > 0.7) {
                     const randomAmount = 0.1 + Math.random() * 5;
@@ -1137,15 +1248,11 @@
                 tier: currentTier.name.substring(0, 10)
             });
             
-            // Keep only last 5 purchases
             if (recentPurchases.length > 5) {
                 recentPurchases.pop();
             }
             
             loadRecentPurchases();
-            
-            // Log purchase
-            console.log(`Purchase: ${amount} SOL → ${tokens} ROOFY`);
         }
 
         function loadRecentPurchases() {
@@ -1187,14 +1294,12 @@
             const shareUrl = window.location.href + '#memes';
             
             if (navigator.share) {
-                // Mobile share API
                 navigator.share({
                     title: `${memeTitle} - Roofy Meme`,
                     text: shareText,
                     url: shareUrl
                 });
             } else {
-                // Desktop fallback
                 const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText + shareUrl)}`;
                 window.open(twitterUrl, '_blank');
             }
@@ -1208,7 +1313,6 @@
             handleWalletDisconnect();
         }
 
-        // Initial update
         updateTokenCalculation();
     </script>
 </body>
