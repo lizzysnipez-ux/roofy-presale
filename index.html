@@ -151,6 +151,29 @@
             border: 3px solid white;
             box-shadow: 0 0 0 3px #f97316;
         }
+        
+        /* Error message styling */
+        .error-message {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+            max-width: 100%;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        
+        .error-message pre {
+            white-space: pre-wrap;
+            font-size: 12px;
+            background: rgba(0,0,0,0.2);
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 8px;
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-amber-50 to-orange-50 min-h-screen">
@@ -310,6 +333,11 @@
                         </div>
                     </div>
 
+                    <!-- Error Display -->
+                    <div id="errorDisplay" class="hidden mb-4">
+                        <!-- Error messages will appear here -->
+                    </div>
+
                     <!-- Amount Input -->
                     <div class="mb-4 md:mb-6">
                         <label class="block text-gray-700 mb-2 md:mb-3 font-semibold text-base md:text-lg">
@@ -395,6 +423,7 @@
                                 <div>
                                     <p class="font-medium text-green-800 text-sm md:text-base">Transaction Submitted!</p>
                                     <p id="txHash" class="text-xs md:text-sm text-green-500 font-mono mt-1 truncate"></p>
+                                    <p class="text-xs text-green-600 mt-1">Tokens will be airdropped after presale ends</p>
                                 </div>
                             </div>
                         </div>
@@ -797,6 +826,7 @@
         let recentPurchases = [];
         let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         let tokenomicsChart = null;
+        let transactionTimeout = null;
 
         // =============== INITIALIZATION ===============
         document.addEventListener('DOMContentLoaded', () => {
@@ -825,10 +855,14 @@
                 }
             }
 
-            // Initialize connection
+            // Initialize connection with faster settings
             connection = new solanaWeb3.Connection(
                 solanaWeb3.clusterApiUrl('devnet'),
-                'confirmed'
+                {
+                    commitment: 'confirmed',
+                    disableRetryOnRateLimit: false,
+                    confirmTransactionInitialTimeout: 30000 // 30 seconds timeout
+                }
             );
 
             // Set up event listeners
@@ -842,6 +876,32 @@
             // Initialize tokenomics pie chart
             initializeTokenomicsChart();
         });
+
+        // =============== ERROR HANDLING ===============
+        function showError(message, error = null) {
+            const errorDisplay = document.getElementById('errorDisplay');
+            errorDisplay.classList.remove('hidden');
+            errorDisplay.innerHTML = `
+                <div class="error-message">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <span class="font-bold">Transaction Failed</span>
+                    </div>
+                    <p class="mt-2">${message}</p>
+                    ${error ? `<pre class="mt-2">${error.toString().substring(0, 200)}...</pre>` : ''}
+                    <button onclick="clearError()" class="mt-3 text-sm underline">Dismiss</button>
+                </div>
+            `;
+            
+            // Scroll to error
+            errorDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function clearError() {
+            const errorDisplay = document.getElementById('errorDisplay');
+            errorDisplay.classList.add('hidden');
+            errorDisplay.innerHTML = '';
+        }
 
         // =============== MOBILE WALLET BUTTONS SETUP ===============
         function setupMobileWalletButtons() {
@@ -930,7 +990,7 @@
                 wallet.on('disconnect', () => handleWalletDisconnect());
             } catch (err) {
                 console.error('Connection error:', err);
-                showNotification('Failed to connect wallet. Please try again.', 'error');
+                showError('Failed to connect wallet. Please try again.', err);
             }
         }
 
@@ -1061,6 +1121,7 @@
             document.getElementById('buyButton').disabled = true;
             document.getElementById('buyButtonText').textContent = 'CONNECT WALLET';
             document.getElementById('transactionStatus').classList.add('hidden');
+            clearError();
         }
 
         // =============== EVENT LISTENERS ===============
@@ -1107,7 +1168,7 @@
             }
         }
 
-        // =============== PURCHASE HANDLING ===============
+        // =============== IMPROVED PURCHASE HANDLING ===============
         async function handlePurchase() {
             if (!publicKey) {
                 alert('Please connect your wallet first');
@@ -1117,17 +1178,17 @@
             const amount = parseFloat(document.getElementById('amount').value);
             
             if (isNaN(amount) || amount < MIN_PURCHASE) {
-                alert(`Minimum purchase is ${MIN_PURCHASE} SOL`);
+                showError(`Minimum purchase is ${MIN_PURCHASE} SOL`);
                 return;
             }
 
             if (amount > MAX_PURCHASE) {
-                alert(`Maximum purchase per transaction is ${MAX_PURCHASE} SOL`);
+                showError(`Maximum purchase per transaction is ${MAX_PURCHASE} SOL`);
                 return;
             }
 
             if (totalRaised + amount > PRESALE_CAP) {
-                alert(`Purchase would exceed hard cap! Maximum remaining: ${(PRESALE_CAP - totalRaised).toFixed(2)} SOL`);
+                showError(`Purchase would exceed hard cap! Maximum remaining: ${(PRESALE_CAP - totalRaised).toFixed(2)} SOL`);
                 return;
             }
 
@@ -1135,67 +1196,135 @@
             const originalText = buyButton.innerHTML;
             buyButton.disabled = true;
             buyButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+            
+            // Clear any previous errors
+            clearError();
+
+            // Set timeout for transaction
+            if (transactionTimeout) clearTimeout(transactionTimeout);
+            transactionTimeout = setTimeout(() => {
+                showError('Transaction timed out. Please check your wallet and try again.');
+                resetBuyButton(buyButton, originalText);
+            }, 45000); // 45 second timeout
 
             try {
+                // Check wallet balance first
+                const balance = await connection.getBalance(new solanaWeb3.PublicKey(publicKey));
+                const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
+                
+                if (solBalance < amount * 1.1) { // 10% buffer for fees
+                    showError(`Insufficient SOL balance. You need at least ${(amount * 1.1).toFixed(3)} SOL (including fees). You have ${solBalance.toFixed(3)} SOL.`);
+                    resetBuyButton(buyButton, originalText);
+                    clearTimeout(transactionTimeout);
+                    return;
+                }
+
+                // Create transaction with proper fee
                 const transaction = new solanaWeb3.Transaction().add(
                     solanaWeb3.SystemProgram.transfer({
                         fromPubkey: new solanaWeb3.PublicKey(publicKey),
                         toPubkey: new solanaWeb3.PublicKey(DEV_WALLET),
-                        lamports: Math.floor(amount * solanaWeb3.LAMPORTS_PER_SOL * 0.99),
+                        lamports: Math.floor(amount * solanaWeb3.LAMPORTS_PER_SOL),
                     })
                 );
 
-                const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+                // Get recent blockhash
+                const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
                 transaction.recentBlockhash = blockhash;
                 transaction.feePayer = new solanaWeb3.PublicKey(publicKey);
 
                 let signature;
-                if (isMobile && wallet) {
-                    const { signature: sig } = await wallet.signAndSendTransaction(transaction);
-                    signature = sig;
-                } else {
-                    const signedTransaction = await wallet.signTransaction(transaction);
-                    signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                try {
+                    // Sign and send transaction
+                    if (isMobile && wallet) {
+                        const { signature: sig } = await wallet.signAndSendTransaction(transaction);
+                        signature = sig;
+                    } else {
+                        const signedTransaction = await wallet.signTransaction(transaction);
+                        signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                    }
+                    
+                    console.log('Transaction sent:', signature);
+
+                    // Wait for confirmation with shorter timeout
+                    const confirmationPromise = connection.confirmTransaction({
+                        signature,
+                        blockhash,
+                        lastValidBlockHeight
+                    }, 'confirmed');
+                    
+                    // Set a shorter timeout for confirmation
+                    const confirmationTimeout = new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Confirmation timeout')), 30000)
+                    );
+                    
+                    // Race between confirmation and timeout
+                    await Promise.race([confirmationPromise, confirmationTimeout]);
+
+                    // Clear timeout since we succeeded
+                    clearTimeout(transactionTimeout);
+
+                    // Show success
+                    document.getElementById('transactionStatus').classList.remove('hidden');
+                    document.getElementById('txHash').textContent = `TX: ${signature.slice(0, 8)}...${signature.slice(-8)}`;
+                    
+                    // Update presale stats
+                    totalRaised += amount;
+                    updateStats();
+                    
+                    addRecentPurchase(amount, signature);
+                    
+                    const currentTier = getCurrentTier();
+                    const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
+                    const bonus = document.getElementById('referralCode').value.trim() ? 
+                        Math.floor(baseTokens * REFERRAL_BONUS) : 0;
+                    const total = baseTokens + bonus;
+                    
+                    showNotification(`✅ Purchase Successful! ${total.toLocaleString()} ROOFY tokens will be airdropped after presale`, 'success');
+
+                    // Reset form
+                    document.getElementById('amount').value = '0.1';
+                    document.getElementById('referralCode').value = '';
+                    updateTokenCalculation();
+
+                } catch (signError) {
+                    console.error('Transaction signing/sending error:', signError);
+                    let errorMessage = 'Transaction failed. ';
+                    
+                    if (signError.message?.includes('User rejected')) {
+                        errorMessage += 'You rejected the transaction in your wallet.';
+                    } else if (signError.message?.includes('timeout')) {
+                        errorMessage += 'Transaction timed out. Please try again.';
+                    } else {
+                        errorMessage += 'Please check your wallet and try again.';
+                    }
+                    
+                    showError(errorMessage, signError);
+                    clearTimeout(transactionTimeout);
                 }
-
-                await connection.confirmTransaction({
-                    signature,
-                    blockhash,
-                    lastValidBlockHeight
-                }, 'confirmed');
-
-                document.getElementById('transactionStatus').classList.remove('hidden');
-                document.getElementById('txHash').textContent = `TX: ${signature.slice(0, 8)}...`;
-                
-                // Update presale stats
-                totalRaised += amount;
-                updateStats();
-                
-                addRecentPurchase(amount, signature);
-                
-                const currentTier = getCurrentTier();
-                const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
-                const bonus = document.getElementById('referralCode').value.trim() ? 
-                    Math.floor(baseTokens * REFERRAL_BONUS) : 0;
-                const total = baseTokens + bonus;
-                
-                showNotification(`✅ Purchase Successful! ${total.toLocaleString()} ROOFY tokens`, 'success');
-
-                document.getElementById('amount').value = '0.1';
-                document.getElementById('referralCode').value = '';
-                updateTokenCalculation();
 
             } catch (err) {
                 console.error('Transaction error:', err);
-                showNotification(`Transaction failed: ${err.message || 'Please try again'}`, 'error');
+                let errorMessage = 'Transaction failed: ';
                 
-                if (isMobile && err.message?.includes('User rejected')) {
-                    showNotification('Please approve the transaction in Phantom app', 'error');
+                if (err.message?.includes('Network')) {
+                    errorMessage += 'Network error. Please check your internet connection.';
+                } else if (err.message?.includes('balance')) {
+                    errorMessage += 'Insufficient balance. Please add SOL to your wallet.';
+                } else {
+                    errorMessage += 'Please try again. If problem persists, refresh the page.';
                 }
+                
+                showError(errorMessage, err);
+                clearTimeout(transactionTimeout);
             } finally {
-                buyButton.disabled = false;
-                buyButton.innerHTML = originalText;
+                resetBuyButton(buyButton, originalText);
             }
+        }
+
+        function resetBuyButton(button, originalText) {
+            button.disabled = false;
+            button.innerHTML = originalText;
         }
 
         // =============== STATS UPDATES ===============
