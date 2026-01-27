@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for pie chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Mobile optimization */
         html { -webkit-text-size-adjust: 100%; }
@@ -151,7 +153,6 @@
             <div class="text-center mb-8">
                 <!-- Hero Token Image -->
                 <div class="token-image-container max-w-md mx-auto mb-6">
-                    <!-- REPLACE THIS IMAGE WITH YOUR TOKEN IMAGE -->
                     <img src="https://chocolate-solid-skunk-453.mypinata.cloud/ipfs/bafkreigq22tzxessrj6mvdfcgw4xchwxcphvbbblrylwfunr2w63nhq7xq" 
                          alt="Roofy Token" 
                          class="token-image">
@@ -214,7 +215,6 @@
                                 <i class="fas fa-certificate mr-1"></i> Official Logo
                             </span>
                         </div>
-                        <!-- REPLACE THIS WITH YOUR LOGO -->
                         <img src="https://chocolate-solid-skunk-453.mypinata.cloud/ipfs/bafkreigq22tzxessrj6mvdfcgw4xchwxcphvbbblrylwfunr2w63nhq7xq" 
                              alt="Roofy Official Logo" 
                              class="token-image mb-4">
@@ -229,7 +229,6 @@
                                 <i class="fas fa-palette mr-1"></i> Community Art
                             </span>
                         </div>
-                        <!-- REPLACE THIS WITH YOUR ART 1 -->
                         <img src="https://chocolate-solid-skunk-453.mypinata.cloud/ipfs/bafkreian65uqi46ycwlu4mpcteeu4ofkgtvhczouetbnz44y4msmjh2cgi" 
                              alt="Roofy Art 1" 
                              class="token-image mb-4">
@@ -244,55 +243,11 @@
                                 <i class="fas fa-palette mr-1"></i> Community Art
                             </span>
                         </div>
-                        <!-- REPLACE THIS WITH YOUR ART 2 -->
                         <img src="https://chocolate-solid-skunk-453.mypinata.cloud/ipfs/bafkreidbf3i3qvznsiml6zxiijl2jzd47jhvllo55umz4zm6k3pa36dnp4" 
                              alt="Roofy Art 2" 
                              class="token-image mb-4">
                         <h3 class="font-bold text-lg text-center mb-2">Moon Mission</h3>
                         <p class="text-gray-600 text-sm text-center">Roofy going to the moon</p>
-                    </div>
-                </div>
-
-                <!-- Image Upload Instructions -->
-                <div class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-6 md:p-8 border border-blue-200">
-                    <h3 class="text-xl md:text-2xl font-bold mb-4 text-center">📁 How to Add Your Images</h3>
-                    <div class="max-w-2xl mx-auto">
-                        <div class="grid md:grid-cols-3 gap-4 md:gap-6">
-                            <div class="text-center">
-                                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                                    <i class="fas fa-upload text-xl"></i>
-                                </div>
-                                <h4 class="font-bold mb-2">1. Upload Images</h4>
-                                <p class="text-sm text-gray-600">Upload to <a href="https://imgur.com" target="_blank" class="text-blue-600 font-semibold">Imgur</a> or <a href="https://imgbb.com" target="_blank" class="text-blue-600 font-semibold">ImgBB</a></p>
-                            </div>
-                            <div class="text-center">
-                                <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                                    <i class="fas fa-link text-xl"></i>
-                                </div>
-                                <h4 class="font-bold mb-2">2. Get Direct Link</h4>
-                                <p class="text-sm text-gray-600">Copy the direct image URL (ends with .jpg, .png, .gif)</p>
-                            </div>
-                            <div class="text-center">
-                                <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                                    <i class="fas fa-code text-xl"></i>
-                                </div>
-                                <h4 class="font-bold mb-2">3. Replace in Code</h4>
-                                <p class="text-sm text-gray-600">Replace placeholder URLs in the code with your image links</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Code Example -->
-                        <div class="mt-6 bg-gray-900 rounded-xl p-4 overflow-x-auto">
-                            <pre class="text-sm text-white"><code>&lt;!-- Replace this URL with your image --&gt;
-&lt;img src="<span class="text-yellow-300">YOUR_IMAGE_URL_HERE</span>" 
-     alt="Roofy Token" 
-     class="token-image"&gt;</code></pre>
-                        </div>
-                        
-                        <p class="text-center text-sm text-gray-600 mt-4">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            Look for <code class="bg-gray-100 px-2 py-1 rounded text-xs">REPLACE THIS</code> comments in the code
-                        </p>
                     </div>
                 </div>
             </div>
@@ -572,9 +527,6 @@
                                 <button type="submit" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold hover:opacity-90 transition-all">
                                     <i class="fas fa-upload mr-2"></i>Submit Meme
                                 </button>
-                                <p class="text-sm text-gray-600 mt-3">
-                                    Best memes win bonus ROOFY tokens! Submissions are stored in Netlify.
-                                </p>
                             </div>
                         </form>
                         
@@ -643,30 +595,107 @@
                 </div>
             </div>
 
-            <!-- Tokenomics -->
-            <div id="tokenomics" class="mt-12 md:mt-16 max-w-3xl mx-auto">
+            <!-- Tokenomics with Pie Chart -->
+            <div id="tokenomics" class="mt-12 md:mt-16 max-w-4xl mx-auto">
                 <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-orange-200">
-                    <h3 class="text-xl md:text-2xl font-bold mb-4 md:mb-6"><i class="fas fa-chart-pie mr-2"></i>Tokenomics</h3>
+                    <h3 class="text-xl md:text-2xl font-bold mb-6 text-center"><i class="fas fa-chart-pie mr-2"></i>Tokenomics</h3>
                     
-                    <div class="space-y-4 md:space-y-6">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Pie Chart -->
                         <div>
-                            <h4 class="font-bold text-base md:text-lg mb-2 md:mb-3">📊 Distribution</h4>
-                            <div class="space-y-2 md:space-y-3">
-                                <div class="flex justify-between items-center text-sm md:text-base">
-                                    <span>Presale (50%)</span>
-                                    <span class="font-bold">500,000,000 ROOFY</span>
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <canvas id="tokenomicsChart" class="w-full h-64 md:h-80"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Distribution Details -->
+                        <div>
+                            <h4 class="font-bold text-lg mb-4">📊 Distribution</h4>
+                            <div class="space-y-4">
+                                <!-- Presale -->
+                                <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
+                                        <div>
+                                            <div class="font-semibold">Presale</div>
+                                            <div class="text-sm text-gray-600">Early supporters</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold">50%</div>
+                                        <div class="text-sm text-gray-600">500M ROOFY</div>
+                                    </div>
                                 </div>
-                                <div class="flex justify-between items-center text-sm md:text-base">
-                                    <span>Liquidity (30%)</span>
-                                    <span class="font-bold">300,000,000 ROOFY</span>
+                                
+                                <!-- Liquidity -->
+                                <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                                        <div>
+                                            <div class="font-semibold">Liquidity</div>
+                                            <div class="text-sm text-gray-600">DEX liquidity pool</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold">30%</div>
+                                        <div class="text-sm text-gray-600">300M ROOFY</div>
+                                    </div>
                                 </div>
-                                <div class="flex justify-between items-center text-sm md:text-base">
-                                    <span>Marketing (10%)</span>
-                                    <span class="font-bold">100,000,000 ROOFY</span>
+                                
+                                <!-- Marketing -->
+                                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                                        <div>
+                                            <div class="font-semibold">Marketing</div>
+                                            <div class="text-sm text-gray-600">Promotions & growth</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold">5%</div>
+                                        <div class="text-sm text-gray-600">50M ROOFY</div>
+                                    </div>
                                 </div>
-                                <div class="flex justify-between items-center text-sm md:text-base">
-                                    <span>Lily's Fund (10%)</span>
-                                    <span class="font-bold">100,000,000 ROOFY</span>
+                                
+                                <!-- CEX -->
+                                <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
+                                        <div>
+                                            <div class="font-semibold">CEX Listings</div>
+                                            <div class="text-sm text-gray-600">Centralized exchanges</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold">5%</div>
+                                        <div class="text-sm text-gray-600">50M ROOFY</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Lily's Fund -->
+                                <div class="flex items-center justify-between p-3 bg-pink-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-pink-500 rounded-full mr-3"></div>
+                                        <div>
+                                            <div class="font-semibold">Lily's Fund</div>
+                                            <div class="text-sm text-gray-600">Charity & memorial</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold">10%</div>
+                                        <div class="text-sm text-gray-600">100M ROOFY</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Total Supply -->
+                            <div class="mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-lg">Total Supply</div>
+                                        <div class="text-sm text-gray-600">1,000,000,000 ROOFY</div>
+                                    </div>
+                                    <div class="text-2xl font-bold text-orange-600">1B</div>
                                 </div>
                             </div>
                         </div>
@@ -700,6 +729,7 @@
                         <a href="#token" class="block text-gray-400 hover:text-white text-sm md:text-base">Token</a>
                         <a href="#memes" class="block text-gray-400 hover:text-white text-sm md:text-base">Memes</a>
                         <a href="#story" class="block text-gray-400 hover:text-white text-sm md:text-base">Story</a>
+                        <a href="#tokenomics" class="block text-gray-400 hover:text-white text-sm md:text-base">Tokenomics</a>
                     </div>
                 </div>
                 
@@ -711,14 +741,6 @@
                         </p>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Netlify Badge -->
-            <div class="mt-8 text-center">
-                <a href="https://www.netlify.com" target="_blank">
-                    <img src="https://www.netlify.com/v3/img/components/netlify-light.svg" alt="Deploys by Netlify" class="inline-block h-8 opacity-50 hover:opacity-100 transition-opacity">
-                </a>
-                <p class="text-gray-500 text-xs mt-2">Meme submissions powered by Netlify Forms</p>
             </div>
             
             <div class="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-gray-800 text-center text-gray-500 text-xs md:text-sm">
@@ -772,6 +794,7 @@
         let totalRaised = 0;
         let recentPurchases = [];
         let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        let tokenomicsChart = null;
 
         // =============== INITIALIZATION ===============
         document.addEventListener('DOMContentLoaded', () => {
@@ -819,7 +842,63 @@
             
             // Load user-submitted memes from localStorage (for demo)
             loadUserMemes();
+            
+            // Initialize tokenomics pie chart
+            initializeTokenomicsChart();
         });
+
+        // =============== TOKENOMICS PIE CHART ===============
+        function initializeTokenomicsChart() {
+            const ctx = document.getElementById('tokenomicsChart').getContext('2d');
+            
+            tokenomicsChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Presale (50%)', 'Liquidity (30%)', 'Marketing (5%)', 'CEX (5%)', "Lily's Fund (10%)"],
+                    datasets: [{
+                        data: [50, 30, 5, 5, 10],
+                        backgroundColor: [
+                            '#f97316', // Orange
+                            '#3b82f6', // Blue
+                            '#10b981', // Green
+                            '#8b5cf6', // Purple
+                            '#ec4899'  // Pink
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    const tokens = Math.round(value / 100 * 1000000000);
+                                    
+                                    return `${label}: ${percentage}% (${tokens.toLocaleString()} ROOFY)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
 
         // =============== COPY TOKEN ADDRESS ===============
         function copyTokenAddress() {
