@@ -174,6 +174,18 @@
             margin-top: 8px;
             overflow-x: auto;
         }
+        
+        /* Balance display */
+        .balance-display {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-amber-50 to-orange-50 min-h-screen">
@@ -326,6 +338,10 @@
                             <div class="overflow-hidden">
                                 <p class="font-medium text-green-800 text-sm md:text-base"><i class="fas fa-check-circle mr-2"></i>Connected</p>
                                 <p id="walletAddress" class="text-xs md:text-sm text-green-600 font-mono truncate"></p>
+                                <div id="walletBalance" class="balance-display mt-2 hidden">
+                                    <i class="fas fa-coins mr-2"></i>
+                                    <span id="balanceAmount">0 SOL</span>
+                                </div>
                             </div>
                             <button onclick="disconnectWallet()" class="text-red-600 hover:text-red-800 ml-2">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -827,9 +843,12 @@
         let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         let tokenomicsChart = null;
         let transactionTimeout = null;
+        let currentBalance = 0;
 
         // =============== INITIALIZATION ===============
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('Initializing Roofy Presale...');
+            
             // Mobile detection and help
             if (isMobile) {
                 document.getElementById('mobileWalletHelp').classList.remove('hidden');
@@ -845,25 +864,10 @@
             });
             
             // Check if Phantom is available in browser
-            if (window.solana && window.solana.isPhantom) {
-                wallet = window.solana;
-                wallet.on('connect', () => handleWalletConnect(wallet.publicKey));
-                wallet.on('disconnect', () => handleWalletDisconnect());
-                
-                if (wallet.isConnected) {
-                    handleWalletConnect(wallet.publicKey);
-                }
-            }
-
-            // Initialize connection with faster settings
-            connection = new solanaWeb3.Connection(
-                solanaWeb3.clusterApiUrl('devnet'),
-                {
-                    commitment: 'confirmed',
-                    disableRetryOnRateLimit: false,
-                    confirmTransactionInitialTimeout: 30000 // 30 seconds timeout
-                }
-            );
+            checkPhantomWallet();
+            
+            // Initialize connection with multiple RPC endpoints
+            initializeConnection();
 
             // Set up event listeners
             setupEventListeners();
@@ -877,6 +881,105 @@
             initializeTokenomicsChart();
         });
 
+        // =============== CONNECTION MANAGEMENT ===============
+        function initializeConnection() {
+            // Try multiple RPC endpoints for better reliability
+            const rpcEndpoints = [
+                'https://api.devnet.solana.com',
+                'https://devnet.helius-rpc.com/?api-key=default',
+                'https://solana-devnet.g.alchemy.com/v2/demo'
+            ];
+            
+            // Try to create connection with first endpoint
+            try {
+                connection = new solanaWeb3.Connection(
+                    rpcEndpoints[0],
+                    {
+                        commitment: 'confirmed',
+                        disableRetryOnRateLimit: false,
+                        confirmTransactionInitialTimeout: 20000
+                    }
+                );
+                console.log('Connected to Solana devnet');
+            } catch (err) {
+                console.error('Failed to initialize connection:', err);
+                showError('Failed to connect to Solana network. Please refresh the page.');
+            }
+        }
+
+        // =============== WALLET DETECTION ===============
+        function checkPhantomWallet() {
+            // Check for Phantom wallet
+            if (window.solana && window.solana.isPhantom) {
+                console.log('Phantom wallet detected');
+                wallet = window.solana;
+                
+                // Set up event listeners
+                wallet.on('connect', () => {
+                    console.log('Wallet connected:', wallet.publicKey.toString());
+                    handleWalletConnect(wallet.publicKey);
+                });
+                
+                wallet.on('disconnect', () => {
+                    console.log('Wallet disconnected');
+                    handleWalletDisconnect();
+                });
+                
+                // Check if already connected
+                if (wallet.isConnected) {
+                    console.log('Wallet already connected');
+                    handleWalletConnect(wallet.publicKey);
+                }
+                
+                // Also check for other wallet providers
+                checkOtherWallets();
+            } else {
+                console.log('Phantom wallet not detected');
+                // Check for other wallets
+                checkOtherWallets();
+            }
+        }
+
+        function checkOtherWallets() {
+            // Check for other Solana wallets
+            if (window.solflare && window.solflare.isSolflare) {
+                console.log('Solflare wallet detected');
+            }
+            if (window.backpack && window.backpack.isBackpack) {
+                console.log('Backpack wallet detected');
+            }
+        }
+
+        // =============== BALANCE CHECKING ===============
+        async function updateWalletBalance() {
+            if (!publicKey || !connection) {
+                console.log('Cannot update balance: no public key or connection');
+                return;
+            }
+            
+            try {
+                console.log('Fetching balance for:', publicKey);
+                const balance = await connection.getBalance(new solanaWeb3.PublicKey(publicKey));
+                currentBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
+                console.log('Balance fetched:', currentBalance, 'SOL');
+                
+                // Update UI
+                const balanceDisplay = document.getElementById('walletBalance');
+                const balanceAmount = document.getElementById('balanceAmount');
+                
+                if (balanceDisplay && balanceAmount) {
+                    balanceDisplay.classList.remove('hidden');
+                    balanceAmount.textContent = `${currentBalance.toFixed(4)} SOL`;
+                }
+                
+                return currentBalance;
+            } catch (err) {
+                console.error('Error fetching balance:', err);
+                showError('Failed to fetch wallet balance. Please try reconnecting.');
+                return 0;
+            }
+        }
+
         // =============== ERROR HANDLING ===============
         function showError(message, error = null) {
             const errorDisplay = document.getElementById('errorDisplay');
@@ -885,16 +988,19 @@
                 <div class="error-message">
                     <div class="flex items-center">
                         <i class="fas fa-exclamation-triangle mr-2"></i>
-                        <span class="font-bold">Transaction Failed</span>
+                        <span class="font-bold">Error</span>
                     </div>
                     <p class="mt-2">${message}</p>
-                    ${error ? `<pre class="mt-2">${error.toString().substring(0, 200)}...</pre>` : ''}
+                    ${error ? `<pre class="mt-2 text-xs">${error.toString().substring(0, 150)}...</pre>` : ''}
                     <button onclick="clearError()" class="mt-3 text-sm underline">Dismiss</button>
                 </div>
             `;
             
             // Scroll to error
             errorDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Log error
+            console.error('User error:', message, error);
         }
 
         function clearError() {
@@ -923,28 +1029,21 @@
 
         // =============== PHANTOM DEEP LINKING ===============
         function openInPhantomApp() {
-            // Phantom's universal link for opening dApps
             const currentUrl = encodeURIComponent(window.location.href);
             let phantomUrl = '';
             
             if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // iOS - use universal link
                 phantomUrl = `https://phantom.app/ul/browse/${currentUrl}?ref=${encodeURIComponent('Roofy Presale')}`;
             } else if (/Android/i.test(navigator.userAgent)) {
-                // Android - use intent
                 phantomUrl = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=app.phantom;S.browser_fallback_url=https://phantom.app/download;end`;
             } else {
-                // Fallback
                 phantomUrl = `https://phantom.app/ul/browse/${currentUrl}?ref=${encodeURIComponent('Roofy Presale')}`;
             }
             
-            // Try to open Phantom
             window.location.href = phantomUrl;
             
-            // Fallback after delay
             setTimeout(() => {
                 if (document.hasFocus()) {
-                    // User is still on our page, open download page
                     window.open('https://phantom.app/download', '_blank');
                 }
             }, 2000);
@@ -964,20 +1063,22 @@
             window.open(installUrl, '_blank');
         }
 
-        // =============== IMPROVED CONNECT WALLET FUNCTION ===============
+        // =============== CONNECT WALLET FUNCTION ===============
         async function connectWallet() {
+            console.log('Connect wallet clicked');
+            
             if (isMobile && (!window.solana || !window.solana.isPhantom)) {
-                // On mobile without Phantom in browser - use deep link
+                console.log('Mobile without Phantom - using deep link');
                 openInPhantomApp();
                 return;
             }
             
             if (!window.solana) {
-                // Phantom not installed
+                console.log('Phantom not installed');
                 if (isMobile) {
                     installPhantomWallet();
                 } else {
-                    alert('Please install Phantom wallet from phantom.app');
+                    showError('Please install Phantom wallet from <a href="https://phantom.app" target="_blank" class="underline">phantom.app</a>');
                 }
                 return;
             }
@@ -985,13 +1086,261 @@
             wallet = window.solana;
             
             try {
+                console.log('Requesting wallet connection...');
                 await wallet.connect();
-                wallet.on('connect', () => handleWalletConnect(wallet.publicKey));
-                wallet.on('disconnect', () => handleWalletDisconnect());
+                console.log('Wallet connection requested');
             } catch (err) {
                 console.error('Connection error:', err);
-                showError('Failed to connect wallet. Please try again.', err);
+                if (err.code === 4001) {
+                    showError('Connection rejected. Please approve the connection in your wallet.');
+                } else {
+                    showError('Failed to connect wallet. Please try again.', err);
+                }
             }
+        }
+
+        // =============== WALLET CONNECT/DISCONNECT ===============
+        async function handleWalletConnect(publicKeyObj) {
+            console.log('Handling wallet connect');
+            publicKey = publicKeyObj.toString();
+            
+            const shortAddress = publicKey.slice(0, 4) + '...' + publicKey.slice(-4);
+            document.getElementById('connectWallet').innerHTML = `<i class="fas fa-wallet mr-2"></i>${shortAddress}`;
+            document.getElementById('connectWallet').classList.add('wallet-connected');
+            document.getElementById('walletStatus').classList.add('hidden');
+            document.getElementById('walletInfo').classList.remove('hidden');
+            document.getElementById('walletAddress').textContent = shortAddress;
+            document.getElementById('buyButton').disabled = false;
+            document.getElementById('buyButtonText').textContent = 'BUY ROOFY TOKENS';
+            
+            // Clear any errors
+            clearError();
+            
+            // Update wallet balance
+            try {
+                await updateWalletBalance();
+                console.log('Balance updated after connect');
+            } catch (err) {
+                console.error('Failed to update balance after connect:', err);
+            }
+        }
+
+        function handleWalletDisconnect() {
+            console.log('Handling wallet disconnect');
+            publicKey = null;
+            currentBalance = 0;
+            document.getElementById('connectWallet').innerHTML = '<i class="fas fa-wallet mr-2"></i>Connect';
+            document.getElementById('connectWallet').classList.remove('wallet-connected');
+            document.getElementById('walletStatus').classList.remove('hidden');
+            document.getElementById('walletInfo').classList.add('hidden');
+            document.getElementById('buyButton').disabled = true;
+            document.getElementById('buyButtonText').textContent = 'CONNECT WALLET';
+            document.getElementById('transactionStatus').classList.add('hidden');
+            clearError();
+        }
+
+        // =============== EVENT LISTENERS ===============
+        function setupEventListeners() {
+            // Connect wallet button
+            document.getElementById('connectWallet').addEventListener('click', connectWallet);
+
+            // Quick amount buttons
+            document.querySelectorAll('.quick-amount').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('amount').value = btn.dataset.amount;
+                    updateTokenCalculation();
+                });
+            });
+
+            // Input listeners
+            document.getElementById('amount').addEventListener('input', updateTokenCalculation);
+            document.getElementById('referralCode').addEventListener('input', updateTokenCalculation);
+            document.getElementById('buyButton').addEventListener('click', handlePurchase);
+        }
+
+        // =============== TOKEN CALCULATION ===============
+        function updateTokenCalculation() {
+            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            const currentTier = getCurrentTier();
+            
+            document.getElementById('currentPrice').textContent = 
+                `${Math.floor(currentTier.tokensPerSOL).toLocaleString()}K`;
+            
+            const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
+            
+            const hasReferral = document.getElementById('referralCode').value.trim().length > 0;
+            const bonusTokens = hasReferral ? Math.floor(baseTokens * REFERRAL_BONUS) : 0;
+            const totalTokens = baseTokens + bonusTokens;
+
+            document.getElementById('baseTokens').textContent = baseTokens.toLocaleString();
+            document.getElementById('totalTokens').textContent = totalTokens.toLocaleString();
+            
+            if (hasReferral && bonusTokens > 0) {
+                document.getElementById('bonusSection').classList.remove('hidden');
+                document.getElementById('bonusTokens').textContent = `+${bonusTokens.toLocaleString()}`;
+            } else {
+                document.getElementById('bonusSection').classList.add('hidden');
+            }
+        }
+
+        // =============== PURCHASE HANDLING ===============
+        async function handlePurchase() {
+            console.log('Purchase initiated');
+            
+            if (!publicKey) {
+                showError('Please connect your wallet first');
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById('amount').value);
+            
+            if (isNaN(amount) || amount < MIN_PURCHASE) {
+                showError(`Minimum purchase is ${MIN_PURCHASE} SOL`);
+                return;
+            }
+
+            if (amount > MAX_PURCHASE) {
+                showError(`Maximum purchase per transaction is ${MAX_PURCHASE} SOL`);
+                return;
+            }
+
+            if (totalRaised + amount > PRESALE_CAP) {
+                showError(`Purchase would exceed hard cap! Maximum remaining: ${(PRESALE_CAP - totalRaised).toFixed(2)} SOL`);
+                return;
+            }
+
+            const buyButton = document.getElementById('buyButton');
+            const originalText = buyButton.innerHTML;
+            buyButton.disabled = true;
+            buyButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+            
+            // Clear any previous errors
+            clearError();
+
+            // Update balance before transaction
+            try {
+                await updateWalletBalance();
+                console.log('Current balance before purchase:', currentBalance);
+            } catch (err) {
+                console.error('Failed to update balance:', err);
+                showError('Failed to check wallet balance. Please try again.');
+                resetBuyButton(buyButton, originalText);
+                return;
+            }
+
+            // Check balance
+            if (currentBalance < amount * 1.05) { // 5% buffer for fees
+                showError(`Insufficient SOL balance. You need at least ${(amount * 1.05).toFixed(3)} SOL (including fees). You have ${currentBalance.toFixed(3)} SOL.`);
+                resetBuyButton(buyButton, originalText);
+                return;
+            }
+
+            // Set timeout for transaction
+            if (transactionTimeout) clearTimeout(transactionTimeout);
+            transactionTimeout = setTimeout(() => {
+                showError('Transaction timed out. Please check your wallet and try again.');
+                resetBuyButton(buyButton, originalText);
+            }, 60000); // 60 second timeout
+
+            try {
+                console.log('Creating transaction for amount:', amount, 'SOL');
+                
+                // Create transaction
+                const transaction = new solanaWeb3.Transaction().add(
+                    solanaWeb3.SystemProgram.transfer({
+                        fromPubkey: new solanaWeb3.PublicKey(publicKey),
+                        toPubkey: new solanaWeb3.PublicKey(DEV_WALLET),
+                        lamports: Math.floor(amount * solanaWeb3.LAMPORTS_PER_SOL),
+                    })
+                );
+
+                // Get recent blockhash
+                const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
+                transaction.recentBlockhash = blockhash;
+                transaction.feePayer = new solanaWeb3.PublicKey(publicKey);
+
+                let signature;
+                console.log('Signing transaction...');
+                
+                // Sign and send transaction
+                if (isMobile && wallet) {
+                    const { signature: sig } = await wallet.signAndSendTransaction(transaction);
+                    signature = sig;
+                } else {
+                    const signedTransaction = await wallet.signTransaction(transaction);
+                    signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                }
+                
+                console.log('Transaction sent with signature:', signature);
+
+                // Wait for confirmation
+                console.log('Waiting for confirmation...');
+                await connection.confirmTransaction({
+                    signature,
+                    blockhash,
+                    lastValidBlockHeight
+                }, 'confirmed');
+                
+                console.log('Transaction confirmed!');
+
+                // Clear timeout since we succeeded
+                clearTimeout(transactionTimeout);
+
+                // Show success
+                document.getElementById('transactionStatus').classList.remove('hidden');
+                document.getElementById('txHash').textContent = `TX: ${signature.slice(0, 8)}...${signature.slice(-8)}`;
+                
+                // Update presale stats
+                totalRaised += amount;
+                updateStats();
+                
+                addRecentPurchase(amount, signature);
+                
+                const currentTier = getCurrentTier();
+                const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
+                const bonus = document.getElementById('referralCode').value.trim() ? 
+                    Math.floor(baseTokens * REFERRAL_BONUS) : 0;
+                const total = baseTokens + bonus;
+                
+                showNotification(`✅ Purchase Successful! ${total.toLocaleString()} ROOFY tokens will be airdropped after presale`, 'success');
+
+                // Update balance after purchase
+                setTimeout(() => updateWalletBalance(), 2000);
+
+                // Reset form
+                document.getElementById('amount').value = '0.1';
+                document.getElementById('referralCode').value = '';
+                updateTokenCalculation();
+
+            } catch (err) {
+                console.error('Transaction error:', err);
+                clearTimeout(transactionTimeout);
+                
+                let errorMessage = 'Transaction failed. ';
+                
+                if (err.message?.includes('User rejected')) {
+                    errorMessage = 'You rejected the transaction in your wallet.';
+                } else if (err.message?.includes('NotConnectedError')) {
+                    errorMessage = 'Wallet not connected. Please reconnect your wallet.';
+                } else if (err.message?.includes('timeout') || err.message?.includes('Timeout')) {
+                    errorMessage = 'Transaction timed out. The network might be busy. Please try again.';
+                } else if (err.message?.includes('blockhash')) {
+                    errorMessage = 'Network error. Please refresh the page and try again.';
+                } else if (err.message?.includes('insufficient funds')) {
+                    errorMessage = 'Insufficient funds. Please add SOL to your wallet.';
+                } else {
+                    errorMessage += 'Please check your wallet and try again.';
+                }
+                
+                showError(errorMessage, err);
+            } finally {
+                resetBuyButton(buyButton, originalText);
+            }
+        }
+
+        function resetBuyButton(button, originalText) {
+            button.disabled = false;
+            button.innerHTML = originalText;
         }
 
         // =============== TOKENOMICS PIE CHART ===============
@@ -1089,242 +1438,6 @@
                 }
             }
             return TIERS[TIERS.length - 1];
-        }
-
-        // =============== WALLET FUNCTIONS ===============
-        async function handleWalletConnect(publicKeyObj) {
-            publicKey = publicKeyObj.toString();
-            
-            const shortAddress = publicKey.slice(0, 4) + '...' + publicKey.slice(-4);
-            document.getElementById('connectWallet').innerHTML = `<i class="fas fa-wallet mr-2"></i>${shortAddress}`;
-            document.getElementById('connectWallet').classList.add('wallet-connected');
-            document.getElementById('walletStatus').classList.add('hidden');
-            document.getElementById('walletInfo').classList.remove('hidden');
-            document.getElementById('walletAddress').textContent = shortAddress;
-            document.getElementById('buyButton').disabled = false;
-            document.getElementById('buyButtonText').textContent = 'BUY ROOFY TOKENS';
-            
-            try {
-                const balance = await connection.getBalance(publicKeyObj);
-                console.log(`Balance: ${balance / solanaWeb3.LAMPORTS_PER_SOL} SOL`);
-            } catch (err) {
-                console.log('Could not fetch balance');
-            }
-        }
-
-        function handleWalletDisconnect() {
-            publicKey = null;
-            document.getElementById('connectWallet').innerHTML = '<i class="fas fa-wallet mr-2"></i>Connect';
-            document.getElementById('connectWallet').classList.remove('wallet-connected');
-            document.getElementById('walletStatus').classList.remove('hidden');
-            document.getElementById('walletInfo').classList.add('hidden');
-            document.getElementById('buyButton').disabled = true;
-            document.getElementById('buyButtonText').textContent = 'CONNECT WALLET';
-            document.getElementById('transactionStatus').classList.add('hidden');
-            clearError();
-        }
-
-        // =============== EVENT LISTENERS ===============
-        function setupEventListeners() {
-            // Connect wallet button
-            document.getElementById('connectWallet').addEventListener('click', connectWallet);
-
-            // Quick amount buttons
-            document.querySelectorAll('.quick-amount').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.getElementById('amount').value = btn.dataset.amount;
-                    updateTokenCalculation();
-                });
-            });
-
-            // Input listeners
-            document.getElementById('amount').addEventListener('input', updateTokenCalculation);
-            document.getElementById('referralCode').addEventListener('input', updateTokenCalculation);
-            document.getElementById('buyButton').addEventListener('click', handlePurchase);
-        }
-
-        // =============== TOKEN CALCULATION ===============
-        function updateTokenCalculation() {
-            const amount = parseFloat(document.getElementById('amount').value) || 0;
-            const currentTier = getCurrentTier();
-            
-            document.getElementById('currentPrice').textContent = 
-                `${Math.floor(currentTier.tokensPerSOL).toLocaleString()}K`;
-            
-            const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
-            
-            const hasReferral = document.getElementById('referralCode').value.trim().length > 0;
-            const bonusTokens = hasReferral ? Math.floor(baseTokens * REFERRAL_BONUS) : 0;
-            const totalTokens = baseTokens + bonusTokens;
-
-            document.getElementById('baseTokens').textContent = baseTokens.toLocaleString();
-            document.getElementById('totalTokens').textContent = totalTokens.toLocaleString();
-            
-            if (hasReferral && bonusTokens > 0) {
-                document.getElementById('bonusSection').classList.remove('hidden');
-                document.getElementById('bonusTokens').textContent = `+${bonusTokens.toLocaleString()}`;
-            } else {
-                document.getElementById('bonusSection').classList.add('hidden');
-            }
-        }
-
-        // =============== IMPROVED PURCHASE HANDLING ===============
-        async function handlePurchase() {
-            if (!publicKey) {
-                alert('Please connect your wallet first');
-                return;
-            }
-
-            const amount = parseFloat(document.getElementById('amount').value);
-            
-            if (isNaN(amount) || amount < MIN_PURCHASE) {
-                showError(`Minimum purchase is ${MIN_PURCHASE} SOL`);
-                return;
-            }
-
-            if (amount > MAX_PURCHASE) {
-                showError(`Maximum purchase per transaction is ${MAX_PURCHASE} SOL`);
-                return;
-            }
-
-            if (totalRaised + amount > PRESALE_CAP) {
-                showError(`Purchase would exceed hard cap! Maximum remaining: ${(PRESALE_CAP - totalRaised).toFixed(2)} SOL`);
-                return;
-            }
-
-            const buyButton = document.getElementById('buyButton');
-            const originalText = buyButton.innerHTML;
-            buyButton.disabled = true;
-            buyButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-            
-            // Clear any previous errors
-            clearError();
-
-            // Set timeout for transaction
-            if (transactionTimeout) clearTimeout(transactionTimeout);
-            transactionTimeout = setTimeout(() => {
-                showError('Transaction timed out. Please check your wallet and try again.');
-                resetBuyButton(buyButton, originalText);
-            }, 45000); // 45 second timeout
-
-            try {
-                // Check wallet balance first
-                const balance = await connection.getBalance(new solanaWeb3.PublicKey(publicKey));
-                const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
-                
-                if (solBalance < amount * 1.1) { // 10% buffer for fees
-                    showError(`Insufficient SOL balance. You need at least ${(amount * 1.1).toFixed(3)} SOL (including fees). You have ${solBalance.toFixed(3)} SOL.`);
-                    resetBuyButton(buyButton, originalText);
-                    clearTimeout(transactionTimeout);
-                    return;
-                }
-
-                // Create transaction with proper fee
-                const transaction = new solanaWeb3.Transaction().add(
-                    solanaWeb3.SystemProgram.transfer({
-                        fromPubkey: new solanaWeb3.PublicKey(publicKey),
-                        toPubkey: new solanaWeb3.PublicKey(DEV_WALLET),
-                        lamports: Math.floor(amount * solanaWeb3.LAMPORTS_PER_SOL),
-                    })
-                );
-
-                // Get recent blockhash
-                const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
-                transaction.recentBlockhash = blockhash;
-                transaction.feePayer = new solanaWeb3.PublicKey(publicKey);
-
-                let signature;
-                try {
-                    // Sign and send transaction
-                    if (isMobile && wallet) {
-                        const { signature: sig } = await wallet.signAndSendTransaction(transaction);
-                        signature = sig;
-                    } else {
-                        const signedTransaction = await wallet.signTransaction(transaction);
-                        signature = await connection.sendRawTransaction(signedTransaction.serialize());
-                    }
-                    
-                    console.log('Transaction sent:', signature);
-
-                    // Wait for confirmation with shorter timeout
-                    const confirmationPromise = connection.confirmTransaction({
-                        signature,
-                        blockhash,
-                        lastValidBlockHeight
-                    }, 'confirmed');
-                    
-                    // Set a shorter timeout for confirmation
-                    const confirmationTimeout = new Promise((_, reject) => 
-                        setTimeout(() => reject(new Error('Confirmation timeout')), 30000)
-                    );
-                    
-                    // Race between confirmation and timeout
-                    await Promise.race([confirmationPromise, confirmationTimeout]);
-
-                    // Clear timeout since we succeeded
-                    clearTimeout(transactionTimeout);
-
-                    // Show success
-                    document.getElementById('transactionStatus').classList.remove('hidden');
-                    document.getElementById('txHash').textContent = `TX: ${signature.slice(0, 8)}...${signature.slice(-8)}`;
-                    
-                    // Update presale stats
-                    totalRaised += amount;
-                    updateStats();
-                    
-                    addRecentPurchase(amount, signature);
-                    
-                    const currentTier = getCurrentTier();
-                    const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
-                    const bonus = document.getElementById('referralCode').value.trim() ? 
-                        Math.floor(baseTokens * REFERRAL_BONUS) : 0;
-                    const total = baseTokens + bonus;
-                    
-                    showNotification(`✅ Purchase Successful! ${total.toLocaleString()} ROOFY tokens will be airdropped after presale`, 'success');
-
-                    // Reset form
-                    document.getElementById('amount').value = '0.1';
-                    document.getElementById('referralCode').value = '';
-                    updateTokenCalculation();
-
-                } catch (signError) {
-                    console.error('Transaction signing/sending error:', signError);
-                    let errorMessage = 'Transaction failed. ';
-                    
-                    if (signError.message?.includes('User rejected')) {
-                        errorMessage += 'You rejected the transaction in your wallet.';
-                    } else if (signError.message?.includes('timeout')) {
-                        errorMessage += 'Transaction timed out. Please try again.';
-                    } else {
-                        errorMessage += 'Please check your wallet and try again.';
-                    }
-                    
-                    showError(errorMessage, signError);
-                    clearTimeout(transactionTimeout);
-                }
-
-            } catch (err) {
-                console.error('Transaction error:', err);
-                let errorMessage = 'Transaction failed: ';
-                
-                if (err.message?.includes('Network')) {
-                    errorMessage += 'Network error. Please check your internet connection.';
-                } else if (err.message?.includes('balance')) {
-                    errorMessage += 'Insufficient balance. Please add SOL to your wallet.';
-                } else {
-                    errorMessage += 'Please try again. If problem persists, refresh the page.';
-                }
-                
-                showError(errorMessage, err);
-                clearTimeout(transactionTimeout);
-            } finally {
-                resetBuyButton(buyButton, originalText);
-            }
-        }
-
-        function resetBuyButton(button, originalText) {
-            button.disabled = false;
-            button.innerHTML = originalText;
         }
 
         // =============== STATS UPDATES ===============
