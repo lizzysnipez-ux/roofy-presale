@@ -281,10 +281,15 @@
                 <div class="p-4 md:p-6 lg:p-8">
                     <!-- Mobile Wallet Instructions -->
                     <div id="mobileWalletHelp" class="mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200 text-sm hidden">
-                        <p class="text-blue-700"><i class="fas fa-mobile-alt mr-2"></i>On mobile? Open in Phantom browser app for best experience.</p>
-                        <a href="https://phantom.app" target="_blank" class="phantom-deep-link mt-2 inline-block">
-                            <i class="fas fa-external-link-alt mr-2"></i>Open in Phantom
-                        </a>
+                        <p class="text-blue-700"><i class="fas fa-mobile-alt mr-2"></i>For best mobile experience:</p>
+                        <div class="mt-2 space-y-2">
+                            <button id="openInPhantom" class="phantom-deep-link w-full text-center">
+                                <i class="fas fa-external-link-alt mr-2"></i>Open in Phantom App
+                            </button>
+                            <button id="installPhantom" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-4 rounded-lg w-full text-center">
+                                <i class="fas fa-download mr-2"></i>Install Phantom
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Connection Status -->
@@ -798,6 +803,9 @@
             // Mobile detection and help
             if (isMobile) {
                 document.getElementById('mobileWalletHelp').classList.remove('hidden');
+                
+                // Set up mobile-specific buttons
+                setupMobileWalletButtons();
             }
             
             // Mobile menu toggle
@@ -806,7 +814,7 @@
                 menu.classList.toggle('hidden');
             });
             
-            // Check if Phantom is available
+            // Check if Phantom is available in browser
             if (window.solana && window.solana.isPhantom) {
                 wallet = window.solana;
                 wallet.on('connect', () => handleWalletConnect(wallet.publicKey));
@@ -815,9 +823,6 @@
                 if (wallet.isConnected) {
                     handleWalletConnect(wallet.publicKey);
                 }
-            } else if (isMobile) {
-                // Show mobile-specific instructions
-                showMobileWalletInstructions();
             }
 
             // Initialize connection
@@ -837,6 +842,97 @@
             // Initialize tokenomics pie chart
             initializeTokenomicsChart();
         });
+
+        // =============== MOBILE WALLET BUTTONS SETUP ===============
+        function setupMobileWalletButtons() {
+            const openInPhantomBtn = document.getElementById('openInPhantom');
+            const installPhantomBtn = document.getElementById('installPhantom');
+            
+            if (openInPhantomBtn) {
+                openInPhantomBtn.addEventListener('click', () => {
+                    openInPhantomApp();
+                });
+            }
+            
+            if (installPhantomBtn) {
+                installPhantomBtn.addEventListener('click', () => {
+                    installPhantomWallet();
+                });
+            }
+        }
+
+        // =============== PHANTOM DEEP LINKING ===============
+        function openInPhantomApp() {
+            // Phantom's universal link for opening dApps
+            const currentUrl = encodeURIComponent(window.location.href);
+            let phantomUrl = '';
+            
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                // iOS - use universal link
+                phantomUrl = `https://phantom.app/ul/browse/${currentUrl}?ref=${encodeURIComponent('Roofy Presale')}`;
+            } else if (/Android/i.test(navigator.userAgent)) {
+                // Android - use intent
+                phantomUrl = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=app.phantom;S.browser_fallback_url=https://phantom.app/download;end`;
+            } else {
+                // Fallback
+                phantomUrl = `https://phantom.app/ul/browse/${currentUrl}?ref=${encodeURIComponent('Roofy Presale')}`;
+            }
+            
+            // Try to open Phantom
+            window.location.href = phantomUrl;
+            
+            // Fallback after delay
+            setTimeout(() => {
+                if (document.hasFocus()) {
+                    // User is still on our page, open download page
+                    window.open('https://phantom.app/download', '_blank');
+                }
+            }, 2000);
+        }
+
+        function installPhantomWallet() {
+            let installUrl = '';
+            
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                installUrl = 'https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977';
+            } else if (/Android/i.test(navigator.userAgent)) {
+                installUrl = 'https://play.google.com/store/apps/details?id=app.phantom';
+            } else {
+                installUrl = 'https://phantom.app/download';
+            }
+            
+            window.open(installUrl, '_blank');
+        }
+
+        // =============== IMPROVED CONNECT WALLET FUNCTION ===============
+        async function connectWallet() {
+            if (isMobile && (!window.solana || !window.solana.isPhantom)) {
+                // On mobile without Phantom in browser - use deep link
+                openInPhantomApp();
+                return;
+            }
+            
+            if (!window.solana) {
+                // Phantom not installed
+                if (isMobile) {
+                    installPhantomWallet();
+                } else {
+                    alert('Please install Phantom wallet from phantom.app');
+                }
+                return;
+            }
+
+            wallet = window.solana;
+            
+            try {
+                await wallet.connect();
+                wallet.on('connect', () => handleWalletConnect(wallet.publicKey));
+                wallet.on('disconnect', () => handleWalletDisconnect());
+            } catch (err) {
+                console.error('Connection error:', err);
+                showNotification('Failed to connect wallet. Please try again.', 'error');
+            }
+        }
 
         // =============== TOKENOMICS PIE CHART ===============
         function initializeTokenomicsChart() {
@@ -925,28 +1021,6 @@
             }, 3000);
         }
 
-        // =============== MOBILE WALLET HANDLING ===============
-        function showMobileWalletInstructions() {
-            const helpDiv = document.getElementById('mobileWalletHelp');
-            if (!helpDiv.classList.contains('hidden')) {
-                const connectBtn = document.getElementById('connectWallet');
-                connectBtn.innerHTML = '<i class="fas fa-external-link-alt mr-2"></i>Open in Phantom';
-                connectBtn.onclick = () => {
-                    window.location.href = 'https://phantom.app/ul/browse/' + encodeURIComponent(window.location.href);
-                };
-            }
-        }
-
-        function handleMobileTransaction() {
-            if (isMobile && (!window.solana || !window.solana.isPhantom)) {
-                const amount = document.getElementById('amount').value;
-                const url = `https://phantom.app/ul/sign/${encodeURIComponent(window.location.href)}?amount=${amount}`;
-                window.location.href = url;
-                return true;
-            }
-            return false;
-        }
-
         // =============== TIER FUNCTIONS ===============
         function getCurrentTier() {
             for (const tier of TIERS) {
@@ -991,25 +1065,10 @@
 
         // =============== EVENT LISTENERS ===============
         function setupEventListeners() {
-            document.getElementById('connectWallet').addEventListener('click', async () => {
-                if (!wallet && isMobile) {
-                    window.open('https://phantom.app', '_blank');
-                    return;
-                }
-                
-                if (!wallet) {
-                    alert('Please install Phantom wallet from phantom.app');
-                    return;
-                }
+            // Connect wallet button
+            document.getElementById('connectWallet').addEventListener('click', connectWallet);
 
-                try {
-                    await wallet.connect();
-                } catch (err) {
-                    console.error('Connection error:', err);
-                    alert('Failed to connect wallet. Please try again.');
-                }
-            });
-
+            // Quick amount buttons
             document.querySelectorAll('.quick-amount').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.getElementById('amount').value = btn.dataset.amount;
@@ -1017,6 +1076,7 @@
                 });
             });
 
+            // Input listeners
             document.getElementById('amount').addEventListener('input', updateTokenCalculation);
             document.getElementById('referralCode').addEventListener('input', updateTokenCalculation);
             document.getElementById('buyButton').addEventListener('click', handlePurchase);
@@ -1071,10 +1131,6 @@
                 return;
             }
 
-            if (isMobile && (!window.solana || !window.solana.isPhantom)) {
-                if (handleMobileTransaction()) return;
-            }
-
             const buyButton = document.getElementById('buyButton');
             const originalText = buyButton.innerHTML;
             buyButton.disabled = true;
@@ -1111,9 +1167,9 @@
                 document.getElementById('transactionStatus').classList.remove('hidden');
                 document.getElementById('txHash').textContent = `TX: ${signature.slice(0, 8)}...`;
                 
-                // YES, THIS IS WHERE THE PRESALE BAR UPDATES!
+                // Update presale stats
                 totalRaised += amount;
-                updateStats(); // This function updates the progress bar
+                updateStats();
                 
                 addRecentPurchase(amount, signature);
                 
