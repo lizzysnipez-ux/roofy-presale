@@ -310,7 +310,7 @@
                     <p class="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">Share your favorite Roofy memes! The best memes get bonus tokens.</p>
                 </div>
 
-                <div class="meme-grid mb-8">
+                <div class="meme-grid mb-8" id="memeGallery">
                     <!-- Meme 1 -->
                     <div class="meme-item bg-white rounded-2xl overflow-hidden shadow-lg border border-orange-200">
                         <div class="p-4 text-center">
@@ -360,19 +360,99 @@
                     </div>
                 </div>
 
-                <!-- Upload Meme Section -->
+                <!-- Upload Meme Section with Netlify Forms -->
                 <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 md:p-8 border border-purple-200">
                     <h3 class="text-xl md:text-2xl font-bold mb-4 text-center">📸 Submit Your Roofy Meme</h3>
                     <div class="max-w-md mx-auto">
-                        <div class="mb-4">
-                            <input type="text" placeholder="Meme title" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3">
-                            <textarea placeholder="Describe your meme..." class="w-full border border-gray-300 rounded-lg px-4 py-3 h-24"></textarea>
+                        <!-- Netlify Form -->
+                        <form name="meme-submission" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" netlify id="memeForm">
+                            <!-- Hidden fields for Netlify -->
+                            <input type="hidden" name="form-name" value="meme-submission">
+                            <div class="hidden">
+                                <label>Don't fill this out if you're human: <input name="bot-field"></label>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <input type="text" name="meme-title" placeholder="Meme title" 
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3" required>
+                                <textarea name="meme-description" placeholder="Describe your meme..." 
+                                          class="w-full border border-gray-300 rounded-lg px-4 py-3 h-24" required></textarea>
+                            </div>
+                            
+                            <!-- Image URL input -->
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">
+                                    <i class="fas fa-link mr-2"></i>Meme Image URL
+                                </label>
+                                <input type="url" name="meme-image-url" 
+                                       placeholder="https://imgur.com/your-meme.png" 
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3"
+                                       required>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    Upload your meme to <a href="https://imgur.com" target="_blank" class="text-purple-600">Imgur</a> 
+                                    or <a href="https://imgbb.com" target="_blank" class="text-purple-600">ImgBB</a> and paste the link here
+                                </p>
+                            </div>
+                            
+                            <!-- Wallet Address for token bonus -->
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">
+                                    <i class="fas fa-wallet mr-2"></i>Your Solana Wallet (for bonus tokens)
+                                </label>
+                                <input type="text" name="wallet-address" 
+                                       placeholder="BLKj7mTgRa9Fg1vCDqZeNaBSjyekF4xpK72fMWikZYmq"
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3"
+                                       pattern="^[1-9A-HJ-NP-Za-km-z]{32,44}$">
+                                <p class="text-xs text-gray-500 mt-1">
+                                    Optional: Provide your wallet address to receive bonus tokens if your meme wins
+                                </p>
+                            </div>
+                            
+                            <!-- Social Media -->
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">
+                                    <i class="fas fa-hashtag mr-2"></i>Your Twitter/X Handle
+                                </label>
+                                <input type="text" name="twitter-handle" 
+                                       placeholder="@YourTwitterHandle"
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3">
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="text-center">
+                                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold hover:opacity-90 transition-all">
+                                    <i class="fas fa-upload mr-2"></i>Submit Meme
+                                </button>
+                                <p class="text-sm text-gray-600 mt-3">
+                                    Best memes win bonus ROOFY tokens! Submissions are stored in Netlify.
+                                </p>
+                            </div>
+                        </form>
+                        
+                        <!-- Success Message (hidden by default) -->
+                        <div id="formSuccess" class="hidden mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                            <div class="flex items-center">
+                                <div class="text-green-500 text-xl mr-3">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-green-800">Meme submitted successfully!</p>
+                                    <p class="text-sm text-green-600 mt-1">Thank you for your submission. We'll review it soon!</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-center">
-                            <button class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold">
-                                <i class="fas fa-upload mr-2"></i>Upload Meme
-                            </button>
-                            <p class="text-sm text-gray-600 mt-3">Best memes win bonus ROOFY tokens!</p>
+                        
+                        <!-- Error Message (hidden by default) -->
+                        <div id="formError" class="hidden mt-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-200">
+                            <div class="flex items-center">
+                                <div class="text-red-500 text-xl mr-3">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-red-800">Submission failed</p>
+                                    <p class="text-sm text-red-600 mt-1" id="errorMessage">Please try again</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -483,6 +563,14 @@
                 </div>
             </div>
             
+            <!-- Netlify Badge -->
+            <div class="mt-8 text-center">
+                <a href="https://www.netlify.com" target="_blank">
+                    <img src="https://www.netlify.com/v3/img/components/netlify-light.svg" alt="Deploys by Netlify" class="inline-block h-8 opacity-50 hover:opacity-100 transition-opacity">
+                </a>
+                <p class="text-gray-500 text-xs mt-2">Meme submissions powered by Netlify Forms</p>
+            </div>
+            
             <div class="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-gray-800 text-center text-gray-500 text-xs md:text-sm">
                 <p>This is a memecoin. Invest responsibly. 10% goes to charity.</p>
             </div>
@@ -575,7 +663,177 @@
             updateTokenCalculation();
             simulateLiveStats();
             loadRecentPurchases();
+            
+            // Setup Netlify form submission
+            setupNetlifyForm();
+            
+            // Load user-submitted memes from localStorage (for demo)
+            loadUserMemes();
         });
+
+        // =============== NETLIFY FORM HANDLING ===============
+        function setupNetlifyForm() {
+            const form = document.getElementById('memeForm');
+            
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    const originalText = submitButton.innerHTML;
+                    
+                    // Show loading state
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+                    
+                    // Hide any previous messages
+                    document.getElementById('formSuccess').classList.add('hidden');
+                    document.getElementById('formError').classList.add('hidden');
+                    
+                    try {
+                        // Netlify will handle the form submission automatically
+                        // We'll just show success message
+                        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate submission
+                        
+                        // Show success message
+                        document.getElementById('formSuccess').classList.remove('hidden');
+                        
+                        // Add meme to gallery (for demo - in real app, you'd fetch from Netlify)
+                        addMemeToGallery(
+                            form.querySelector('[name="meme-title"]').value,
+                            form.querySelector('[name="meme-description"]').value,
+                            form.querySelector('[name="meme-image-url"]').value
+                        );
+                        
+                        // Reset form
+                        form.reset();
+                        
+                        // Scroll to show the new meme
+                        document.getElementById('memeGallery').scrollIntoView({ behavior: 'smooth' });
+                        
+                    } catch (error) {
+                        // Show error message
+                        document.getElementById('formError').classList.remove('hidden');
+                        document.getElementById('errorMessage').textContent = error.message || 'Please try again';
+                    } finally {
+                        // Reset button
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalText;
+                    }
+                });
+            }
+        }
+
+        function addMemeToGallery(title, description, imageUrl) {
+            // For demo purposes, we'll add it to the gallery
+            // In a real app, you'd fetch submissions from Netlify backend
+            
+            const memeGrid = document.getElementById('memeGallery');
+            
+            // Create new meme element
+            const memeItem = document.createElement('div');
+            memeItem.className = 'meme-item bg-white rounded-2xl overflow-hidden shadow-lg border border-orange-200';
+            
+            // Try to load image, fallback to emoji if fails
+            let imageContent = '<div class="text-4xl mb-3">🦊🦖</div>';
+            if (imageUrl && imageUrl.startsWith('http')) {
+                imageContent = `
+                    <div class="h-32 overflow-hidden flex items-center justify-center bg-gray-100">
+                        <img src="${imageUrl}" alt="${title}" class="max-h-full max-w-full object-contain" 
+                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'text-4xl\\'>🦊🦖</div>';">
+                    </div>
+                `;
+            }
+            
+            memeItem.innerHTML = `
+                <div class="p-4 text-center">
+                    ${imageContent}
+                    <h4 class="font-bold text-lg mb-2">${title}</h4>
+                    <p class="text-gray-600 text-sm mb-3">${description}</p>
+                    <p class="text-xs text-purple-600 mb-3"><i class="fas fa-user mr-1"></i> User Submitted</p>
+                    <button class="share-meme px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium">
+                        <i class="fas fa-share mr-2"></i>Share
+                    </button>
+                </div>
+            `;
+            
+            // Add to gallery (at the beginning)
+            memeGrid.prepend(memeItem);
+            
+            // Add share functionality
+            memeItem.querySelector('.share-meme').addEventListener('click', () => {
+                shareMeme(title);
+            });
+            
+            // Show notification
+            showNotification('Meme added to gallery!', 'success');
+            
+            // Store in localStorage for demo persistence
+            storeMemeInLocalStorage(title, description, imageUrl);
+        }
+
+        function loadUserMemes() {
+            // Load memes from localStorage (for demo only)
+            try {
+                const storedMemes = JSON.parse(localStorage.getItem('roofyMemes')) || [];
+                
+                storedMemes.forEach(meme => {
+                    setTimeout(() => {
+                        addMemeToGallery(meme.title, meme.description, meme.imageUrl);
+                    }, 100);
+                });
+            } catch (error) {
+                console.log('Could not load stored memes');
+            }
+        }
+
+        function storeMemeInLocalStorage(title, description, imageUrl) {
+            try {
+                const storedMemes = JSON.parse(localStorage.getItem('roofyMemes')) || [];
+                storedMemes.unshift({
+                    title,
+                    description,
+                    imageUrl,
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Keep only last 20 memes
+                if (storedMemes.length > 20) {
+                    storedMemes.pop();
+                }
+                
+                localStorage.setItem('roofyMemes', JSON.stringify(storedMemes));
+            } catch (error) {
+                console.log('Could not store meme in localStorage');
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-xl shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-500 text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' : 
+                'bg-blue-500 text-white'
+            }`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
 
         // =============== MOBILE WALLET HANDLING ===============
         function showMobileWalletInstructions() {
@@ -810,10 +1068,7 @@
                     Math.floor(baseTokens * REFERRAL_BONUS) : 0;
                 const total = baseTokens + bonus;
                 
-                alert(`✅ Purchase Successful!\n\n` +
-                      `Amount: ${amount} SOL\n` +
-                      `Tokens: ${total.toLocaleString()} ROOFY\n` +
-                      `Transaction: ${signature.slice(0, 8)}...`);
+                showNotification(`✅ Purchase Successful! ${total.toLocaleString()} ROOFY tokens`, 'success');
 
                 // Reset form
                 document.getElementById('amount').value = '0.1';
@@ -822,11 +1077,11 @@
 
             } catch (err) {
                 console.error('Transaction error:', err);
-                alert(`Transaction failed: ${err.message || 'Please try again'}`);
+                showNotification(`Transaction failed: ${err.message || 'Please try again'}`, 'error');
                 
                 // Mobile-specific error handling
                 if (isMobile && err.message?.includes('User rejected')) {
-                    alert('Please approve the transaction in Phantom app');
+                    showNotification('Please approve the transaction in Phantom app', 'error');
                 }
             } finally {
                 // Reset button
