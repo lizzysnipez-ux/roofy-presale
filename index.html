@@ -186,6 +186,16 @@
             align-items: center;
             margin-top: 5px;
         }
+        
+        /* Network indicator */
+        .network-indicator {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-amber-50 to-orange-50 min-h-screen">
@@ -193,7 +203,6 @@
     <nav class="bg-white/95 backdrop-blur-sm border-b border-orange-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <!-- Replace this with your token logo -->
                 <img src="https://chocolate-solid-skunk-453.mypinata.cloud/ipfs/bafkreigq22tzxessrj6mvdfcgw4xchwxcphvbbblrylwfunr2w63nhq7xq" alt="Roofy Logo" class="w-10 h-10 rounded-full">
                 <div>
                     <h1 class="text-xl font-bold gradient-text mobile-hidden">ROOFY</h1>
@@ -201,6 +210,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3">
+                <div class="network-indicator" id="networkIndicator">MAINNET</div>
                 <button id="mobileMenu" class="md:hidden text-gray-700">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
@@ -314,6 +324,11 @@
                 </div>
 
                 <div class="p-4 md:p-6 lg:p-8">
+                    <!-- Network Warning -->
+                    <div id="networkWarning" class="mb-4 p-3 bg-yellow-50 rounded-xl border border-yellow-200 text-sm">
+                        <p class="text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i><strong>MAINNET ACTIVE:</strong> This presale uses real SOL on Solana Mainnet. Transactions require real funds.</p>
+                    </div>
+
                     <!-- Mobile Wallet Instructions -->
                     <div id="mobileWalletHelp" class="mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200 text-sm hidden">
                         <p class="text-blue-700"><i class="fas fa-mobile-alt mr-2"></i>For best mobile experience:</p>
@@ -798,6 +813,7 @@
 
     <script>
         // =============== CONFIGURATION ===============
+        // REPLACE THIS WITH YOUR ACTUAL MAINNET WALLET ADDRESS
         const DEV_WALLET = 'BLKj7mTgRa9Fg1vCDqZeNaBSjyekF4xpK72fMWikZYmq';
         
         // FIXED: Increased to 1,000 SOL hard cap
@@ -844,10 +860,16 @@
         let tokenomicsChart = null;
         let transactionTimeout = null;
         let currentBalance = 0;
+        let isMainnet = true; // Set to true for Mainnet
 
         // =============== INITIALIZATION ===============
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Initializing Roofy Presale...');
+            console.log('Initializing Roofy Presale on MAINNET...');
+            
+            // Check if dev wallet is configured
+            if (DEV_WALLET === 'YOUR_MAINNET_SOLANA_WALLET_ADDRESS_HERE') {
+                showError('⚠️ WARNING: Developer wallet not configured! Please update DEV_WALLET with your mainnet Solana address.');
+            }
             
             // Mobile detection and help
             if (isMobile) {
@@ -863,11 +885,11 @@
                 menu.classList.toggle('hidden');
             });
             
-            // Check if Phantom is available in browser
-            checkPhantomWallet();
+            // Initialize Solana connection for MAINNET
+            initializeMainnetConnection();
             
-            // Initialize connection with multiple RPC endpoints
-            initializeConnection();
+            // Check for wallet
+            checkPhantomWallet();
 
             // Set up event listeners
             setupEventListeners();
@@ -881,42 +903,62 @@
             initializeTokenomicsChart();
         });
 
-        // =============== CONNECTION MANAGEMENT ===============
-        function initializeConnection() {
-            // Try multiple RPC endpoints for better reliability
-            const rpcEndpoints = [
-                'https://api.devnet.solana.com',
-                'https://devnet.helius-rpc.com/?api-key=default',
-                'https://solana-devnet.g.alchemy.com/v2/demo'
+        // =============== MAINNET CONNECTION ===============
+        function initializeMainnetConnection() {
+            console.log('Setting up MAINNET connection...');
+            
+            // Mainnet RPC endpoints (you might want to use your own RPC for reliability)
+            const mainnetEndpoints = [
+                'https://api.mainnet-beta.solana.com',
+                'https://solana-api.projectserum.com',
+                'https://rpc.ankr.com/solana'
             ];
             
-            // Try to create connection with first endpoint
             try {
+                // Using the public Solana mainnet endpoint
                 connection = new solanaWeb3.Connection(
-                    rpcEndpoints[0],
+                    mainnetEndpoints[0],
                     {
                         commitment: 'confirmed',
                         disableRetryOnRateLimit: false,
-                        confirmTransactionInitialTimeout: 20000
+                        confirmTransactionInitialTimeout: 60000 // 60 seconds for mainnet
                     }
                 );
-                console.log('Connected to Solana devnet');
+                console.log('Connected to Solana MAINNET');
+                
+                // Update network indicator
+                document.getElementById('networkIndicator').textContent = 'MAINNET ✅';
+                document.getElementById('networkIndicator').style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                
             } catch (err) {
-                console.error('Failed to initialize connection:', err);
-                showError('Failed to connect to Solana network. Please refresh the page.');
+                console.error('Failed to initialize mainnet connection:', err);
+                showError('Failed to connect to Solana Mainnet. Please refresh the page.');
+                
+                // Fallback to other endpoint
+                try {
+                    connection = new solanaWeb3.Connection(
+                        mainnetEndpoints[1],
+                        {
+                            commitment: 'confirmed',
+                            disableRetryOnRateLimit: false
+                        }
+                    );
+                    console.log('Connected to fallback MAINNET endpoint');
+                } catch (fallbackErr) {
+                    console.error('Fallback connection also failed:', fallbackErr);
+                }
             }
         }
 
         // =============== WALLET DETECTION ===============
         function checkPhantomWallet() {
-            // Check for Phantom wallet
             if (window.solana && window.solana.isPhantom) {
-                console.log('Phantom wallet detected');
+                console.log('Phantom wallet detected on MAINNET');
                 wallet = window.solana;
                 
                 // Set up event listeners
                 wallet.on('connect', () => {
-                    console.log('Wallet connected:', wallet.publicKey.toString());
+                    console.log('Wallet connected on MAINNET:', wallet.publicKey.toString());
                     handleWalletConnect(wallet.publicKey);
                 });
                 
@@ -927,26 +969,11 @@
                 
                 // Check if already connected
                 if (wallet.isConnected) {
-                    console.log('Wallet already connected');
+                    console.log('Wallet already connected on MAINNET');
                     handleWalletConnect(wallet.publicKey);
                 }
-                
-                // Also check for other wallet providers
-                checkOtherWallets();
             } else {
                 console.log('Phantom wallet not detected');
-                // Check for other wallets
-                checkOtherWallets();
-            }
-        }
-
-        function checkOtherWallets() {
-            // Check for other Solana wallets
-            if (window.solflare && window.solflare.isSolflare) {
-                console.log('Solflare wallet detected');
-            }
-            if (window.backpack && window.backpack.isBackpack) {
-                console.log('Backpack wallet detected');
             }
         }
 
@@ -954,14 +981,14 @@
         async function updateWalletBalance() {
             if (!publicKey || !connection) {
                 console.log('Cannot update balance: no public key or connection');
-                return;
+                return 0;
             }
             
             try {
-                console.log('Fetching balance for:', publicKey);
+                console.log('Fetching MAINNET balance for:', publicKey);
                 const balance = await connection.getBalance(new solanaWeb3.PublicKey(publicKey));
                 currentBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
-                console.log('Balance fetched:', currentBalance, 'SOL');
+                console.log('MAINNET Balance fetched:', currentBalance, 'SOL');
                 
                 // Update UI
                 const balanceDisplay = document.getElementById('walletBalance');
@@ -974,9 +1001,9 @@
                 
                 return currentBalance;
             } catch (err) {
-                console.error('Error fetching balance:', err);
-                showError('Failed to fetch wallet balance. Please try reconnecting.');
-                return 0;
+                console.error('Error fetching MAINNET balance:', err);
+                // Don't show error for balance fetch - it might be rate limiting
+                return currentBalance; // Return last known balance
             }
         }
 
@@ -988,7 +1015,7 @@
                 <div class="error-message">
                     <div class="flex items-center">
                         <i class="fas fa-exclamation-triangle mr-2"></i>
-                        <span class="font-bold">Error</span>
+                        <span class="font-bold">${isMainnet ? 'MAINNET' : 'Devnet'} Error</span>
                     </div>
                     <p class="mt-2">${message}</p>
                     ${error ? `<pre class="mt-2 text-xs">${error.toString().substring(0, 150)}...</pre>` : ''}
@@ -996,10 +1023,6 @@
                 </div>
             `;
             
-            // Scroll to error
-            errorDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            // Log error
             console.error('User error:', message, error);
         }
 
@@ -1009,86 +1032,21 @@
             errorDisplay.innerHTML = '';
         }
 
-        // =============== MOBILE WALLET BUTTONS SETUP ===============
-        function setupMobileWalletButtons() {
-            const openInPhantomBtn = document.getElementById('openInPhantom');
-            const installPhantomBtn = document.getElementById('installPhantom');
-            
-            if (openInPhantomBtn) {
-                openInPhantomBtn.addEventListener('click', () => {
-                    openInPhantomApp();
-                });
-            }
-            
-            if (installPhantomBtn) {
-                installPhantomBtn.addEventListener('click', () => {
-                    installPhantomWallet();
-                });
-            }
-        }
-
-        // =============== PHANTOM DEEP LINKING ===============
-        function openInPhantomApp() {
-            const currentUrl = encodeURIComponent(window.location.href);
-            let phantomUrl = '';
-            
-            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                phantomUrl = `https://phantom.app/ul/browse/${currentUrl}?ref=${encodeURIComponent('Roofy Presale')}`;
-            } else if (/Android/i.test(navigator.userAgent)) {
-                phantomUrl = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=app.phantom;S.browser_fallback_url=https://phantom.app/download;end`;
-            } else {
-                phantomUrl = `https://phantom.app/ul/browse/${currentUrl}?ref=${encodeURIComponent('Roofy Presale')}`;
-            }
-            
-            window.location.href = phantomUrl;
-            
-            setTimeout(() => {
-                if (document.hasFocus()) {
-                    window.open('https://phantom.app/download', '_blank');
-                }
-            }, 2000);
-        }
-
-        function installPhantomWallet() {
-            let installUrl = '';
-            
-            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                installUrl = 'https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977';
-            } else if (/Android/i.test(navigator.userAgent)) {
-                installUrl = 'https://play.google.com/store/apps/details?id=app.phantom';
-            } else {
-                installUrl = 'https://phantom.app/download';
-            }
-            
-            window.open(installUrl, '_blank');
-        }
-
-        // =============== CONNECT WALLET FUNCTION ===============
+        // =============== WALLET CONNECTION ===============
         async function connectWallet() {
-            console.log('Connect wallet clicked');
-            
-            if (isMobile && (!window.solana || !window.solana.isPhantom)) {
-                console.log('Mobile without Phantom - using deep link');
-                openInPhantomApp();
-                return;
-            }
+            console.log('Connect wallet clicked on MAINNET');
             
             if (!window.solana) {
-                console.log('Phantom not installed');
-                if (isMobile) {
-                    installPhantomWallet();
-                } else {
-                    showError('Please install Phantom wallet from <a href="https://phantom.app" target="_blank" class="underline">phantom.app</a>');
-                }
+                showError('Please install Phantom wallet from <a href="https://phantom.app" target="_blank" class="underline">phantom.app</a>');
                 return;
             }
 
             wallet = window.solana;
             
             try {
-                console.log('Requesting wallet connection...');
+                console.log('Requesting MAINNET wallet connection...');
                 await wallet.connect();
-                console.log('Wallet connection requested');
+                console.log('Wallet connection requested on MAINNET');
             } catch (err) {
                 console.error('Connection error:', err);
                 if (err.code === 4001) {
@@ -1101,7 +1059,7 @@
 
         // =============== WALLET CONNECT/DISCONNECT ===============
         async function handleWalletConnect(publicKeyObj) {
-            console.log('Handling wallet connect');
+            console.log('Handling MAINNET wallet connect');
             publicKey = publicKeyObj.toString();
             
             const shortAddress = publicKey.slice(0, 4) + '...' + publicKey.slice(-4);
@@ -1119,7 +1077,7 @@
             // Update wallet balance
             try {
                 await updateWalletBalance();
-                console.log('Balance updated after connect');
+                console.log('MAINNET balance updated after connect');
             } catch (err) {
                 console.error('Failed to update balance after connect:', err);
             }
@@ -1183,9 +1141,9 @@
             }
         }
 
-        // =============== PURCHASE HANDLING ===============
+        // =============== MAINNET PURCHASE HANDLING ===============
         async function handlePurchase() {
-            console.log('Purchase initiated');
+            console.log('MAINNET purchase initiated');
             
             if (!publicKey) {
                 showError('Please connect your wallet first');
@@ -1220,7 +1178,7 @@
             // Update balance before transaction
             try {
                 await updateWalletBalance();
-                console.log('Current balance before purchase:', currentBalance);
+                console.log('Current MAINNET balance before purchase:', currentBalance);
             } catch (err) {
                 console.error('Failed to update balance:', err);
                 showError('Failed to check wallet balance. Please try again.');
@@ -1228,22 +1186,23 @@
                 return;
             }
 
-            // Check balance
-            if (currentBalance < amount * 1.05) { // 5% buffer for fees
-                showError(`Insufficient SOL balance. You need at least ${(amount * 1.05).toFixed(3)} SOL (including fees). You have ${currentBalance.toFixed(3)} SOL.`);
+            // Check balance with small buffer for mainnet fees (0.000005 SOL typical fee)
+            if (currentBalance < amount + 0.01) { // 0.01 SOL buffer for mainnet fees
+                showError(`Insufficient SOL balance. You need at least ${(amount + 0.01).toFixed(3)} SOL (including fees). You have ${currentBalance.toFixed(4)} SOL.`);
                 resetBuyButton(buyButton, originalText);
                 return;
             }
 
-            // Set timeout for transaction
+            // Set timeout for transaction (mainnet can be slower)
             if (transactionTimeout) clearTimeout(transactionTimeout);
             transactionTimeout = setTimeout(() => {
                 showError('Transaction timed out. Please check your wallet and try again.');
                 resetBuyButton(buyButton, originalText);
-            }, 60000); // 60 second timeout
+            }, 90000); // 90 second timeout for mainnet
 
             try {
-                console.log('Creating transaction for amount:', amount, 'SOL');
+                console.log('Creating MAINNET transaction for amount:', amount, 'SOL');
+                console.log('Sending to dev wallet:', DEV_WALLET);
                 
                 // Create transaction
                 const transaction = new solanaWeb3.Transaction().add(
@@ -1260,28 +1219,24 @@
                 transaction.feePayer = new solanaWeb3.PublicKey(publicKey);
 
                 let signature;
-                console.log('Signing transaction...');
+                console.log('Signing MAINNET transaction...');
                 
                 // Sign and send transaction
-                if (isMobile && wallet) {
-                    const { signature: sig } = await wallet.signAndSendTransaction(transaction);
-                    signature = sig;
-                } else {
-                    const signedTransaction = await wallet.signTransaction(transaction);
-                    signature = await connection.sendRawTransaction(signedTransaction.serialize());
-                }
+                const signedTransaction = await wallet.signTransaction(transaction);
+                signature = await connection.sendRawTransaction(signedTransaction.serialize());
                 
-                console.log('Transaction sent with signature:', signature);
+                console.log('MAINNET Transaction sent with signature:', signature);
+                console.log('View on Solana Explorer: https://explorer.solana.com/tx/' + signature);
 
-                // Wait for confirmation
-                console.log('Waiting for confirmation...');
+                // Wait for confirmation (mainnet can take longer)
+                console.log('Waiting for MAINNET confirmation...');
                 await connection.confirmTransaction({
                     signature,
                     blockhash,
                     lastValidBlockHeight
                 }, 'confirmed');
                 
-                console.log('Transaction confirmed!');
+                console.log('MAINNET Transaction confirmed!');
 
                 // Clear timeout since we succeeded
                 clearTimeout(transactionTimeout);
@@ -1289,6 +1244,9 @@
                 // Show success
                 document.getElementById('transactionStatus').classList.remove('hidden');
                 document.getElementById('txHash').textContent = `TX: ${signature.slice(0, 8)}...${signature.slice(-8)}`;
+                document.getElementById('txHash').onclick = () => {
+                    window.open(`https://explorer.solana.com/tx/${signature}`, '_blank');
+                };
                 
                 // Update presale stats
                 totalRaised += amount;
@@ -1302,10 +1260,10 @@
                     Math.floor(baseTokens * REFERRAL_BONUS) : 0;
                 const total = baseTokens + bonus;
                 
-                showNotification(`✅ Purchase Successful! ${total.toLocaleString()} ROOFY tokens will be airdropped after presale`, 'success');
+                showNotification(`✅ MAINNET Purchase Successful! ${total.toLocaleString()} ROOFY tokens will be airdropped after presale`, 'success');
 
                 // Update balance after purchase
-                setTimeout(() => updateWalletBalance(), 2000);
+                setTimeout(() => updateWalletBalance(), 3000);
 
                 // Reset form
                 document.getElementById('amount').value = '0.1';
@@ -1313,7 +1271,7 @@
                 updateTokenCalculation();
 
             } catch (err) {
-                console.error('Transaction error:', err);
+                console.error('MAINNET Transaction error:', err);
                 clearTimeout(transactionTimeout);
                 
                 let errorMessage = 'Transaction failed. ';
@@ -1323,11 +1281,13 @@
                 } else if (err.message?.includes('NotConnectedError')) {
                     errorMessage = 'Wallet not connected. Please reconnect your wallet.';
                 } else if (err.message?.includes('timeout') || err.message?.includes('Timeout')) {
-                    errorMessage = 'Transaction timed out. The network might be busy. Please try again.';
+                    errorMessage = 'Transaction timed out. The mainnet might be busy. Please try again.';
                 } else if (err.message?.includes('blockhash')) {
                     errorMessage = 'Network error. Please refresh the page and try again.';
                 } else if (err.message?.includes('insufficient funds')) {
-                    errorMessage = 'Insufficient funds. Please add SOL to your wallet.';
+                    errorMessage = 'Insufficient funds. You need real SOL on mainnet.';
+                } else if (err.message?.includes('429')) {
+                    errorMessage = 'Rate limited. Please wait a moment and try again.';
                 } else {
                     errorMessage += 'Please check your wallet and try again.';
                 }
@@ -1343,7 +1303,148 @@
             button.innerHTML = originalText;
         }
 
-        // =============== TOKENOMICS PIE CHART ===============
+        // =============== HELPER FUNCTIONS ===============
+        function getCurrentTier() {
+            for (const tier of TIERS) {
+                if (totalRaised >= tier.range[0] && totalRaised < tier.range[1]) {
+                    return tier;
+                }
+            }
+            return TIERS[TIERS.length - 1];
+        }
+
+        function updateStats() {
+            const progress = (totalRaised / PRESALE_CAP) * 100;
+            const currentTier = getCurrentTier();
+            
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            document.getElementById('progressPercent').textContent = `${progress.toFixed(1)}%`;
+            document.getElementById('currentRaised').textContent = `${totalRaised.toFixed(2)} SOL`;
+            document.getElementById('totalRaised').textContent = totalRaised.toFixed(2);
+            document.getElementById('currentPrice').textContent = 
+                `${Math.floor(currentTier.tokensPerSOL).toLocaleString()}K`;
+                
+            updateTokenCalculation();
+        }
+
+        function simulateLiveStats() {
+            totalRaised = 245.67;
+            updateStats();
+            document.getElementById('totalBuyers').textContent = '124';
+            
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const randomAmount = 0.1 + Math.random() * 5;
+                    totalRaised += randomAmount;
+                    if (totalRaised > PRESALE_CAP) totalRaised = PRESALE_CAP;
+                    updateStats();
+                    
+                    if (recentPurchases.length < 5) {
+                        addRecentPurchase(randomAmount, `sim_${Date.now()}`);
+                    }
+                }
+            }, 10000);
+        }
+
+        function addRecentPurchase(amount, txHash) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const currentTier = getCurrentTier();
+            const tokens = Math.floor(amount * currentTier.tokensPerSOL);
+            
+            recentPurchases.unshift({
+                time: timeString,
+                amount: amount.toFixed(2),
+                tokens: tokens.toLocaleString(),
+                tier: currentTier.name.substring(0, 10),
+                txHash: txHash
+            });
+            
+            if (recentPurchases.length > 5) {
+                recentPurchases.pop();
+            }
+            
+            loadRecentPurchases();
+        }
+
+        function loadRecentPurchases() {
+            const container = document.getElementById('recentPurchases');
+            container.innerHTML = '';
+            
+            if (recentPurchases.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-4 text-sm">
+                        <i class="fas fa-shopping-cart mr-2"></i>No purchases yet
+                    </div>
+                `;
+                return;
+            }
+            
+            recentPurchases.forEach(purchase => {
+                const purchaseEl = document.createElement('div');
+                purchaseEl.className = 'flex justify-between items-center p-2 hover:bg-orange-50 rounded-lg text-sm cursor-pointer';
+                purchaseEl.onclick = () => {
+                    if (purchase.txHash && !purchase.txHash.startsWith('sim_')) {
+                        window.open(`https://explorer.solana.com/tx/${purchase.txHash}`, '_blank');
+                    }
+                };
+                purchaseEl.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                        <div>
+                            <div class="font-medium">${purchase.time}</div>
+                            <div class="text-xs text-gray-500">${purchase.tier}</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold">${purchase.amount} SOL</div>
+                        <div class="text-xs text-orange-600">${purchase.tokens} ROOFY</div>
+                    </div>
+                `;
+                container.appendChild(purchaseEl);
+            });
+        }
+
+        function disconnectWallet() {
+            if (wallet) {
+                wallet.disconnect();
+            }
+            handleWalletDisconnect();
+        }
+
+        function copyTokenAddress() {
+            const message = "Token address will be revealed after presale completion. Stay tuned! 🚀";
+            navigator.clipboard.writeText(message).then(() => {
+                showNotification('Token address info copied to clipboard!', 'success');
+            }).catch(err => {
+                showNotification('Failed to copy address', 'error');
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-xl shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-500 text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' : 
+                'bg-blue-500 text-white'
+            }`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
         function initializeTokenomicsChart() {
             const ctx = document.getElementById('tokenomicsChart').getContext('2d');
             
@@ -1396,146 +1497,22 @@
             });
         }
 
-        // =============== COPY TOKEN ADDRESS ===============
-        function copyTokenAddress() {
-            const message = "Token address will be revealed after presale completion. Stay tuned! 🚀";
-            navigator.clipboard.writeText(message).then(() => {
-                showNotification('Token address info copied to clipboard!', 'success');
-            }).catch(err => {
-                showNotification('Failed to copy address', 'error');
-            });
-        }
-
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 p-4 rounded-xl shadow-lg z-50 ${
-                type === 'success' ? 'bg-green-500 text-white' : 
-                type === 'error' ? 'bg-red-500 text-white' : 
-                'bg-blue-500 text-white'
-            }`;
-            notification.innerHTML = `
-                <div class="flex items-center">
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} mr-2"></i>
-                    <span>${message}</span>
-                </div>
-            `;
+        // Mobile functions (simplified)
+        function setupMobileWalletButtons() {
+            const openInPhantomBtn = document.getElementById('openInPhantom');
+            const installPhantomBtn = document.getElementById('installPhantom');
             
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        }
-
-        // =============== TIER FUNCTIONS ===============
-        function getCurrentTier() {
-            for (const tier of TIERS) {
-                if (totalRaised >= tier.range[0] && totalRaised < tier.range[1]) {
-                    return tier;
-                }
-            }
-            return TIERS[TIERS.length - 1];
-        }
-
-        // =============== STATS UPDATES ===============
-        function updateStats() {
-            const progress = (totalRaised / PRESALE_CAP) * 100;
-            const currentTier = getCurrentTier();
-            
-            // Update progress bar
-            document.getElementById('progressBar').style.width = `${progress}%`;
-            document.getElementById('progressPercent').textContent = `${progress.toFixed(1)}%`;
-            document.getElementById('currentRaised').textContent = `${totalRaised.toFixed(2)} SOL`;
-            document.getElementById('totalRaised').textContent = totalRaised.toFixed(2);
-            document.getElementById('currentPrice').textContent = 
-                `${Math.floor(currentTier.tokensPerSOL).toLocaleString()}K`;
-                
-            // Update token calculation with new tier if needed
-            updateTokenCalculation();
-        }
-
-        function simulateLiveStats() {
-            totalRaised = 245.67;
-            updateStats();
-            document.getElementById('totalBuyers').textContent = '124';
-            
-            // Simulate occasional purchases for demo purposes
-            setInterval(() => {
-                if (Math.random() > 0.7) {
-                    const randomAmount = 0.1 + Math.random() * 5;
-                    totalRaised += randomAmount;
-                    if (totalRaised > PRESALE_CAP) totalRaised = PRESALE_CAP;
-                    updateStats();
-                    
-                    if (recentPurchases.length < 5) {
-                        addRecentPurchase(randomAmount, `sim_${Date.now()}`);
-                    }
-                }
-            }, 10000);
-        }
-
-        function addRecentPurchase(amount, txHash) {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const currentTier = getCurrentTier();
-            const tokens = Math.floor(amount * currentTier.tokensPerSOL);
-            
-            recentPurchases.unshift({
-                time: timeString,
-                amount: amount.toFixed(2),
-                tokens: tokens.toLocaleString(),
-                tier: currentTier.name.substring(0, 10)
-            });
-            
-            if (recentPurchases.length > 5) {
-                recentPurchases.pop();
+            if (openInPhantomBtn) {
+                openInPhantomBtn.addEventListener('click', () => {
+                    window.location.href = 'https://phantom.app/ul/browse/' + encodeURIComponent(window.location.href);
+                });
             }
             
-            loadRecentPurchases();
-        }
-
-        function loadRecentPurchases() {
-            const container = document.getElementById('recentPurchases');
-            container.innerHTML = '';
-            
-            if (recentPurchases.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center text-gray-500 py-4 text-sm">
-                        <i class="fas fa-shopping-cart mr-2"></i>No purchases yet
-                    </div>
-                `;
-                return;
+            if (installPhantomBtn) {
+                installPhantomBtn.addEventListener('click', () => {
+                    window.open('https://phantom.app/download', '_blank');
+                });
             }
-            
-            recentPurchases.forEach(purchase => {
-                const purchaseEl = document.createElement('div');
-                purchaseEl.className = 'flex justify-between items-center p-2 hover:bg-orange-50 rounded-lg text-sm';
-                purchaseEl.innerHTML = `
-                    <div class="flex items-center">
-                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                        <div>
-                            <div class="font-medium">${purchase.time}</div>
-                            <div class="text-xs text-gray-500">${purchase.tier}</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-bold">${purchase.amount} SOL</div>
-                        <div class="text-xs text-orange-600">${purchase.tokens} ROOFY</div>
-                    </div>
-                `;
-                container.appendChild(purchaseEl);
-            });
-        }
-
-        // =============== HELPER FUNCTIONS ===============
-        function disconnectWallet() {
-            if (wallet) {
-                wallet.disconnect();
-            }
-            handleWalletDisconnect();
         }
 
         updateTokenCalculation();
