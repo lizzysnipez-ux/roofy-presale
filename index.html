@@ -311,64 +311,139 @@
             transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
-        /* Backed by section */
-        .backed-card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.1);
-            border: 2px solid #f97316;
-            transition: all 0.3s ease;
-            height: 100%;
+        /* Roadmap styling */
+        .roadmap-container {
+            position: relative;
+            padding-left: 30px;
         }
         
-        .backed-card:hover {
-            transform: translateY(-5px);
+        .roadmap-container::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #f97316, #dc2626, #f97316);
+        }
+        
+        .roadmap-phase {
+            position: relative;
+            margin-bottom: 40px;
+            padding-left: 40px;
+        }
+        
+        .roadmap-phase:last-child {
+            margin-bottom: 0;
+        }
+        
+        .roadmap-phase::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background: #f97316;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px #f97316;
+        }
+        
+        .roadmap-phase.active::before {
+            background: #10b981;
+            box-shadow: 0 0 0 4px #10b981;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .roadmap-phase.completed::before {
+            background: #10b981;
+            box-shadow: 0 0 0 4px #10b981;
+        }
+        
+        .phase-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.1);
+            border-left: 5px solid #f97316;
+            transition: all 0.3s ease;
+        }
+        
+        .phase-card:hover {
+            transform: translateX(5px);
             box-shadow: 0 15px 40px rgba(249, 115, 22, 0.2);
         }
         
-        .backed-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
-            border-radius: 50%;
-            display: flex;
+        .phase-number {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
             color: white;
-            font-size: 30px;
-            margin: 0 auto 20px;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
         
-        /* Launch strategy card */
-        .strategy-card {
-            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+        .phase-number.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        /* Launch announcement */
+        .launch-announcement {
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
             border-radius: 20px;
-            padding: 25px;
-            border: 2px solid #f97316;
+            padding: 30px;
+            color: white;
+            text-align: center;
             position: relative;
             overflow: hidden;
+            margin: 30px auto;
         }
         
-        .strategy-card::before {
+        .launch-announcement::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #f97316, #dc2626);
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
         }
         
-        .milestone-badge {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
+        .launch-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 50px;
             display: inline-block;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Roadmap section specific */
+        .roadmap-section {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            border: 3px solid #f97316;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .roadmap-section::before {
+            content: '🚀';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 60px;
+            opacity: 0.1;
         }
     </style>
 </head>
@@ -402,9 +477,9 @@
         <div id="mobileMenuContent" class="md:hidden bg-white border-t border-orange-200 hidden">
             <div class="px-4 py-3 space-y-3">
                 <a href="#presale" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Presale</a>
-                <a href="#token" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Token</a>
                 <a href="#story" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Story</a>
-                <a href="#launch" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Launch Countdown</a>
+                <a href="#launch" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Launch</a>
+                <a href="#roadmap" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Roadmap</a>
                 <a href="#tokenomics" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Tokenomics</a>
             </div>
         </div>
@@ -458,8 +533,8 @@
 
             <!-- Launch Countdown -->
             <div id="launch" class="countdown-container mb-12">
-                <h2 class="text-2xl md:text-3xl font-bold mb-2">🚀 Official Launch Countdown</h2>
-                <p class="text-lg opacity-90 mb-4">$ROOFY launches on February 15, 2026 - A tribute, not a coincidence</p>
+                <h2 class="text-2xl md:text-3xl font-bold mb-2">🚀 OFFICIAL LAUNCH: FEB 15, 2026</h2>
+                <p class="text-lg opacity-90 mb-4">Not just a date. A tribute to eternal love.</p>
                 
                 <div class="countdown-timer">
                     <div class="countdown-box">
@@ -481,7 +556,7 @@
                 </div>
                 
                 <p class="text-sm opacity-80 mt-6">
-                    <i class="fas fa-heart mr-2"></i>In memory of a light that will never fade
+                    <i class="fas fa-heart mr-2"></i>Exactly one year later. Because love never fades.
                 </p>
             </div>
 
@@ -684,45 +759,240 @@
                 </div>
             </div>
 
-            <!-- Backed by Scale Section -->
-            <div class="mb-16">
-                <div class="text-center mb-8">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-3">💎 Backed by Scale, Built by the Best</h2>
-                    <p class="text-gray-600 text-lg max-w-3xl mx-auto">$ROOFY combines heartfelt meaning with institutional-grade execution</p>
+            <!-- Updated Story Section -->
+            <div id="story" class="mt-12 md:mt-16 max-w-5xl mx-auto">
+                <div class="text-center mb-8 md:mb-12">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-4">
+                        <i class="fas fa-heart text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">A Legacy of Love</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Some stories aren't born from hype. They're born from love, loss, and memory.
+                    </p>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-6 md:gap-8 mb-8">
-                    <!-- Marketing Card -->
-                    <div class="backed-card">
-                        <div class="backed-icon">
-                            <i class="fas fa-bullhorn"></i>
+                <!-- Story Introduction -->
+                <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-8 mb-8 border border-pink-200">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-heart text-3xl text-white"></i>
                         </div>
-                        <h3 class="text-xl font-bold mb-3 text-center">$1M+ Marketing</h3>
-                        <p class="text-gray-600 text-center">
-                            Global influencer campaigns, strategic media placements, and collaborations with music producers and artists worldwide.
+                        
+                        <h3 class="text-2xl font-bold mb-6 text-gray-800">A Story That Will Touch Your Heart</h3>
+                        
+                        <p class="text-gray-700 text-lg mb-6 leading-relaxed">
+                            Lizzy's daughter was the light of her world—gentle, kind, and full of a joy that made everyone around her feel safe. On February 15, 2025, that light was taken far too soon in a tragic car accident. A moment that changed everything.
+                        </p>
+                        
+                        <p class="text-gray-700 text-lg mb-6 leading-relaxed">
+                            But love doesn't disappear when life ends. Roofy, her beloved pet, was always by her side—through laughter, through quiet moments, through the days that mattered most. Roofy became a symbol of comfort, loyalty, and unconditional love.
+                        </p>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-lg mt-6 max-w-lg">
+                            <div class="flex items-center justify-center mb-4">
+                                <div class="text-4xl mr-3">❤️</div>
+                                <h4 class="text-xl font-bold">The Promise</h4>
+                            </div>
+                            <p class="text-gray-700 text-center">
+                                <span class="text-xl font-bold gradient-text">$ROOFY</span> was created as a living memory. Not just a token—but a promise.<br>
+                                <span class="text-lg font-semibold mt-2 block">That her name, her warmth, and her spirit will never fade.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Launch Announcement -->
+                <div class="launch-announcement mb-12">
+                    <div class="launch-badge">
+                        <i class="fas fa-calendar-star mr-2"></i>LAUNCH DAY
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">FEBRUARY 15, 2026</h3>
+                    <p class="text-xl opacity-90 mb-6 max-w-2xl mx-auto">
+                        Exactly one year later. Not a coincidence. A tribute.<br>
+                        A moment to remember, together.
+                    </p>
+                    <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4 max-w-lg mx-auto">
+                        <p class="text-lg">
+                            <i class="fas fa-quote-left text-white/50 mr-2"></i>
+                            When you hold $ROOFY, you're not just holding a coin. You're holding a story. You're holding a memory. You're helping ensure that she is never forgotten.
+                            <i class="fas fa-quote-right text-white/50 ml-2"></i>
+                        </p>
+                        <p class="mt-4 font-bold">
+                            <i class="fas fa-heart mr-2"></i>For her. For Roofy. Forever.
                         </p>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Development Card -->
-                    <div class="backed-card">
-                        <div class="backed-icon">
-                            <i class="fas fa-code"></i>
+            <!-- Aggressive Roadmap -->
+            <div id="roadmap" class="roadmap-section">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">🚀 ROOFY BLASTOFF ROADMAP</h2>
+                    <p class="text-lg text-gray-700 max-w-2xl mx-auto">
+                        From presale to mainstream adoption - Our aggressive plan to make $ROOFY legendary
+                    </p>
+                </div>
+
+                <div class="roadmap-container">
+                    <!-- Phase 1 -->
+                    <div class="roadmap-phase active">
+                        <div class="phase-card">
+                            <div class="phase-number active">1</div>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">🔥 PRESALE & MARKETING BLAST</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <i class="fas fa-rocket text-green-500 mt-1 mr-2"></i>
+                                    <span>Presale launch with 50% bonus for early birds</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-bullhorn text-orange-500 mt-1 mr-2"></i>
+                                    <span>Aggressive marketing campaign across all platforms</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-users text-blue-500 mt-1 mr-2"></i>
+                                    <span>Build initial community of 10,000+ members</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-trophy text-purple-500 mt-1 mr-2"></i>
+                                    <span>Reach 1,000 SOL presale hard cap</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                    <i class="fas fa-play-circle mr-1"></i>IN PROGRESS
+                                </span>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-bold mb-3 text-center">Top-Tier Development</h3>
-                        <p class="text-gray-600 text-center">
-                            Led by Dr. SAM, one of Solana's top developers, ensuring institutional-grade smart contracts, performance, and security.
-                        </p>
                     </div>
 
-                    <!-- Whales Card -->
-                    <div class="backed-card">
-                        <div class="backed-icon">
-                            <i class="fas fa-whale"></i>
+                    <!-- Phase 2 -->
+                    <div class="roadmap-phase">
+                        <div class="phase-card">
+                            <div class="phase-number">2</div>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">🚀 TOKEN LAUNCH & LIFTOFF</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <i class="fas fa-calendar-check text-red-500 mt-1 mr-2"></i>
+                                    <span><strong>February 15, 2026:</strong> Official token launch</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-gift text-pink-500 mt-1 mr-2"></i>
+                                    <span>Airdrop tokens to all presale participants</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-lock text-amber-500 mt-1 mr-2"></i>
+                                    <span>Liquidity locked for 1 year + Contract renounced</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-chart-line text-green-500 mt-1 mr-2"></i>
+                                    <span>CMC & CoinGecko listing applications</span>
+                                </div>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-bold mb-3 text-center">Whale Support</h3>
-                        <p class="text-gray-600 text-center">
-                            Backed by major Solana whales Armando and Carlito, aligning strong hands and deep liquidity from day one.
-                        </p>
+                    </div>
+
+                    <!-- Phase 3 -->
+                    <div class="roadmap-phase">
+                        <div class="phase-card">
+                            <div class="phase-number">3</div>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">📈 DEX BOOST & VIRAL PUSH</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <i class="fas fa-bolt text-yellow-500 mt-1 mr-2"></i>
+                                    <span>Raydium launch with deep liquidity</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-fire text-red-500 mt-1 mr-2"></i>
+                                    <span>Trending on DexTools & DexScreener</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-virus text-purple-500 mt-1 mr-2"></i>
+                                    <span>TikTok & Instagram viral campaign</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-trending-up text-green-500 mt-1 mr-2"></i>
+                                    <span>Achieve first 10x from launch price</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 4 -->
+                    <div class="roadmap-phase">
+                        <div class="phase-card">
+                            <div class="phase-number">4</div>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">🎥 LIVE STREAM & CONTENT BLAST</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <i class="fas fa-video text-blue-500 mt-1 mr-2"></i>
+                                    <span>24/7 Twitter Spaces marathon</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-gamepad text-green-500 mt-1 mr-2"></i>
+                                    <span>Twitch streamer collaborations</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-film text-purple-500 mt-1 mr-2"></i>
+                                    <span>YouTube documentary series</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-trophy text-amber-500 mt-1 mr-2"></i>
+                                    <span>Memes & content contests with prize pools</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 5 -->
+                    <div class="roadmap-phase">
+                        <div class="phase-card">
+                            <div class="phase-number">5</div>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">🌟 INFLUENCER SUPPORT & MAINSTREAM</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <i class="fas fa-star text-yellow-500 mt-1 mr-2"></i>
+                                    <span>Top 50 crypto influencers onboarded</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-music text-pink-500 mt-1 mr-2"></i>
+                                    <span>Music producer & artist collaborations</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-newspaper text-gray-500 mt-1 mr-2"></i>
+                                    <span>Forbes, CoinTelegraph, Bloomberg features</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-users text-blue-500 mt-1 mr-2"></i>
+                                    <span>100,000+ holder milestone</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 6 -->
+                    <div class="roadmap-phase">
+                        <div class="phase-card">
+                            <div class="phase-number">6</div>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">🏦 CEX LISTINGS & MASS ADOPTION</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <i class="fas fa-exchange-alt text-green-500 mt-1 mr-2"></i>
+                                    <span>KuCoin, Gate.io, MEXC listings</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-bank text-blue-500 mt-1 mr-2"></i>
+                                    <span><strong>$10M MC:</strong> Binance & Coinbase applications</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-globe text-purple-500 mt-1 mr-2"></i>
+                                    <span>Global marketing campaign expansion</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-infinity text-red-500 mt-1 mr-2"></i>
+                                    <span>Eternal community-driven development</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -779,107 +1049,6 @@
                 </div>
             </div>
 
-            <!-- Updated Story Section -->
-            <div id="story" class="mt-12 md:mt-16 max-w-5xl mx-auto">
-                <div class="text-center mb-8 md:mb-12">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-4">
-                        <i class="fas fa-heart text-2xl text-white"></i>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">The Story Behind $ROOFY</h2>
-                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                        Some stories aren't born from hype. They're born from love, loss, and memory.
-                    </p>
-                </div>
-
-                <!-- Story Introduction -->
-                <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 md:p-8 mb-8 border border-pink-200">
-                    <div class="flex flex-col md:flex-row items-center">
-                        <div class="md:w-2/3 md:pr-8">
-                            <h3 class="text-2xl font-bold mb-4 text-gray-800">A Legacy of Love</h3>
-                            <p class="text-gray-700 mb-4">
-                                Lizzy's daughter was the light of her world—gentle, kind, and full of a joy that made everyone around her feel safe. On February 15, 2025, that light was taken far too soon in a tragic car accident. A moment that changed everything.
-                            </p>
-                            <p class="text-gray-700 mb-4">
-                                But love doesn't disappear when life ends. Roofy, her beloved pet, was always by her side—through laughter, through quiet moments, through the days that mattered most. Roofy became a symbol of comfort, loyalty, and unconditional love.
-                            </p>
-                            <p class="text-gray-700 font-medium">
-                                <i class="fas fa-quote-left text-orange-500 mr-2"></i>
-                                $ROOFY was created as a living memory. Not just a token—but a promise.
-                                <i class="fas fa-quote-right text-orange-500 ml-2"></i>
-                            </p>
-                        </div>
-                        <div class="md:w-1/3 mt-6 md:mt-0">
-                            <div class="bg-white p-6 rounded-xl shadow-lg">
-                                <div class="text-center">
-                                    <div class="text-5xl mb-3">❤️</div>
-                                    <h4 class="font-bold text-lg mb-2">The Promise</h4>
-                                    <p class="text-sm text-gray-600">
-                                        That her name, her warmth, and her spirit will never fade.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Launch Tribute -->
-                <div class="strategy-card mb-8">
-                    <div class="milestone-badge">
-                        <i class="fas fa-calendar-alt mr-2"></i>Launch Date
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">A Date With Meaning</h3>
-                    <p class="text-gray-700 mb-4">
-                        On February 15, 2026—exactly one year later—$ROOFY will launch. Not as a coincidence, but as a tribute. A date chosen with intention. A moment to remember, together.
-                    </p>
-                    <p class="text-gray-700 font-medium">
-                        When you hold $ROOFY, you're not just holding a coin. You're holding a story. You're holding a memory. You're helping ensure that she is never forgotten.
-                    </p>
-                    <div class="mt-4 pt-4 border-t border-orange-300">
-                        <p class="text-gray-600 text-sm">
-                            <i class="fas fa-hand-holding-heart text-orange-500 mr-2"></i>
-                            <strong>For her. For Roofy. Forever.</strong>
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Launch Strategy -->
-                <div class="mb-12">
-                    <h3 class="text-2xl font-bold mb-6 text-center">🌐 Launch & Exchange Strategy</h3>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="strategy-card">
-                            <div class="milestone-badge">
-                                <i class="fas fa-rocket mr-2"></i>Phase 1
-                            </div>
-                            <h4 class="text-lg font-bold mb-2">Initial Launch</h4>
-                            <p class="text-gray-700">
-                                $ROOFY will initially launch on Raydium, ensuring deep on-chain liquidity and immediate access within the Solana ecosystem.
-                            </p>
-                        </div>
-                        <div class="strategy-card">
-                            <div class="milestone-badge">
-                                <i class="fas fa-chart-line mr-2"></i>Phase 2
-                            </div>
-                            <h4 class="text-lg font-bold mb-2">CEX Expansion</h4>
-                            <p class="text-gray-700">
-                                Strategic CEX listings including tier-one platforms like Coinbase and Binance once we reach $10M market cap.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quote Section -->
-                <div class="mt-8 text-center">
-                    <div class="inline-block bg-gradient-to-r from-orange-100 to-amber-100 px-6 py-4 rounded-xl border-l-4 border-orange-500 max-w-2xl mx-auto">
-                        <p class="text-lg italic text-gray-700 mb-2">
-                            "This project is not about quick wins. It's about remembrance, unity, and legacy."
-                        </p>
-                        <p class="text-sm text-gray-600 font-medium">
-                            — A memorial token keeping love alive on the blockchain
-                        </p>
-                    </div>
-                </div>
-            </div>
-
             <!-- Tokenomics with Pie Chart -->
             <div id="tokenomics" class="mt-12 md:mt-16 max-w-4xl mx-auto">
                 <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-orange-200">
@@ -903,7 +1072,7 @@
                                         <div class="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">Presale</div>
-                                            <div class="text-sm text-gray-600">Early supporters</div>
+                                            <div class="text-sm text-gray-600">Early supporters (50% bonus!)</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
@@ -918,7 +1087,7 @@
                                         <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">Liquidity</div>
-                                            <div class="text-sm text-gray-600">DEX liquidity pool</div>
+                                            <div class="text-sm text-gray-600">Locked for 1 year</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
@@ -933,7 +1102,7 @@
                                         <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">Marketing</div>
-                                            <div class="text-sm text-gray-600">Promotions & growth</div>
+                                            <div class="text-sm text-gray-600">Aggressive growth push</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
@@ -948,7 +1117,7 @@
                                         <div class="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">CEX Listings</div>
-                                            <div class="text-sm text-gray-600">Centralized exchanges</div>
+                                            <div class="text-sm text-gray-600">Exchange partnerships</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
@@ -957,13 +1126,13 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Lily's Fund -->
+                                <!-- Memorial Fund -->
                                 <div class="flex items-center justify-between p-3 bg-pink-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-pink-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">Memorial Fund</div>
-                                            <div class="text-sm text-gray-600">Charity & legacy</div>
+                                            <div class="text-sm text-gray-600">Honoring the legacy</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
@@ -1011,9 +1180,9 @@
                     <h4 class="text-base md:text-lg font-bold mb-3 md:mb-4">Links</h4>
                     <div class="space-y-2">
                         <a href="#presale" class="block text-gray-400 hover:text-white text-sm md:text-base">Presale</a>
-                        <a href="#token" class="block text-gray-400 hover:text-white text-sm md:text-base">Token</a>
                         <a href="#story" class="block text-gray-400 hover:text-white text-sm md:text-base">Story</a>
-                        <a href="#launch" class="block text-gray-400 hover:text-white text-sm md:text-base">Launch Countdown</a>
+                        <a href="#launch" class="block text-gray-400 hover:text-white text-sm md:text-base">Launch</a>
+                        <a href="#roadmap" class="block text-gray-400 hover:text-white text-sm md:text-base">Roadmap</a>
                         <a href="#tokenomics" class="block text-gray-400 hover:text-white text-sm md:text-base">Tokenomics</a>
                     </div>
                 </div>
