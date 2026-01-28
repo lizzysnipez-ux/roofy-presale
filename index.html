@@ -218,6 +218,32 @@
         .network-status.error {
             background: rgba(239, 68, 68, 0.8);
         }
+        
+        /* Additional connect button in presale */
+        .presale-connect-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .presale-connect-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .presale-connect-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-amber-50 to-orange-50 min-h-screen">
@@ -240,7 +266,7 @@
                 <button id="mobileMenu" class="md:hidden text-gray-700">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
-                <button id="connectWallet" class="gradient-bg text-white px-4 py-2 rounded-full font-semibold text-sm md:px-6 md:py-3 md:text-base">
+                <button id="connectWalletNav" class="gradient-bg text-white px-4 py-2 rounded-full font-semibold text-sm md:px-6 md:py-3 md:text-base">
                     <i class="fas fa-wallet mr-2"></i><span class="mobile-hidden">Connect</span>
                 </button>
             </div>
@@ -366,6 +392,10 @@
                     <!-- Connection Status -->
                     <div id="walletStatus" class="mb-4 md:mb-6 p-3 md:p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl text-center border border-amber-200">
                         <p class="text-amber-700 text-sm md:text-base"><i class="fas fa-info-circle mr-2"></i>Connect wallet to participate</p>
+                        <!-- Additional Connect Button in Presale -->
+                        <button id="connectWalletPresale" class="presale-connect-btn">
+                            <i class="fas fa-wallet mr-2"></i>Connect Wallet
+                        </button>
                     </div>
 
                     <!-- Wallet Info -->
@@ -1157,7 +1187,7 @@
             successDisplay.innerHTML = '';
         }
 
-        // =============== WALLET CONNECTION ===============
+        // =============== WALLET CONNECTION FUNCTION ===============
         async function connectWallet() {
             console.log('Connect wallet clicked');
             
@@ -1192,13 +1222,18 @@
             publicKey = publicKeyObj.toString();
             
             const shortAddress = publicKey.slice(0, 4) + '...' + publicKey.slice(-4);
-            document.getElementById('connectWallet').innerHTML = `<i class="fas fa-wallet mr-2"></i>${shortAddress}`;
-            document.getElementById('connectWallet').classList.add('wallet-connected');
+            
+            // Update navigation button
+            document.getElementById('connectWalletNav').innerHTML = `<i class="fas fa-wallet mr-2"></i>${shortAddress}`;
+            document.getElementById('connectWalletNav').classList.add('wallet-connected');
+            
+            // Update presale section
             document.getElementById('walletStatus').classList.add('hidden');
             document.getElementById('walletInfo').classList.remove('hidden');
             document.getElementById('walletAddress').textContent = shortAddress;
             document.getElementById('walletBalance').style.display = 'flex';
             
+            // Update buy button
             const buyButton = document.getElementById('buyButton');
             buyButton.disabled = false;
             buyButton.innerHTML = '<i class="fas fa-bolt mr-2"></i>BUY ROOFY TOKENS';
@@ -1207,13 +1242,12 @@
             clearError();
             showSuccess('Wallet connected successfully!');
             
-            // Update wallet balance with retry
+            // Update wallet balance
             try {
                 await updateWalletBalance();
                 console.log('✅ Balance updated after connect');
             } catch (err) {
                 console.error('Failed to update balance after connect:', err);
-                // Don't show error - balance might not be critical
             }
         }
 
@@ -1221,11 +1255,16 @@
             console.log('Handling wallet disconnect');
             publicKey = null;
             currentBalance = 0;
-            document.getElementById('connectWallet').innerHTML = '<i class="fas fa-wallet mr-2"></i>Connect';
-            document.getElementById('connectWallet').classList.remove('wallet-connected');
+            
+            // Update navigation button
+            document.getElementById('connectWalletNav').innerHTML = '<i class="fas fa-wallet mr-2"></i>Connect';
+            document.getElementById('connectWalletNav').classList.remove('wallet-connected');
+            
+            // Update presale section
             document.getElementById('walletStatus').classList.remove('hidden');
             document.getElementById('walletInfo').classList.add('hidden');
             
+            // Update buy button
             const buyButton = document.getElementById('buyButton');
             buyButton.disabled = true;
             buyButton.innerHTML = '<i class="fas fa-lock mr-2"></i>CONNECT WALLET';
@@ -1237,8 +1276,13 @@
 
         // =============== EVENT LISTENERS ===============
         function setupEventListeners() {
-            document.getElementById('connectWallet').addEventListener('click', connectWallet);
+            // Connect wallet from navigation
+            document.getElementById('connectWalletNav').addEventListener('click', connectWallet);
+            
+            // Connect wallet from presale section
+            document.getElementById('connectWalletPresale').addEventListener('click', connectWallet);
 
+            // Quick amount buttons
             document.querySelectorAll('.quick-amount').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.getElementById('amount').value = btn.dataset.amount;
@@ -1246,8 +1290,11 @@
                 });
             });
 
+            // Amount and referral inputs
             document.getElementById('amount').addEventListener('input', updateTokenCalculation);
             document.getElementById('referralCode').addEventListener('input', updateTokenCalculation);
+            
+            // Buy button
             document.getElementById('buyButton').addEventListener('click', handlePurchase);
         }
 
@@ -1275,9 +1322,12 @@
                 document.getElementById('bonusSection').classList.add('hidden');
             }
             
-            // Update buy button based on balance
+            // Update buy button based on balance and connection
             const buyButton = document.getElementById('buyButton');
-            if (publicKey && currentBalance > 0) {
+            if (!publicKey) {
+                buyButton.disabled = true;
+                buyButton.innerHTML = '<i class="fas fa-lock mr-2"></i>CONNECT WALLET';
+            } else if (currentBalance > 0) {
                 if (currentBalance < amount) {
                     buyButton.disabled = true;
                     buyButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>INSUFFICIENT BALANCE';
