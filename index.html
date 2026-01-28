@@ -244,6 +244,132 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+        
+        /* Countdown timer */
+        .countdown-container {
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            text-align: center;
+            margin: 30px auto;
+            max-width: 800px;
+            box-shadow: 0 20px 40px rgba(249, 115, 22, 0.2);
+        }
+        
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 15px;
+            min-width: 80px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .countdown-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            line-height: 1;
+        }
+        
+        .countdown-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .countdown-timer {
+                gap: 10px;
+            }
+            
+            .countdown-box {
+                min-width: 60px;
+                padding: 15px 10px;
+            }
+            
+            .countdown-value {
+                font-size: 1.8rem;
+            }
+            
+            .countdown-label {
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Real-time progress animation */
+        .progress-animation {
+            transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        /* Backed by section */
+        .backed-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.1);
+            border: 2px solid #f97316;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .backed-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(249, 115, 22, 0.2);
+        }
+        
+        .backed-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+            margin: 0 auto 20px;
+        }
+        
+        /* Launch strategy card */
+        .strategy-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid #f97316;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .strategy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #f97316, #dc2626);
+        }
+        
+        .milestone-badge {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-amber-50 to-orange-50 min-h-screen">
@@ -278,6 +404,7 @@
                 <a href="#presale" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Presale</a>
                 <a href="#token" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Token</a>
                 <a href="#story" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Story</a>
+                <a href="#launch" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Launch Countdown</a>
                 <a href="#tokenomics" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Tokenomics</a>
             </div>
         </div>
@@ -316,17 +443,46 @@
                     <div class="flex flex-col md:flex-row items-center justify-between">
                         <div class="bg-gradient-to-r from-orange-100 to-amber-100 px-6 py-4 rounded-lg w-full md:w-auto mb-4 md:mb-0">
                             <div class="text-xl font-bold text-center text-gray-800">
-                                🚀 COMING SOON 🚀
+                                🚀 LAUNCHING FEB 15, 2026 🚀
                             </div>
                             <p class="text-sm text-gray-600 text-center mt-1">
-                                Token address will be revealed after presale
+                                Token address will be revealed at launch
                             </p>
                         </div>
                         <button onclick="copyTokenAddress()" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all shadow-lg hover:shadow-xl font-bold">
-                            <i class="fas fa-copy mr-2"></i>Copy
+                            <i class="fas fa-copy mr-2"></i>Copy Launch Info
                         </button>
                     </div>
                 </div>
+            </div>
+
+            <!-- Launch Countdown -->
+            <div id="launch" class="countdown-container mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2">🚀 Official Launch Countdown</h2>
+                <p class="text-lg opacity-90 mb-4">$ROOFY launches on February 15, 2026 - A tribute, not a coincidence</p>
+                
+                <div class="countdown-timer">
+                    <div class="countdown-box">
+                        <span id="days" class="countdown-value">00</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <div class="countdown-box">
+                        <span id="hours" class="countdown-value">00</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <div class="countdown-box">
+                        <span id="minutes" class="countdown-value">00</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                    <div class="countdown-box">
+                        <span id="seconds" class="countdown-value">00</span>
+                        <span class="countdown-label">Seconds</span>
+                    </div>
+                </div>
+                
+                <p class="text-sm opacity-80 mt-6">
+                    <i class="fas fa-heart mr-2"></i>In memory of a light that will never fade
+                </p>
             </div>
 
             <!-- Presale Stats -->
@@ -362,14 +518,14 @@
                     <div class="mt-4 md:mt-6">
                         <div class="flex justify-between text-xs md:text-sm mb-1 md:mb-2">
                             <span>Progress</span>
-                            <span id="progressPercent">0%</span>
+                            <span id="progressPercent">21%</span>
                         </div>
                         <div class="h-2 md:h-3 bg-white/30 rounded-full overflow-hidden">
-                            <div id="progressBar" class="h-full bg-white rounded-full transition-all duration-1000" style="width: 0%"></div>
+                            <div id="progressBar" class="h-full bg-white rounded-full progress-animation" style="width: 21%"></div>
                         </div>
                         <div class="flex justify-between text-xs mt-1 md:mt-2">
                             <span>0 SOL</span>
-                            <span id="currentRaised">0 SOL</span>
+                            <span id="currentRaised">210 SOL</span>
                             <span>1,000 SOL</span>
                         </div>
                     </div>
@@ -528,6 +684,49 @@
                 </div>
             </div>
 
+            <!-- Backed by Scale Section -->
+            <div class="mb-16">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-3">💎 Backed by Scale, Built by the Best</h2>
+                    <p class="text-gray-600 text-lg max-w-3xl mx-auto">$ROOFY combines heartfelt meaning with institutional-grade execution</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 md:gap-8 mb-8">
+                    <!-- Marketing Card -->
+                    <div class="backed-card">
+                        <div class="backed-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-center">$1M+ Marketing</h3>
+                        <p class="text-gray-600 text-center">
+                            Global influencer campaigns, strategic media placements, and collaborations with music producers and artists worldwide.
+                        </p>
+                    </div>
+
+                    <!-- Development Card -->
+                    <div class="backed-card">
+                        <div class="backed-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-center">Top-Tier Development</h3>
+                        <p class="text-gray-600 text-center">
+                            Led by Dr. SAM, one of Solana's top developers, ensuring institutional-grade smart contracts, performance, and security.
+                        </p>
+                    </div>
+
+                    <!-- Whales Card -->
+                    <div class="backed-card">
+                        <div class="backed-icon">
+                            <i class="fas fa-whale"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-center">Whale Support</h3>
+                        <p class="text-gray-600 text-center">
+                            Backed by major Solana whales Armando and Carlito, aligning strong hands and deep liquidity from day one.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Token Image Gallery Section -->
             <div id="token" class="mt-12 md:mt-16">
                 <div class="text-center mb-6 md:mb-8">
@@ -580,136 +779,103 @@
                 </div>
             </div>
 
-            <!-- Professional Story Section -->
+            <!-- Updated Story Section -->
             <div id="story" class="mt-12 md:mt-16 max-w-5xl mx-auto">
                 <div class="text-center mb-8 md:mb-12">
                     <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-4">
-                        <i class="fas fa-book-open text-2xl text-white"></i>
+                        <i class="fas fa-heart text-2xl text-white"></i>
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">The Roofy Story</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">The Story Behind $ROOFY</h2>
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                        A heartfelt journey of love, imagination, and eternal memories
+                        Some stories aren't born from hype. They're born from love, loss, and memory.
                     </p>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-6 md:gap-8 mb-8">
-                    <!-- Story Card 1 -->
-                    <div class="story-card">
-                        <div class="story-icon">
-                            <i class="fas fa-dog"></i>
+                <!-- Story Introduction -->
+                <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 md:p-8 mb-8 border border-pink-200">
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-2/3 md:pr-8">
+                            <h3 class="text-2xl font-bold mb-4 text-gray-800">A Legacy of Love</h3>
+                            <p class="text-gray-700 mb-4">
+                                Lizzy's daughter was the light of her world—gentle, kind, and full of a joy that made everyone around her feel safe. On February 15, 2025, that light was taken far too soon in a tragic car accident. A moment that changed everything.
+                            </p>
+                            <p class="text-gray-700 mb-4">
+                                But love doesn't disappear when life ends. Roofy, her beloved pet, was always by her side—through laughter, through quiet moments, through the days that mattered most. Roofy became a symbol of comfort, loyalty, and unconditional love.
+                            </p>
+                            <p class="text-gray-700 font-medium">
+                                <i class="fas fa-quote-left text-orange-500 mr-2"></i>
+                                $ROOFY was created as a living memory. Not just a token—but a promise.
+                                <i class="fas fa-quote-right text-orange-500 ml-2"></i>
+                            </p>
                         </div>
-                        <h3 class="text-xl font-bold mb-3 text-gray-800">Our Beloved Shiba Rusty</h3>
-                        <p class="text-gray-600 mb-4">
-                            Rusty was more than just a pet - he was family. A curious, loyal Shiba Inu with 
-                            the classic smile that could brighten even the darkest days. His playful spirit 
-                            and unwavering loyalty defined our home.
-                        </p>
-                        <div class="flex items-center text-sm text-orange-600">
-                            <i class="fas fa-heart mr-2"></i>
-                            <span>The heart of our family</span>
-                        </div>
-                    </div>
-
-                    <!-- Story Card 2 -->
-                    <div class="story-card">
-                        <div class="story-icon">
-                            <i class="fas fa-child"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 text-gray-800">Lily's Magical Imagination</h3>
-                        <p class="text-gray-600 mb-4">
-                            "Look! Rusty turned into ROOFY the dinosaur!" she'd giggle, as our Shiba 
-                            proudly wore his makeshift costume. Lily saw magic in the ordinary, transforming 
-                            our loyal companion into her prehistoric best friend through pure imagination.
-                        </p>
-                        <div class="flex items-center text-sm text-orange-600">
-                            <i class="fas fa-magic mr-2"></i>
-                            <span>Where reality meets imagination</span>
-                        </div>
-                    </div>
-
-                    <!-- Story Card 3 -->
-                    <div class="story-card">
-                        <div class="story-icon">
-                            <i class="fas fa-sun"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-3 text-gray-800">Sunset Rituals</h3>
-                        <p class="text-gray-600 mb-4">
-                            Every evening became a magical ritual. As the sun dipped below the horizon, 
-                            dino-costume zoomies filled our home with infectious laughter. These golden 
-                            moments created memories that would last forever.
-                        </p>
-                        <div class="flex items-center text-sm text-orange-600">
-                            <i class="fas fa-memory mr-2"></i>
-                            <span>Timeless memories created</span>
+                        <div class="md:w-1/3 mt-6 md:mt-0">
+                            <div class="bg-white p-6 rounded-xl shadow-lg">
+                                <div class="text-center">
+                                    <div class="text-5xl mb-3">❤️</div>
+                                    <h4 class="font-bold text-lg mb-2">The Promise</h4>
+                                    <p class="text-sm text-gray-600">
+                                        That her name, her warmth, and her spirit will never fade.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Timeline Section -->
-                <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 md:p-8 border border-amber-200 mt-8">
-                    <h3 class="text-2xl font-bold mb-6 text-center text-gray-800">The Journey</h3>
-                    
-                    <div class="story-timeline max-w-2xl mx-auto">
-                        <!-- Timeline Item 1 -->
-                        <div class="story-item">
-                            <div class="bg-white rounded-xl p-5 shadow-sm">
-                                <div class="flex items-center mb-3">
-                                    <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-paw text-orange-600"></i>
-                                    </div>
-                                    <h4 class="font-bold text-lg">The Beginning</h4>
-                                </div>
-                                <p class="text-gray-600">
-                                    Rusty joined our family, bringing endless joy and companionship. 
-                                    His Shiba smile became the symbol of our home's happiness.
-                                </p>
-                            </div>
-                        </div>
+                <!-- Launch Tribute -->
+                <div class="strategy-card mb-8">
+                    <div class="milestone-badge">
+                        <i class="fas fa-calendar-alt mr-2"></i>Launch Date
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">A Date With Meaning</h3>
+                    <p class="text-gray-700 mb-4">
+                        On February 15, 2026—exactly one year later—$ROOFY will launch. Not as a coincidence, but as a tribute. A date chosen with intention. A moment to remember, together.
+                    </p>
+                    <p class="text-gray-700 font-medium">
+                        When you hold $ROOFY, you're not just holding a coin. You're holding a story. You're holding a memory. You're helping ensure that she is never forgotten.
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-orange-300">
+                        <p class="text-gray-600 text-sm">
+                            <i class="fas fa-hand-holding-heart text-orange-500 mr-2"></i>
+                            <strong>For her. For Roofy. Forever.</strong>
+                        </p>
+                    </div>
+                </div>
 
-                        <!-- Timeline Item 2 -->
-                        <div class="story-item">
-                            <div class="bg-white rounded-xl p-5 shadow-sm">
-                                <div class="flex items-center mb-3">
-                                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-hat-wizard text-purple-600"></i>
-                                    </div>
-                                    <h4 class="font-bold text-lg">Magical Transformation</h4>
-                                </div>
-                                <p class="text-gray-600">
-                                    Lily's imagination turned Rusty into "Roofy" the dinosaur. 
-                                    What started as playtime became our most cherished tradition.
-                                </p>
+                <!-- Launch Strategy -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-bold mb-6 text-center">🌐 Launch & Exchange Strategy</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="strategy-card">
+                            <div class="milestone-badge">
+                                <i class="fas fa-rocket mr-2"></i>Phase 1
                             </div>
+                            <h4 class="text-lg font-bold mb-2">Initial Launch</h4>
+                            <p class="text-gray-700">
+                                $ROOFY will initially launch on Raydium, ensuring deep on-chain liquidity and immediate access within the Solana ecosystem.
+                            </p>
                         </div>
-
-                        <!-- Timeline Item 3 -->
-                        <div class="story-item">
-                            <div class="bg-white rounded-xl p-5 shadow-sm">
-                                <div class="flex items-center mb-3">
-                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-infinity text-blue-600"></i>
-                                    </div>
-                                    <h4 class="font-bold text-lg">Eternal Legacy</h4>
-                                </div>
-                                <p class="text-gray-600">
-                                    Today, Roofy lives forever on Solana - a tribute to love, 
-                                    imagination, and the magic that lives in our memories.
-                                </p>
+                        <div class="strategy-card">
+                            <div class="milestone-badge">
+                                <i class="fas fa-chart-line mr-2"></i>Phase 2
                             </div>
+                            <h4 class="text-lg font-bold mb-2">CEX Expansion</h4>
+                            <p class="text-gray-700">
+                                Strategic CEX listings including tier-one platforms like Coinbase and Binance once we reach $10M market cap.
+                            </p>
                         </div>
                     </div>
-                    
-                    <!-- Quote Section -->
-                    <div class="mt-8 text-center">
-                        <div class="inline-block bg-gradient-to-r from-orange-100 to-amber-100 px-6 py-4 rounded-xl border-l-4 border-orange-500 max-w-2xl mx-auto">
-                            <p class="text-lg italic text-gray-700 mb-2">
-                                "For Lily, who saw dinosaurs in every Shiba, and for Rusty, 
-                                who was always more than just a dog."
-                            </p>
-                            <p class="text-sm text-gray-600 font-medium">
-                                — A memorial token keeping magic alive on the blockchain
-                            </p>
-                        </div>
+                </div>
+
+                <!-- Quote Section -->
+                <div class="mt-8 text-center">
+                    <div class="inline-block bg-gradient-to-r from-orange-100 to-amber-100 px-6 py-4 rounded-xl border-l-4 border-orange-500 max-w-2xl mx-auto">
+                        <p class="text-lg italic text-gray-700 mb-2">
+                            "This project is not about quick wins. It's about remembrance, unity, and legacy."
+                        </p>
+                        <p class="text-sm text-gray-600 font-medium">
+                            — A memorial token keeping love alive on the blockchain
+                        </p>
                     </div>
                 </div>
             </div>
@@ -796,8 +962,8 @@
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-pink-500 rounded-full mr-3"></div>
                                         <div>
-                                            <div class="font-semibold">Lily's Fund</div>
-                                            <div class="text-sm text-gray-600">Charity & memorial</div>
+                                            <div class="font-semibold">Memorial Fund</div>
+                                            <div class="text-sm text-gray-600">Charity & legacy</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
@@ -837,7 +1003,7 @@
                         </div>
                     </div>
                     <p class="text-gray-400 text-sm">
-                        A memorial token keeping Lily's magic alive.
+                        A memorial token keeping love and memory alive.
                     </p>
                 </div>
                 
@@ -847,6 +1013,7 @@
                         <a href="#presale" class="block text-gray-400 hover:text-white text-sm md:text-base">Presale</a>
                         <a href="#token" class="block text-gray-400 hover:text-white text-sm md:text-base">Token</a>
                         <a href="#story" class="block text-gray-400 hover:text-white text-sm md:text-base">Story</a>
+                        <a href="#launch" class="block text-gray-400 hover:text-white text-sm md:text-base">Launch Countdown</a>
                         <a href="#tokenomics" class="block text-gray-400 hover:text-white text-sm md:text-base">Tokenomics</a>
                     </div>
                 </div>
@@ -855,14 +1022,17 @@
                     <h4 class="text-base md:text-lg font-bold mb-3 md:mb-4">In Memory</h4>
                     <div class="bg-gray-800/30 rounded-xl p-3 md:p-4">
                         <p class="text-gray-400 text-xs md:text-sm">
-                            "For Lily, who saw dinosaurs in every Shiba."
+                            "For her. For Roofy. Forever."
+                        </p>
+                        <p class="text-gray-500 text-xs mt-2">
+                            Launch: February 15, 2026
                         </p>
                     </div>
                 </div>
             </div>
             
             <div class="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-gray-800 text-center text-gray-500 text-xs md:text-sm">
-                <p>This is a memecoin. Invest responsibly. 10% goes to charity.</p>
+                <p>This is more than a token - it's a legacy. Invest with heart. 10% goes to memorial fund.</p>
             </div>
         </div>
     </footer>
@@ -907,13 +1077,14 @@
         let wallet = null;
         let publicKey = null;
         let connection = null;
-        let totalRaised = 0;
+        let totalRaised = 210; // Start at 21% (210 SOL)
         let recentPurchases = [];
         let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         let tokenomicsChart = null;
         let transactionTimeout = null;
         let currentBalance = 0;
         let connectionAttempts = 0;
+        let countdownInterval = null;
 
         // =============== INITIALIZATION ===============
         document.addEventListener('DOMContentLoaded', () => {
@@ -937,10 +1108,53 @@
 
             setupEventListeners();
             updateTokenCalculation();
-            simulateLiveStats();
+            initializeCountdown();
             loadRecentPurchases();
             initializeTokenomicsChart();
+            
+            // Start with initial simulated stats
+            updateStats();
+            simulateLiveStats();
         });
+
+        // =============== COUNTDOWN TIMER ===============
+        function initializeCountdown() {
+            // Set launch date to February 15, 2026
+            const launchDate = new Date('February 15, 2026 00:00:00 GMT').getTime();
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = launchDate - now;
+                
+                // Calculate days, hours, minutes, seconds
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // Update display
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                
+                // If countdown is over
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    document.querySelector('.countdown-timer').innerHTML = `
+                        <div class="text-3xl font-bold py-4">
+                            🚀 $ROOFY HAS LAUNCHED! 🚀
+                        </div>
+                    `;
+                }
+            }
+            
+            // Initial call
+            updateCountdown();
+            
+            // Update every second
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
 
         // =============== IMPROVED RPC CONNECTION WITH RETRY ===============
         async function initializeConnectionWithRetry() {
@@ -1344,7 +1558,7 @@
             }
         }
 
-        // =============== IMPROVED PURCHASE HANDLING ===============
+        // =============== REAL PURCHASE HANDLING ===============
         async function handlePurchase() {
             console.log('Purchase initiated');
             
@@ -1445,6 +1659,13 @@
                 console.log('✅ Transaction confirmed!');
                 clearTimeout(transactionTimeout);
 
+                // Update with REAL purchase
+                totalRaised += amount;
+                updateStats(); // This updates the progress bar with real data
+                
+                // Add to recent purchases
+                addRecentPurchase(amount, signature, true);
+                
                 // Show success
                 document.getElementById('transactionStatus').classList.remove('hidden');
                 document.getElementById('txHash').textContent = `TX: ${signature.slice(0, 8)}...${signature.slice(-8)}`;
@@ -1452,12 +1673,7 @@
                     window.open(`https://explorer.solana.com/tx/${signature}`, '_blank');
                 };
                 
-                // Update presale stats
-                totalRaised += amount;
-                updateStats();
-                
-                addRecentPurchase(amount, signature);
-                
+                // Calculate tokens
                 const currentTier = getCurrentTier();
                 const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
                 const bonus = document.getElementById('referralCode').value.trim() ? 
@@ -1511,52 +1727,65 @@
             button.innerHTML = originalText;
         }
 
-        // =============== HELPER FUNCTIONS ===============
-        function getCurrentTier() {
-            for (const tier of TIERS) {
-                if (totalRaised >= tier.range[0] && totalRaised < tier.range[1]) {
-                    return tier;
-                }
-            }
-            return TIERS[TIERS.length - 1];
-        }
-
+        // =============== UPDATED STATS FUNCTION ===============
         function updateStats() {
             const progress = (totalRaised / PRESALE_CAP) * 100;
             const currentTier = getCurrentTier();
             
-            document.getElementById('progressBar').style.width = `${progress}%`;
+            // Smooth animation for progress bar
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${progress}%`;
+            
             document.getElementById('progressPercent').textContent = `${progress.toFixed(1)}%`;
             document.getElementById('currentRaised').textContent = `${totalRaised.toFixed(2)} SOL`;
             document.getElementById('totalRaised').textContent = totalRaised.toFixed(2);
             document.getElementById('currentPrice').textContent = 
                 `${Math.floor(currentTier.tokensPerSOL).toLocaleString()}K`;
+            
+            // Update total buyers (simulated)
+            const totalBuyers = Math.floor(totalRaised / 2) + 124; // Simple formula
+            document.getElementById('totalBuyers').textContent = totalBuyers;
                 
             updateTokenCalculation();
         }
 
+        // =============== SIMULATED LIVE STATS ===============
         function simulateLiveStats() {
-            totalRaised = 245.67;
-            updateStats();
-            document.getElementById('totalBuyers').textContent = '124';
+            // Add some initial simulated purchases
+            setTimeout(() => {
+                const simulatedPurchases = [
+                    { amount: 1.5, time: 'Just now', tx: 'sim_1' },
+                    { amount: 0.8, time: '2 mins ago', tx: 'sim_2' },
+                    { amount: 2.2, time: '5 mins ago', tx: 'sim_3' },
+                    { amount: 0.5, time: '10 mins ago', tx: 'sim_4' },
+                    { amount: 1.2, time: '15 mins ago', tx: 'sim_5' },
+                ];
+                
+                simulatedPurchases.forEach(purchase => {
+                    addRecentPurchase(purchase.amount, purchase.tx, false, purchase.time);
+                });
+            }, 1000);
             
+            // Continue to add simulated purchases occasionally
             setInterval(() => {
                 if (Math.random() > 0.7) {
-                    const randomAmount = 0.1 + Math.random() * 5;
+                    const randomAmount = 0.1 + Math.random() * 3;
                     totalRaised += randomAmount;
                     if (totalRaised > PRESALE_CAP) totalRaised = PRESALE_CAP;
                     updateStats();
                     
-                    if (recentPurchases.length < 5) {
-                        addRecentPurchase(randomAmount, `sim_${Date.now()}`);
+                    // Only add simulated purchases if we haven't reached cap
+                    if (totalRaised < PRESALE_CAP) {
+                        addRecentPurchase(randomAmount, `sim_${Date.now()}`, false);
                     }
                 }
-            }, 10000);
+            }, 15000); // Every 15 seconds
         }
 
-        function addRecentPurchase(amount, txHash) {
+        // =============== ADD RECENT PURCHASE ===============
+        function addRecentPurchase(amount, txHash, isReal = false, customTime = null) {
             const now = new Date();
-            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const timeString = customTime || now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const currentTier = getCurrentTier();
             const tokens = Math.floor(amount * currentTier.tokensPerSOL);
             
@@ -1565,10 +1794,11 @@
                 amount: amount.toFixed(2),
                 tokens: tokens.toLocaleString(),
                 tier: currentTier.name.substring(0, 10),
-                txHash: txHash
+                txHash: txHash,
+                isReal: isReal
             });
             
-            if (recentPurchases.length > 5) {
+            if (recentPurchases.length > 8) {
                 recentPurchases.pop();
             }
             
@@ -1591,14 +1821,25 @@
             recentPurchases.forEach(purchase => {
                 const purchaseEl = document.createElement('div');
                 purchaseEl.className = 'flex justify-between items-center p-2 hover:bg-orange-50 rounded-lg text-sm cursor-pointer';
-                purchaseEl.onclick = () => {
-                    if (purchase.txHash && !purchase.txHash.startsWith('sim_')) {
+                
+                // Real purchases can be clicked to view on explorer
+                if (purchase.isReal && !purchase.txHash.startsWith('sim_')) {
+                    purchaseEl.onclick = () => {
                         window.open(`https://explorer.solana.com/tx/${purchase.txHash}`, '_blank');
-                    }
-                };
+                    };
+                    purchaseEl.style.cursor = 'pointer';
+                    purchaseEl.title = 'Click to view transaction';
+                } else {
+                    purchaseEl.style.cursor = 'default';
+                }
+                
+                // Different styling for real vs simulated purchases
+                const indicatorColor = purchase.isReal ? 'bg-green-500' : 'bg-blue-500';
+                const indicatorTitle = purchase.isReal ? 'Real Purchase' : 'Simulated';
+                
                 purchaseEl.innerHTML = `
                     <div class="flex items-center">
-                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                        <div class="w-2 h-2 ${indicatorColor} rounded-full mr-2" title="${indicatorTitle}"></div>
                         <div>
                             <div class="font-medium">${purchase.time}</div>
                             <div class="text-xs text-gray-500">${purchase.tier}</div>
@@ -1613,6 +1854,16 @@
             });
         }
 
+        // =============== HELPER FUNCTIONS ===============
+        function getCurrentTier() {
+            for (const tier of TIERS) {
+                if (totalRaised >= tier.range[0] && totalRaised < tier.range[1]) {
+                    return tier;
+                }
+            }
+            return TIERS[TIERS.length - 1];
+        }
+
         function disconnectWallet() {
             if (wallet) {
                 wallet.disconnect();
@@ -1621,11 +1872,11 @@
         }
 
         function copyTokenAddress() {
-            const message = "Token address will be revealed after presale completion. Stay tuned! 🚀";
+            const message = "$ROOFY launches February 15, 2026 - A tribute, not a coincidence. Token address will be revealed at launch. 🚀";
             navigator.clipboard.writeText(message).then(() => {
-                showNotification('Token address info copied to clipboard!', 'success');
+                showNotification('Launch info copied to clipboard!', 'success');
             }).catch(err => {
-                showNotification('Failed to copy address', 'error');
+                showNotification('Failed to copy info', 'error');
             });
         }
 
@@ -1659,7 +1910,7 @@
             tokenomicsChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Presale (50%)', 'Liquidity (30%)', 'Marketing (5%)', 'CEX (5%)', "Lily's Fund (10%)"],
+                    labels: ['Presale (50%)', 'Liquidity (30%)', 'Marketing (5%)', 'CEX (5%)', "Memorial Fund (10%)"],
                     datasets: [{
                         data: [50, 30, 5, 5, 10],
                         backgroundColor: [
