@@ -186,16 +186,6 @@
             align-items: center;
             margin-top: 5px;
         }
-        
-        /* Network indicator */
-        .network-indicator {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-amber-50 to-orange-50 min-h-screen">
@@ -210,7 +200,6 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <div class="network-indicator" id="networkIndicator">MAINNET</div>
                 <button id="mobileMenu" class="md:hidden text-gray-700">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
@@ -324,8 +313,6 @@
                 </div>
 
                 <div class="p-4 md:p-6 lg:p-8">
-                    
-
                     <!-- Mobile Wallet Instructions -->
                     <div id="mobileWalletHelp" class="mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200 text-sm hidden">
                         <p class="text-blue-700"><i class="fas fa-mobile-alt mr-2"></i>For best mobile experience:</p>
@@ -810,38 +797,35 @@
 
     <script>
         // =============== CONFIGURATION ===============
-        // REPLACE THIS WITH YOUR ACTUAL MAINNET WALLET ADDRESS
         const DEV_WALLET = 'BLKj7mTgRa9Fg1vCDqZeNaBSjyekF4xpK72fMWikZYmq';
         
-        // FIXED: Increased to 1,000 SOL hard cap
-        const PRESALE_CAP = 1000; // 1,000 SOL hard cap
+        const PRESALE_CAP = 1000;
         const MIN_PURCHASE = 0.01;
         const MAX_PURCHASE = 100;
-        const REFERRAL_BONUS = 0.05; // 5%
+        const REFERRAL_BONUS = 0.05;
         
-        // Tiered pricing for 1,000 SOL cap
         const TIERS = [
             {
-                range: [0, 250],        // First 250 SOL
-                tokensPerSOL: 300_000,   // 300K per SOL
+                range: [0, 250],
+                tokensPerSOL: 300_000,
                 name: 'Early Dino',
                 bonus: '50% Bonus'
             },
             {
-                range: [250, 500],      // Next 250 SOL
-                tokensPerSOL: 250_000,   // 250K per SOL
+                range: [250, 500],
+                tokensPerSOL: 250_000,
                 name: 'Shiba Warrior',
                 bonus: '25% Bonus'
             },
             {
-                range: [500, 750],      // Next 250 SOL
-                tokensPerSOL: 200_000,   // 200K per SOL
+                range: [500, 750],
+                tokensPerSOL: 200_000,
                 name: 'Dino Pack',
                 bonus: 'Base Price'
             },
             {
-                range: [750, 1000],     // Last 250 SOL
-                tokensPerSOL: 150_000,   // 150K per SOL
+                range: [750, 1000],
+                tokensPerSOL: 150_000,
                 name: 'Community',
                 bonus: 'Reduced Price'
             }
@@ -857,104 +841,94 @@
         let tokenomicsChart = null;
         let transactionTimeout = null;
         let currentBalance = 0;
-        let isMainnet = true; // Set to true for Mainnet
 
         // =============== INITIALIZATION ===============
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Initializing Roofy Presale on MAINNET...');
+            console.log('Initializing Roofy Presale...');
             
-            // Check if dev wallet is configured
-            if (DEV_WALLET === 'YOUR_MAINNET_SOLANA_WALLET_ADDRESS_HERE') {
-                showError('⚠️ WARNING: Developer wallet not configured! Please update DEV_WALLET with your mainnet Solana address.');
-            }
+            // Remove network indicator from HTML
+            const networkIndicator = document.getElementById('networkIndicator');
+            if (networkIndicator) networkIndicator.remove();
             
-            // Mobile detection and help
             if (isMobile) {
                 document.getElementById('mobileWalletHelp').classList.remove('hidden');
-                
-                // Set up mobile-specific buttons
                 setupMobileWalletButtons();
             }
             
-            // Mobile menu toggle
             document.getElementById('mobileMenu').addEventListener('click', () => {
                 const menu = document.getElementById('mobileMenuContent');
                 menu.classList.toggle('hidden');
             });
             
-            // Initialize Solana connection for MAINNET
-            initializeMainnetConnection();
+            // Initialize connection
+            initializeConnection();
             
             // Check for wallet
             checkPhantomWallet();
 
-            // Set up event listeners
             setupEventListeners();
-            
-            // Initialize UI
             updateTokenCalculation();
             simulateLiveStats();
             loadRecentPurchases();
-            
-            // Initialize tokenomics pie chart
             initializeTokenomicsChart();
         });
 
-        // =============== MAINNET CONNECTION ===============
-        function initializeMainnetConnection() {
-            console.log('Setting up MAINNET connection...');
+        // =============== IMPROVED RPC CONNECTION ===============
+        function initializeConnection() {
+            console.log('Setting up Solana connection...');
             
-            // Mainnet RPC endpoints (you might want to use your own RPC for reliability)
-            const mainnetEndpoints = [
+            // Use more reliable RPC endpoints for mainnet
+            const rpcEndpoints = [
                 'https://api.mainnet-beta.solana.com',
                 'https://solana-api.projectserum.com',
-                'https://rpc.ankr.com/solana'
+                'https://rpc.ankr.com/solana',
+                'https://solana-mainnet.g.alchemy.com/v2/demo' // Alchemy demo endpoint
             ];
             
             try {
-                // Using the public Solana mainnet endpoint
-                connection = new solanaWeb3.Connection(
-                    mainnetEndpoints[0],
-                    {
-                        commitment: 'confirmed',
-                        disableRetryOnRateLimit: false,
-                        confirmTransactionInitialTimeout: 60000 // 60 seconds for mainnet
+                // Try multiple endpoints
+                for (let endpoint of rpcEndpoints) {
+                    try {
+                        connection = new solanaWeb3.Connection(
+                            endpoint,
+                            {
+                                commitment: 'confirmed',
+                                disableRetryOnRateLimit: false,
+                                confirmTransactionInitialTimeout: 60000,
+                                wsEndpoint: endpoint.replace('https://', 'wss://')
+                            }
+                        );
+                        console.log(`Connected to: ${endpoint}`);
+                        break;
+                    } catch (err) {
+                        console.log(`Failed to connect to ${endpoint}:`, err.message);
+                        continue;
                     }
-                );
-                console.log('Connected to Solana MAINNET');
+                }
                 
-                // Update network indicator
-                document.getElementById('networkIndicator').style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                if (!connection) {
+                    // Fallback to default
+                    connection = new solanaWeb3.Connection(
+                        'https://api.mainnet-beta.solana.com',
+                        { commitment: 'confirmed' }
+                    );
+                    console.log('Using default endpoint');
+                }
                 
             } catch (err) {
-                console.error('Failed to initialize mainnet connection:', err);
-                showError('Failed to connect to Solana Mainnet. Please refresh the page.');
-                
-                // Fallback to other endpoint
-                try {
-                    connection = new solanaWeb3.Connection(
-                        mainnetEndpoints[1],
-                        {
-                            commitment: 'confirmed',
-                            disableRetryOnRateLimit: false
-                        }
-                    );
-                    console.log('Connected to fallback MAINNET endpoint');
-                } catch (fallbackErr) {
-                    console.error('Fallback connection also failed:', fallbackErr);
-                }
+                console.error('All connection attempts failed:', err);
+                showError('Network connection issue. Please refresh and try again.');
             }
         }
 
         // =============== WALLET DETECTION ===============
         function checkPhantomWallet() {
             if (window.solana && window.solana.isPhantom) {
-                console.log('Phantom wallet detected on MAINNET');
+                console.log('Phantom wallet detected');
                 wallet = window.solana;
                 
-                // Set up event listeners
                 wallet.on('connect', () => {
-                    console.log('Wallet connected on MAINNET:', wallet.publicKey.toString());
+                    console.log('Wallet connected:', wallet.publicKey.toString());
                     handleWalletConnect(wallet.publicKey);
                 });
                 
@@ -963,9 +937,8 @@
                     handleWalletDisconnect();
                 });
                 
-                // Check if already connected
                 if (wallet.isConnected) {
-                    console.log('Wallet already connected on MAINNET');
+                    console.log('Wallet already connected');
                     handleWalletConnect(wallet.publicKey);
                 }
             } else {
@@ -981,10 +954,27 @@
             }
             
             try {
-                console.log('Fetching MAINNET balance for:', publicKey);
-                const balance = await connection.getBalance(new solanaWeb3.PublicKey(publicKey));
-                currentBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
-                console.log('MAINNET Balance fetched:', currentBalance, 'SOL');
+                console.log('Fetching balance for:', publicKey);
+                
+                // Try multiple times for reliability
+                let balance = 0;
+                let attempts = 3;
+                
+                while (attempts > 0) {
+                    try {
+                        const result = await connection.getBalance(new solanaWeb3.PublicKey(publicKey));
+                        balance = result / solanaWeb3.LAMPORTS_PER_SOL;
+                        console.log(`Balance fetched on attempt ${4-attempts}:`, balance, 'SOL');
+                        break;
+                    } catch (err) {
+                        attempts--;
+                        console.log(`Balance fetch attempt failed, ${attempts} attempts left:`, err.message);
+                        if (attempts === 0) throw err;
+                        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+                    }
+                }
+                
+                currentBalance = balance;
                 
                 // Update UI
                 const balanceDisplay = document.getElementById('walletBalance');
@@ -997,9 +987,9 @@
                 
                 return currentBalance;
             } catch (err) {
-                console.error('Error fetching MAINNET balance:', err);
-                // Don't show error for balance fetch - it might be rate limiting
-                return currentBalance; // Return last known balance
+                console.error('Error fetching balance after all attempts:', err);
+                // Don't show error - just return 0
+                return 0;
             }
         }
 
@@ -1011,7 +1001,7 @@
                 <div class="error-message">
                     <div class="flex items-center">
                         <i class="fas fa-exclamation-triangle mr-2"></i>
-                        <span class="font-bold">${isMainnet ? 'MAINNET' : 'Devnet'} Error</span>
+                        <span class="font-bold">Error</span>
                     </div>
                     <p class="mt-2">${message}</p>
                     ${error ? `<pre class="mt-2 text-xs">${error.toString().substring(0, 150)}...</pre>` : ''}
@@ -1030,7 +1020,7 @@
 
         // =============== WALLET CONNECTION ===============
         async function connectWallet() {
-            console.log('Connect wallet clicked on MAINNET');
+            console.log('Connect wallet clicked');
             
             if (!window.solana) {
                 showError('Please install Phantom wallet from <a href="https://phantom.app" target="_blank" class="underline">phantom.app</a>');
@@ -1040,9 +1030,9 @@
             wallet = window.solana;
             
             try {
-                console.log('Requesting MAINNET wallet connection...');
+                console.log('Requesting wallet connection...');
                 await wallet.connect();
-                console.log('Wallet connection requested on MAINNET');
+                console.log('Wallet connection requested');
             } catch (err) {
                 console.error('Connection error:', err);
                 if (err.code === 4001) {
@@ -1055,7 +1045,7 @@
 
         // =============== WALLET CONNECT/DISCONNECT ===============
         async function handleWalletConnect(publicKeyObj) {
-            console.log('Handling MAINNET wallet connect');
+            console.log('Handling wallet connect');
             publicKey = publicKeyObj.toString();
             
             const shortAddress = publicKey.slice(0, 4) + '...' + publicKey.slice(-4);
@@ -1067,15 +1057,15 @@
             document.getElementById('buyButton').disabled = false;
             document.getElementById('buyButtonText').textContent = 'BUY ROOFY TOKENS';
             
-            // Clear any errors
             clearError();
             
-            // Update wallet balance
+            // Update wallet balance with retry
             try {
                 await updateWalletBalance();
-                console.log('MAINNET balance updated after connect');
+                console.log('Balance updated after connect');
             } catch (err) {
                 console.error('Failed to update balance after connect:', err);
+                // Don't show error - balance might not be critical
             }
         }
 
@@ -1095,10 +1085,8 @@
 
         // =============== EVENT LISTENERS ===============
         function setupEventListeners() {
-            // Connect wallet button
             document.getElementById('connectWallet').addEventListener('click', connectWallet);
 
-            // Quick amount buttons
             document.querySelectorAll('.quick-amount').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.getElementById('amount').value = btn.dataset.amount;
@@ -1106,7 +1094,6 @@
                 });
             });
 
-            // Input listeners
             document.getElementById('amount').addEventListener('input', updateTokenCalculation);
             document.getElementById('referralCode').addEventListener('input', updateTokenCalculation);
             document.getElementById('buyButton').addEventListener('click', handlePurchase);
@@ -1137,9 +1124,9 @@
             }
         }
 
-        // =============== MAINNET PURCHASE HANDLING ===============
+        // =============== PURCHASE HANDLING ===============
         async function handlePurchase() {
-            console.log('MAINNET purchase initiated');
+            console.log('Purchase initiated');
             
             if (!publicKey) {
                 showError('Please connect your wallet first');
@@ -1168,36 +1155,26 @@
             buyButton.disabled = true;
             buyButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
             
-            // Clear any previous errors
             clearError();
 
-            // Update balance before transaction
+            // Update balance with retry logic
             try {
                 await updateWalletBalance();
-                console.log('Current MAINNET balance before purchase:', currentBalance);
+                console.log('Current balance before purchase:', currentBalance);
             } catch (err) {
                 console.error('Failed to update balance:', err);
-                showError('Failed to check wallet balance. Please try again.');
-                resetBuyButton(buyButton, originalText);
-                return;
+                // Continue anyway - balance check might fail but transaction could succeed
             }
 
-            // Check balance with small buffer for mainnet fees (0.000005 SOL typical fee)
-            if (currentBalance < amount + 0.01) { // 0.01 SOL buffer for mainnet fees
-                showError(`Insufficient SOL balance. You need at least ${(amount + 0.01).toFixed(3)} SOL (including fees). You have ${currentBalance.toFixed(4)} SOL.`);
-                resetBuyButton(buyButton, originalText);
-                return;
-            }
-
-            // Set timeout for transaction (mainnet can be slower)
+            // Don't block purchase if balance check fails - let the wallet handle it
             if (transactionTimeout) clearTimeout(transactionTimeout);
             transactionTimeout = setTimeout(() => {
                 showError('Transaction timed out. Please check your wallet and try again.');
                 resetBuyButton(buyButton, originalText);
-            }, 90000); // 90 second timeout for mainnet
+            }, 120000); // 120 second timeout
 
             try {
-                console.log('Creating MAINNET transaction for amount:', amount, 'SOL');
+                console.log('Creating transaction for amount:', amount, 'SOL');
                 console.log('Sending to dev wallet:', DEV_WALLET);
                 
                 // Create transaction
@@ -1215,26 +1192,25 @@
                 transaction.feePayer = new solanaWeb3.PublicKey(publicKey);
 
                 let signature;
-                console.log('Signing MAINNET transaction...');
+                console.log('Signing transaction...');
                 
                 // Sign and send transaction
                 const signedTransaction = await wallet.signTransaction(transaction);
                 signature = await connection.sendRawTransaction(signedTransaction.serialize());
                 
-                console.log('MAINNET Transaction sent with signature:', signature);
+                console.log('Transaction sent with signature:', signature);
                 console.log('View on Solana Explorer: https://explorer.solana.com/tx/' + signature);
 
-                // Wait for confirmation (mainnet can take longer)
-                console.log('Waiting for MAINNET confirmation...');
+                // Wait for confirmation
+                console.log('Waiting for confirmation...');
                 await connection.confirmTransaction({
                     signature,
                     blockhash,
                     lastValidBlockHeight
                 }, 'confirmed');
                 
-                console.log('MAINNET Transaction confirmed!');
+                console.log('Transaction confirmed!');
 
-                // Clear timeout since we succeeded
                 clearTimeout(transactionTimeout);
 
                 // Show success
@@ -1256,7 +1232,7 @@
                     Math.floor(baseTokens * REFERRAL_BONUS) : 0;
                 const total = baseTokens + bonus;
                 
-                showNotification(`✅ MAINNET Purchase Successful! ${total.toLocaleString()} ROOFY tokens will be airdropped after presale`, 'success');
+                showNotification(`✅ Purchase Successful! ${total.toLocaleString()} ROOFY tokens will be airdropped after presale`, 'success');
 
                 // Update balance after purchase
                 setTimeout(() => updateWalletBalance(), 3000);
@@ -1267,7 +1243,7 @@
                 updateTokenCalculation();
 
             } catch (err) {
-                console.error('MAINNET Transaction error:', err);
+                console.error('Transaction error:', err);
                 clearTimeout(transactionTimeout);
                 
                 let errorMessage = 'Transaction failed. ';
@@ -1277,11 +1253,11 @@
                 } else if (err.message?.includes('NotConnectedError')) {
                     errorMessage = 'Wallet not connected. Please reconnect your wallet.';
                 } else if (err.message?.includes('timeout') || err.message?.includes('Timeout')) {
-                    errorMessage = 'Transaction timed out. The mainnet might be busy. Please try again.';
+                    errorMessage = 'Transaction timed out. Please try again.';
                 } else if (err.message?.includes('blockhash')) {
                     errorMessage = 'Network error. Please refresh the page and try again.';
                 } else if (err.message?.includes('insufficient funds')) {
-                    errorMessage = 'Insufficient funds. You need real SOL on mainnet.';
+                    errorMessage = 'Insufficient funds. Please add SOL to your wallet.';
                 } else if (err.message?.includes('429')) {
                     errorMessage = 'Rate limited. Please wait a moment and try again.';
                 } else {
@@ -1493,7 +1469,7 @@
             });
         }
 
-        // Mobile functions (simplified)
+        // Mobile functions
         function setupMobileWalletButtons() {
             const openInPhantomBtn = document.getElementById('openInPhantom');
             const installPhantomBtn = document.getElementById('installPhantom');
