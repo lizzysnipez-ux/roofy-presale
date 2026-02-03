@@ -607,8 +607,8 @@
                 </div>
 
                 <div class="p-4 md:p-6 lg:p-8">
-                    <!-- Mobile Wallet Instructions -->
-                    <div id="mobileWalletHelp" class="mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200 text-sm hidden">
+                    <!-- Mobile Wallet Instructions - Now visible on mobile only -->
+                    <div id="mobileWalletHelp" class="mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200 text-sm md:hidden">
                         <p class="text-blue-700"><i class="fas fa-mobile-alt mr-2"></i>For best mobile experience:</p>
                         <div class="mt-2 space-y-2">
                             <button id="openInPhantom" class="phantom-deep-link w-full text-center">
@@ -1260,10 +1260,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log('Initializing Roofy Presale...');
             
-            if (isMobile) {
-                document.getElementById('mobileWalletHelp').classList.remove('hidden');
-                setupMobileWalletButtons();
-            }
+            // Setup mobile wallet buttons
+            setupMobileWalletButtons();
             
             document.getElementById('mobileMenu').addEventListener('click', () => {
                 const menu = document.getElementById('mobileMenuContent');
@@ -2134,6 +2132,7 @@
             
             if (openInPhantomBtn) {
                 openInPhantomBtn.addEventListener('click', () => {
+                    // Open current URL in Phantom app
                     window.location.href = 'https://phantom.app/ul/browse/' + encodeURIComponent(window.location.href);
                 });
             }
