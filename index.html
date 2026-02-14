@@ -1280,7 +1280,7 @@
             loadRecentPurchases();
             initializeTokenomicsChart();
             
-            // Start with initial simulated stats
+            // Start with initial simulated statsonst launchDate = new Date
             updateStats();
             simulateLiveStats();
         });
@@ -1288,7 +1288,7 @@
         // =============== COUNTDOWN TIMER ===============
         function initializeCountdown() {
             // Set launch date to February 15, 2026
-            const launchDate = new Date('February 15, 2026 00:00:00 GMT').getTime();
+            const launchDate = new Date('February 15, 2026 20:00:00 GMT').getTime();
             
             function updateCountdown() {
                 const now = new Date().getTime();
