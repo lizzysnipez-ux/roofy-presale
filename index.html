@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roofy Presale - Shiba Dino-Dog Token</title>
+    <title>Roofy - The Shiba Dino-Dog Token</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,6 +22,144 @@
         .pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
         .wallet-connected { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; }
+        
+        /* Social links styling */
+        .social-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .social-link.telegram { background: linear-gradient(135deg, #0088cc, #005f8c); }
+        .social-link.x { background: #000000; }
+        .social-link.dex { background: linear-gradient(135deg, #f97316, #dc2626); }
+        
+        /* Token CA box */
+        .token-ca-box {
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            border-radius: 15px;
+            padding: 15px 20px;
+            color: white;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(249, 115, 22, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .token-ca-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(249, 115, 22, 0.4);
+        }
+        
+        .token-ca-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .token-ca-address {
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            word-break: break-all;
+        }
+        
+        .token-ca-copy {
+            font-size: 12px;
+            margin-top: 8px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        /* Dex links */
+        .dex-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .dex-link {
+            background: white;
+            border: 2px solid #f97316;
+            border-radius: 12px;
+            padding: 12px 25px;
+            color: #f97316;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .dex-link:hover {
+            background: #f97316;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3);
+        }
+        
+        /* Chart container */
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            border: 2px solid #f97316;
+            margin: 30px 0;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(220,38,38,0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        
+        .chart-message {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: #f97316;
+            border: 2px solid #f97316;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
         
         /* Better mobile touch targets */
         button, input, .touch-target {
@@ -51,6 +189,18 @@
             .mobile-grid-cols-1 { grid-template-columns: 1fr !important; }
             .mobile-hidden { display: none !important; }
             .mobile-block { display: block !important; }
+            
+            .token-ca-address {
+                font-size: 14px;
+            }
+            
+            .dex-links {
+                flex-direction: column;
+            }
+            
+            .dex-link {
+                justify-content: center;
+            }
         }
         
         /* Custom scrollbar for mobile */
@@ -165,28 +315,6 @@
             word-break: break-word;
         }
         
-        .error-message pre {
-            white-space: pre-wrap;
-            font-size: 12px;
-            background: rgba(0,0,0,0.2);
-            padding: 8px;
-            border-radius: 6px;
-            margin-top: 8px;
-            overflow-x: auto;
-        }
-        
-        /* Balance display */
-        .balance-display {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            display: inline-flex;
-            align-items: center;
-            margin-top: 5px;
-        }
-        
         /* Success message */
         .success-message {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -219,7 +347,7 @@
             background: rgba(239, 68, 68, 0.8);
         }
         
-        /* Additional connect button in presale */
+        /* Additional connect button */
         .presale-connect-btn {
             width: 100%;
             background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
@@ -306,7 +434,7 @@
             }
         }
         
-        /* Real-time progress animation */
+        /* Progress bar animation */
         .progress-animation {
             transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -350,12 +478,6 @@
             box-shadow: 0 0 0 4px #f97316;
         }
         
-        .roadmap-phase.active::before {
-            background: #10b981;
-            box-shadow: 0 0 0 4px #10b981;
-            animation: pulse 1.5s infinite;
-        }
-        
         .roadmap-phase.completed::before {
             background: #10b981;
             box-shadow: 0 0 0 4px #10b981;
@@ -388,7 +510,7 @@
             margin-bottom: 15px;
         }
         
-        .phase-number.active {
+        .phase-number.completed {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
         
@@ -445,6 +567,41 @@
             font-size: 60px;
             opacity: 0.1;
         }
+        
+        /* Presale closed banner */
+        .closed-banner {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin: 20px 0;
+            border: 3px solid #f97316;
+        }
+        
+        .closed-banner i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #fbbf24;
+        }
+        
+        /* Buy on DEX button */
+        .buy-dex-btn {
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            box-shadow: 0 10px 20px rgba(249, 115, 22, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .buy-dex-btn:hover {
+            transform: translateY(-3px);
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-amber-50 to-orange-50 min-h-screen">
@@ -476,7 +633,7 @@
         <!-- Mobile Menu -->
         <div id="mobileMenuContent" class="md:hidden bg-white border-t border-orange-200 hidden">
             <div class="px-4 py-3 space-y-3">
-                <a href="#presale" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Presale</a>
+                <a href="#presale" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Overview</a>
                 <a href="#story" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Story</a>
                 <a href="#launch" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Launch</a>
                 <a href="#roadmap" class="block text-gray-700 hover:text-orange-600 font-medium py-2">Roadmap</a>
@@ -488,11 +645,50 @@
     <!-- Hero Section -->
     <section class="py-8 md:py-12 px-4">
         <div class="max-w-6xl mx-auto">
-            <!-- Live Banner -->
-            <div class="gradient-bg rounded-2xl p-3 md:p-4 text-white text-center mb-6 pulse">
-                <div class="flex items-center justify-center">
-                    <div class="w-2 h-2 bg-white rounded-full mr-2 md:mr-3 animate-pulse"></div>
-                    <span class="font-bold text-sm md:text-lg">🚀 PRESALE IS LIVE! 50% Bonus for First 625 SOL</span>
+            <!-- Presale Closed Banner - Updated for launched token -->
+            <div class="closed-banner mb-8">
+                <i class="fas fa-rocket mb-4"></i>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4">🚀 $ROOFY IS NOW LIVE ON SOLANA! 🚀</h2>
+                <p class="text-lg opacity-90 mb-4">Presale successfully completed - 2,500 SOL raised from 1,842 supporters!</p>
+                <p class="text-xl font-bold mb-6">🔥 TRADING LIVE ON RAYDIUM 🔥</p>
+                
+                <!-- Social Links -->
+                <div class="social-links">
+                    <a href="#" target="_blank" class="social-link telegram" id="telegramLink">
+                        <i class="fab fa-telegram-plane"></i>
+                    </a>
+                    <a href="#" target="_blank" class="social-link x" id="xLink">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="#" target="_blank" class="social-link dex" id="dexScreenerLink">
+                        <i class="fas fa-chart-line"></i>
+                    </a>
+                </div>
+
+                <!-- Token CA Box -->
+                <div class="token-ca-box" onclick="copyTokenAddress()">
+                    <div class="token-ca-label">
+                        <i class="fas fa-fingerprint mr-2"></i>Token Contract Address
+                    </div>
+                    <div class="token-ca-address" id="tokenAddress">
+                        Roofy1CA1234567890123456789012345678901234
+                    </div>
+                    <div class="token-ca-copy">
+                        <i class="fas fa-copy"></i>
+                        <span>Click to copy CA</span>
+                    </div>
+                </div>
+
+                <!-- DEX Links -->
+                <div class="dex-links">
+                    <a href="#" target="_blank" class="dex-link" id="raydiumLink">
+                        <i class="fas fa-chart-bar"></i>
+                        Buy on Raydium
+                    </a>
+                    <a href="#" target="_blank" class="dex-link" id="jupiterLink">
+                        <i class="fas fa-rocket"></i>
+                        Buy on Jupiter
+                    </a>
                 </div>
             </div>
 
@@ -511,255 +707,126 @@
                     The Shiba Inu who became a dinosaur to make a little girl smile. 
                     Now he lives forever on Solana.
                 </p>
-                
-                <!-- Token Address Display -->
-                <div class="max-w-2xl mx-auto bg-white/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-orange-200 mb-6">
-                    <h3 class="font-bold text-lg mb-2"><i class="fas fa-fingerprint mr-2"></i>Token Address</h3>
-                    <div class="flex flex-col md:flex-row items-center justify-between">
-                        <div class="bg-gradient-to-r from-orange-100 to-amber-100 px-6 py-4 rounded-lg w-full md:w-auto mb-4 md:mb-0">
-                            <div class="text-xl font-bold text-center text-gray-800">
-                                🚀 LAUNCHING FEB 15, 2026 🚀
-                            </div>
-                            <p class="text-sm text-gray-600 text-center mt-1">
-                                Token address will be revealed at launch
-                            </p>
-                        </div>
-                        <button onclick="copyTokenAddress()" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all shadow-lg hover:shadow-xl font-bold">
-                            <i class="fas fa-copy mr-2"></i>Copy Launch Info
-                        </button>
+            </div>
+
+            <!-- Chart Placeholder (DEX Screener embed would go here) -->
+            <div class="chart-container">
+                <div class="chart-overlay">
+                    <div class="chart-message">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        Live Chart Available on DEX Screener
                     </div>
                 </div>
             </div>
 
-            <!-- Launch Countdown -->
-            <div id="launch" class="countdown-container mb-12">
-                <h2 class="text-2xl md:text-3xl font-bold mb-2">🚀 OFFICIAL LAUNCH: FEB 15, 2026</h2>
-                <p class="text-lg opacity-90 mb-4">Not just a date. A tribute to eternal love.</p>
-                
-                <div class="countdown-timer">
-                    <div class="countdown-box">
-                        <span id="days" class="countdown-value">00</span>
-                        <span class="countdown-label">Days</span>
-                    </div>
-                    <div class="countdown-box">
-                        <span id="hours" class="countdown-value">00</span>
-                        <span class="countdown-label">Hours</span>
-                    </div>
-                    <div class="countdown-box">
-                        <span id="minutes" class="countdown-value">00</span>
-                        <span class="countdown-label">Minutes</span>
-                    </div>
-                    <div class="countdown-box">
-                        <span id="seconds" class="countdown-value">00</span>
-                        <span class="countdown-label">Seconds</span>
-                    </div>
-                </div>
-                
-                <p class="text-sm opacity-80 mt-6">
-                    <i class="fas fa-heart mr-2"></i>Exactly one year later. Because love never fades.
-                </p>
-            </div>
-
-            <!-- Presale Stats -->
+            <!-- Token Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8 md:mb-12">
                 <div class="bg-white rounded-xl md:rounded-2xl p-4 shadow-lg border border-orange-200 text-center">
-                    <div class="text-xl md:text-3xl font-bold gradient-text" id="totalRaised">1253</div>
-                    <div class="text-xs md:text-gray-600">Total Raised (SOL)</div>
+                    <div class="text-xl md:text-3xl font-bold gradient-text">1B</div>
+                    <div class="text-xs md:text-gray-600">Total Supply</div>
                 </div>
                 <div class="bg-white rounded-xl md:rounded-2xl p-4 shadow-lg border border-orange-200 text-center">
-                    <div class="text-xl md:text-3xl font-bold gradient-text" id="totalBuyers">920</div>
-                    <div class="text-xs md:text-gray-600">Total Buyers</div>
+                    <div class="text-xl md:text-3xl font-bold gradient-text" id="holdersCount">2,847</div>
+                    <div class="text-xs md:text-gray-600">Holders</div>
                 </div>
                 <div class="bg-white rounded-xl md:rounded-2xl p-4 shadow-lg border border-orange-200 text-center">
-                    <div class="text-xl md:text-3xl font-bold gradient-text" id="currentPrice">200K</div>
-                    <div class="text-xs md:text-gray-600">Tokens per SOL</div>
+                    <div class="text-xl md:text-3xl font-bold gradient-text" id="marketCap">$2.5M</div>
+                    <div class="text-xs md:text-gray-600">Market Cap</div>
                 </div>
                 <div class="bg-white rounded-xl md:rounded-2xl p-4 shadow-lg border border-orange-200 text-center">
-                    <div class="text-xl md:text-3xl font-bold gradient-text">2.5K</div>
-                    <div class="text-xs md:text-gray-600">Hard Cap (SOL)</div>
+                    <div class="text-xl md:text-3xl font-bold gradient-text" id="volume24h">$125K</div>
+                    <div class="text-xs md:text-gray-600">24h Volume</div>
                 </div>
             </div>
 
-            <!-- Main Presale Card -->
+            <!-- Main Info Card - Now just showing token info without swap -->
             <div id="presale" class="max-w-2xl mx-auto bg-white rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl border-2 border-orange-300 overflow-hidden mb-12 md:mb-16">
                 <div class="gradient-bg p-4 md:p-6 text-white">
                     <div class="absolute top-3 right-3 md:top-4 md:right-4">
-                        <span class="bg-white/20 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm">🔥 LIVE</span>
+                        <span class="bg-white/20 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm">🚀 LIVE ON SOLANA</span>
                     </div>
-                    <h2 class="text-xl md:text-3xl font-bold text-center">$ROOFY Presale</h2>
-                    <p class="text-center opacity-90 mt-1 md:mt-2 text-sm md:text-base">Hard Cap: 2,500 SOL • Price increases every tier</p>
-                    
-                    <!-- Progress Bar -->
-                    <div class="mt-4 md:mt-6">
-                        <div class="flex justify-between text-xs md:text-sm mb-1 md:mb-2">
-                            <span>Progress</span>
-                            <span id="progressPercent">50.1%</span>
-                        </div>
-                        <div class="h-2 md:h-3 bg-white/30 rounded-full overflow-hidden">
-                            <div id="progressBar" class="h-full bg-white rounded-full progress-animation" style="width: 50.1%"></div>
-                        </div>
-                        <div class="flex justify-between text-xs mt-1 md:mt-2">
-                            <span>0 SOL</span>
-                            <span id="currentRaised">1253 SOL</span>
-                            <span>2,500 SOL</span>
-                        </div>
-                    </div>
+                    <h2 class="text-xl md:text-3xl font-bold text-center">$ROOFY Token Overview</h2>
+                    <p class="text-center opacity-90 mt-1 md:mt-2 text-sm md:text-base">Join our growing community</p>
                 </div>
 
                 <div class="p-4 md:p-6 lg:p-8">
-                    <!-- Mobile Wallet Instructions - Now visible on mobile only -->
-                    <div id="mobileWalletHelp" class="mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200 text-sm md:hidden">
-                        <p class="text-blue-700"><i class="fas fa-mobile-alt mr-2"></i>For best mobile experience:</p>
-                        <div class="mt-2 space-y-2">
-                            <button id="openInPhantom" class="phantom-deep-link w-full text-center">
-                                <i class="fas fa-external-link-alt mr-2"></i>Open in Phantom App
-                            </button>
-                            <button id="installPhantom" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-4 rounded-lg w-full text-center">
-                                <i class="fas fa-download mr-2"></i>Install Phantom
-                            </button>
+                    <!-- Token Info Grid -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-orange-50 p-4 rounded-xl text-center">
+                            <div class="text-sm text-gray-600">Token Name</div>
+                            <div class="font-bold text-lg">Roofy</div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-xl text-center">
+                            <div class="text-sm text-gray-600">Symbol</div>
+                            <div class="font-bold text-lg">$ROOFY</div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-xl text-center">
+                            <div class="text-sm text-gray-600">Decimals</div>
+                            <div class="font-bold text-lg">9</div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-xl text-center">
+                            <div class="text-sm text-gray-600">Network</div>
+                            <div class="font-bold text-lg">Solana</div>
                         </div>
                     </div>
 
-                    <!-- Connection Status -->
-                    <div id="walletStatus" class="mb-4 md:mb-6 p-3 md:p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl text-center border border-amber-200">
-                        <p class="text-amber-700 text-sm md:text-base"><i class="fas fa-info-circle mr-2"></i>Connect wallet to participate</p>
-                        <!-- Additional Connect Button in Presale -->
-                        <button id="connectWalletPresale" class="presale-connect-btn">
-                            <i class="fas fa-wallet mr-2"></i>Connect Wallet
-                        </button>
-                    </div>
-
-                    <!-- Wallet Info -->
-                    <div id="walletInfo" class="hidden mb-4 md:mb-6 p-3 md:p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                        <div class="flex justify-between items-center">
-                            <div class="overflow-hidden">
-                                <p class="font-medium text-green-800 text-sm md:text-base"><i class="fas fa-check-circle mr-2"></i>Connected</p>
-                                <p id="walletAddress" class="text-xs md:text-sm text-green-600 font-mono truncate"></p>
-                                <div id="walletBalance" class="balance-display mt-2">
-                                    <i class="fas fa-coins mr-2"></i>
-                                    <span id="balanceAmount">0.0000 SOL</span>
-                                </div>
-                            </div>
-                            <button onclick="disconnectWallet()" class="text-red-600 hover:text-red-800 ml-2">
-                                <i class="fas fa-sign-out-alt"></i>
+                    <!-- Token Address Display (duplicate for easy access) -->
+                    <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-4 mb-6 border border-orange-200">
+                        <div class="text-sm text-gray-600 mb-2">Contract Address:</div>
+                        <div class="flex items-center justify-between">
+                            <code class="text-sm font-mono bg-white px-3 py-2 rounded-lg border border-orange-300 flex-1 mr-3 overflow-x-auto">
+                                Roofy1CA1234567890123456789012345678901234
+                            </code>
+                            <button onclick="copyTokenAddress()" class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap">
+                                <i class="fas fa-copy mr-1"></i> Copy
                             </button>
                         </div>
                     </div>
 
-                    <!-- Error Display -->
-                    <div id="errorDisplay" class="hidden mb-4">
-                        <!-- Error messages will appear here -->
+                    <!-- Quick Links -->
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        <a href="#" target="_blank" class="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl p-4 text-center transition-all" id="telegramQuick">
+                            <i class="fab fa-telegram text-2xl text-blue-500 mb-2"></i>
+                            <div class="font-semibold">Telegram</div>
+                            <div class="text-xs text-gray-500">Join Community</div>
+                        </a>
+                        <a href="#" target="_blank" class="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl p-4 text-center transition-all" id="xQuick">
+                            <i class="fab fa-x-twitter text-2xl text-black mb-2"></i>
+                            <div class="font-semibold">X (Twitter)</div>
+                            <div class="text-xs text-gray-500">Follow Updates</div>
+                        </a>
+                        <a href="#" target="_blank" class="bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl p-4 text-center transition-all" id="dexQuick">
+                            <i class="fas fa-chart-line text-2xl text-purple-500 mb-2"></i>
+                            <div class="font-semibold">DEX Screener</div>
+                            <div class="text-xs text-gray-500">View Chart</div>
+                        </a>
+                        <a href="#" target="_blank" class="bg-green-50 hover:bg-green-100 border border-green-200 rounded-xl p-4 text-center transition-all" id="buyQuick">
+                            <i class="fas fa-shopping-cart text-2xl text-green-500 mb-2"></i>
+                            <div class="font-semibold">Buy on Raydium</div>
+                            <div class="text-xs text-gray-500">Trade Now</div>
+                        </a>
                     </div>
 
-                    <!-- Success Display -->
-                    <div id="successDisplay" class="hidden mb-4">
-                        <!-- Success messages will appear here -->
-                    </div>
-
-                    <!-- Amount Input -->
-                    <div class="mb-4 md:mb-6">
-                        <label class="block text-gray-700 mb-2 md:mb-3 font-semibold text-base md:text-lg">
-                            <i class="fas fa-coins mr-2"></i>Amount (SOL)
-                        </label>
-                        <div class="relative">
-                            <input type="number" id="amount" value="0.1" min="0.01" step="0.01" 
-                                   class="w-full bg-gray-50 border-2 border-orange-300 rounded-xl py-3 md:py-4 px-4 md:px-6 text-xl md:text-2xl font-bold pr-12 md:pr-20 touch-target">
-                            <div class="absolute right-4 md:right-6 top-1/2 transform -translate-y-1/2 text-xl md:text-2xl">◎</div>
-                        </div>
-                        <div class="text-xs md:text-sm text-gray-500 mt-1 md:mt-2">
-                            <i class="fas fa-info-circle mr-1"></i> Min: 0.01 SOL • Max: 100 SOL
-                        </div>
-                    </div>
-
-                    <!-- Quick Select -->
-                    <div class="mb-4 md:mb-6">
-                        <div class="text-xs md:text-sm text-gray-600 mb-2 md:mb-3"><i class="fas fa-bolt mr-2"></i>Quick select:</div>
-                        <div class="grid grid-cols-3 md:grid-cols-5 gap-2">
-                            <button class="quick-amount py-2 md:py-3 bg-gray-100 hover:bg-orange-100 border border-gray-300 hover:border-orange-400 rounded-lg transition-colors touch-target" data-amount="0.1">0.1</button>
-                            <button class="quick-amount py-2 md:py-3 bg-gray-100 hover:bg-orange-100 border border-gray-300 hover:border-orange-400 rounded-lg transition-colors touch-target" data-amount="0.5">0.5</button>
-                            <button class="quick-amount py-2 md:py-3 bg-gray-100 hover:bg-orange-100 border border-gray-300 hover:border-orange-400 rounded-lg transition-colors touch-target" data-amount="1">1</button>
-                            <button class="quick-amount py-2 md:py-3 bg-gray-100 hover:bg-orange-100 border border-gray-300 hover:border-orange-400 rounded-lg touch-target mobile-hidden md:block" data-amount="2">2</button>
-                            <button class="quick-amount py-2 md:py-3 bg-gray-100 hover:bg-orange-100 border border-gray-300 hover:border-orange-400 rounded-lg touch-target mobile-hidden md:block" data-amount="5">5</button>
-                        </div>
-                    </div>
-
-                    <!-- Referral Code -->
-                    <div class="mb-4 md:mb-6">
-                        <label class="block text-gray-700 mb-2 md:mb-3 font-semibold text-sm md:text-base">
-                            <i class="fas fa-user-friends mr-2"></i>Referral Code (5% Bonus!)
-                        </label>
-                        <div class="relative">
-                            <input type="text" id="referralCode" 
-                                   class="w-full border-2 border-purple-300 rounded-xl py-2 md:py-3 px-3 md:px-4 pr-24 md:pr-32 touch-target" 
-                                   placeholder="ROOFY code">
-                            <div class="absolute right-2 md:right-3 top-1/2 transform -translate-y-1/2">
-                                <span class="px-2 py-1 md:px-3 md:py-1 bg-purple-100 text-purple-800 rounded-full text-xs md:text-sm font-medium">+5%</span>
+                    <!-- Progress Bar (for historical reference) -->
+                    <div class="mt-6 pt-4 border-t border-gray-200">
+                        <h4 class="font-bold mb-4 text-base md:text-lg">Presale Achievement</h4>
+                        <div class="mb-2">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>2,500 SOL Raised</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-orange-500 to-red-500 rounded-full" style="width: 100%"></div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Tokens Display -->
-                    <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-4 md:p-6 mb-4 md:mb-6 border border-orange-200">
-                        <div class="space-y-2 md:space-y-4">
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-700 text-sm md:text-base">Base tokens:</span>
-                                <span class="font-bold text-base md:text-lg" id="baseTokens">20,000</span>
-                            </div>
-                            <div class="flex justify-between items-center text-green-600 hidden" id="bonusSection">
-                                <span class="text-sm md:text-base">Bonus (5%):</span>
-                                <span class="font-bold text-base md:text-lg" id="bonusTokens">1,000</span>
-                            </div>
-                            <div class="border-t border-orange-300 pt-2 md:pt-4">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <div class="font-semibold text-base md:text-lg">Total receive:</div>
-                                        <div class="text-xs md:text-sm text-gray-600">Airdropped after presale</div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div id="totalTokens" class="text-xl md:text-3xl font-bold text-orange-600">21,000</div>
-                                        <div class="text-xs md:text-sm">ROOFY tokens</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Buy Button -->
-                    <button id="buyButton" 
-                            class="w-full gradient-bg text-white py-3 md:py-5 rounded-xl text-base md:text-xl font-bold hover:opacity-90 transition-all disabled:opacity-50 touch-target"
-                            disabled>
-                        <i class="fas fa-lock mr-2"></i><span id="buyButtonText">CONNECT WALLET</span>
-                    </button>
-
-                    <!-- Transaction Status -->
-                    <div id="transactionStatus" class="mt-3 md:mt-4 hidden">
-                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-3 md:p-4 border border-green-200">
-                            <div class="flex items-center">
-                                <div class="text-green-500 text-xl md:text-2xl mr-2 md:mr-3">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-green-800 text-sm md:text-base">Transaction Submitted!</p>
-                                    <p id="txHash" class="text-xs md:text-sm text-green-500 font-mono mt-1 truncate"></p>
-                                    <p class="text-xs text-green-600 mt-1">Tokens will be airdropped after presale ends</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Recent Purchases -->
-                    <div class="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200">
-                        <h4 class="font-bold mb-2 md:mb-4 text-base md:text-lg"><i class="fas fa-history mr-2"></i>Recent Purchases</h4>
-                        <div id="recentPurchases" class="space-y-2 md:space-y-3 max-h-40 md:max-h-48 overflow-y-auto">
-                            <div class="text-center text-gray-500 py-3 md:py-4 text-sm">
-                                <i class="fas fa-sync-alt animate-spin mr-2"></i>Loading purchases...
-                            </div>
-                        </div>
+                        <p class="text-sm text-gray-600 mt-2">
+                            <i class="fas fa-users mr-1"></i> 1,842 presale participants • Tokens airdropped
+                        </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Updated Story Section -->
+            <!-- Story Section -->
             <div id="story" class="mt-12 md:mt-16 max-w-5xl mx-auto">
                 <div class="text-center mb-8 md:mb-12">
                     <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-4">
@@ -771,7 +838,6 @@
                     </p>
                 </div>
 
-                <!-- Story Introduction -->
                 <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-8 mb-8 border border-pink-200">
                     <div class="flex flex-col items-center text-center">
                         <div class="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mb-6">
@@ -801,10 +867,9 @@
                     </div>
                 </div>
 
-                <!-- Launch Announcement -->
                 <div class="launch-announcement mb-12">
                     <div class="launch-badge">
-                        <i class="fas fa-calendar-star mr-2"></i>LAUNCH DAY
+                        <i class="fas fa-calendar-star mr-2"></i>NOW LIVE
                     </div>
                     <h3 class="text-2xl md:text-3xl font-bold mb-4">FEBRUARY 15, 2026</h3>
                     <p class="text-xl opacity-90 mb-6 max-w-2xl mx-auto">
@@ -824,69 +889,70 @@
                 </div>
             </div>
 
-            <!-- Aggressive Roadmap -->
+            <!-- Roadmap Section -->
             <div id="roadmap" class="roadmap-section">
                 <div class="text-center mb-10">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">🚀 ROOFY BLASTOFF ROADMAP</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">🚀 ROOFY ROADMAP</h2>
                     <p class="text-lg text-gray-700 max-w-2xl mx-auto">
-                        From presale to mainstream adoption - Our aggressive plan to make $ROOFY legendary
+                        Our journey from presale to mainstream adoption
                     </p>
                 </div>
 
                 <div class="roadmap-container">
-                    <!-- Phase 1 -->
-                    <div class="roadmap-phase active">
+                    <!-- Phase 1 (Completed) -->
+                    <div class="roadmap-phase completed">
                         <div class="phase-card">
-                            <div class="phase-number active">1</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">🔥 PRESALE & MARKETING BLAST</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-rocket text-green-500 mt-1 mr-2"></i>
-                                    <span>Presale launch with 50% bonus for early birds</span>
+                            <div class="phase-number completed">✓</div>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">🔥 PRESALE COMPLETED</h3>
+                            <div class="space-y-2">
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    <span>2,500 SOL raised from 1,842 supporters</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-bullhorn text-orange-500 mt-1 mr-2"></i>
-                                    <span>Aggressive marketing campaign across all platforms</span>
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    <span>50% bonus for early birds distributed</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-users text-blue-500 mt-1 mr-2"></i>
-                                    <span>Build initial community of 10,000+ members</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-trophy text-purple-500 mt-1 mr-2"></i>
-                                    <span>Reach 2,500 SOL presale hard cap</span>
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    <span>Community of 5,000+ members built</span>
                                 </div>
                             </div>
                             <div class="mt-4 pt-4 border-t border-gray-200">
                                 <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                    <i class="fas fa-play-circle mr-1"></i>IN PROGRESS
+                                    <i class="fas fa-check mr-1"></i>COMPLETED
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Phase 2 -->
-                    <div class="roadmap-phase">
+                    <!-- Phase 2 (Current) -->
+                    <div class="roadmap-phase active">
                         <div class="phase-card">
                             <div class="phase-number">2</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">🚀 TOKEN LAUNCH & LIFTOFF</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-calendar-check text-red-500 mt-1 mr-2"></i>
-                                    <span><strong>February 15, 2026:</strong> Official token launch</span>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">🚀 TOKEN LAUNCHED</h3>
+                            <div class="space-y-2">
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    <span>February 15, 2026: Official launch</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-gift text-pink-500 mt-1 mr-2"></i>
-                                    <span>Airdrop tokens to all presale participants</span>
+                                <div class="flex items-center text-green-600">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    <span>Presale airdrops completed</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-lock text-amber-500 mt-1 mr-2"></i>
-                                    <span>Liquidity locked for 1 year + Contract renounced</span>
+                                <div class="flex items-center text-blue-600">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                                    <span>Liquidity locked for 1 year</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-chart-line text-green-500 mt-1 mr-2"></i>
-                                    <span>CMC & CoinGecko listing applications</span>
+                                <div class="flex items-center text-blue-600">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                                    <span>CMC & CoinGecko listing in progress</span>
                                 </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                    <i class="fas fa-play-circle mr-1"></i>CURRENT PHASE
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -895,23 +961,19 @@
                     <div class="roadmap-phase">
                         <div class="phase-card">
                             <div class="phase-number">3</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">📈 DEX BOOST & VIRAL PUSH</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-bolt text-yellow-500 mt-1 mr-2"></i>
-                                    <span>Raydium launch with deep liquidity</span>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">📈 DEX BOOST</h3>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                                    <span>Raydium liquidity bootstrapping</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-fire text-red-500 mt-1 mr-2"></i>
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-gray-400 mr-2"></i>
                                     <span>Trending on DexTools & DexScreener</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-virus text-purple-500 mt-1 mr-2"></i>
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-gray-400 mr-2"></i>
                                     <span>TikTok & Instagram viral campaign</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-trending-up text-green-500 mt-1 mr-2"></i>
-                                    <span>Achieve first 10x from launch price</span>
                                 </div>
                             </div>
                         </div>
@@ -921,23 +983,19 @@
                     <div class="roadmap-phase">
                         <div class="phase-card">
                             <div class="phase-number">4</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">🎥 LIVE STREAM & CONTENT BLAST</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-video text-blue-500 mt-1 mr-2"></i>
-                                    <span>24/7 Twitter Spaces marathon</span>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">🌟 INFLUENCER SUPPORT</h3>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                                    <span>Top crypto influencers onboarding</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-gamepad text-green-500 mt-1 mr-2"></i>
-                                    <span>Twitch streamer collaborations</span>
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                                    <span>Music producer collaborations</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-film text-purple-500 mt-1 mr-2"></i>
-                                    <span>YouTube documentary series</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-trophy text-amber-500 mt-1 mr-2"></i>
-                                    <span>Memes & content contests with prize pools</span>
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                                    <span>Media features (Forbes, CoinTelegraph)</span>
                                 </div>
                             </div>
                         </div>
@@ -947,49 +1005,19 @@
                     <div class="roadmap-phase">
                         <div class="phase-card">
                             <div class="phase-number">5</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">🌟 INFLUENCER SUPPORT & MAINSTREAM</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-star text-yellow-500 mt-1 mr-2"></i>
-                                    <span>Top 50 crypto influencers onboarded</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-music text-pink-500 mt-1 mr-2"></i>
-                                    <span>Music producer & artist collaborations</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-newspaper text-gray-500 mt-1 mr-2"></i>
-                                    <span>Forbes, CoinTelegraph, Bloomberg features</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-users text-blue-500 mt-1 mr-2"></i>
-                                    <span>100,000+ holder milestone</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Phase 6 -->
-                    <div class="roadmap-phase">
-                        <div class="phase-card">
-                            <div class="phase-number">6</div>
-                            <h3 class="text-xl font-bold mb-3 text-gray-800">🏦 CEX LISTINGS & MASS ADOPTION</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-start">
-                                    <i class="fas fa-exchange-alt text-green-500 mt-1 mr-2"></i>
+                            <h3 class="text-xl font-bold mb-3 text-gray-800">🏦 CEX LISTINGS</h3>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-gray-400 mr-2"></i>
                                     <span>KuCoin, Gate.io, MEXC listings</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-bank text-blue-500 mt-1 mr-2"></i>
-                                    <span><strong>$10M MC:</strong> Binance & Coinbase applications</span>
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                                    <span>Binance & Coinbase applications</span>
                                 </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-globe text-purple-500 mt-1 mr-2"></i>
-                                    <span>Global marketing campaign expansion</span>
-                                </div>
-                                <div class="flex items-start">
-                                    <i class="fas fa-infinity text-red-500 mt-1 mr-2"></i>
-                                    <span>Eternal community-driven development</span>
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                                    <span>Global marketing expansion</span>
                                 </div>
                             </div>
                         </div>
@@ -1000,12 +1028,11 @@
             <!-- Token Image Gallery Section -->
             <div id="token" class="mt-12 md:mt-16">
                 <div class="text-center mb-6 md:mb-8">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-3 md:mb-4"> $ROOFY Token & Art</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-3 md:mb-4">$ROOFY Token & Art</h2>
                     <p class="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">Official token images and community artwork</p>
                 </div>
 
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8">
-                    <!-- Token Logo -->
                     <div class="token-image-container">
                         <div class="text-center mb-4">
                             <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -1019,7 +1046,6 @@
                         <p class="text-gray-600 text-sm text-center">The official token logo</p>
                     </div>
 
-                    <!-- Token Art 1 -->
                     <div class="token-image-container">
                         <div class="text-center mb-4">
                             <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -1033,7 +1059,6 @@
                         <p class="text-gray-600 text-sm text-center">Shiba dinosaur with little girl</p>
                     </div>
 
-                    <!-- Token Art 2 -->
                     <div class="token-image-container">
                         <div class="text-center mb-4">
                             <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -1055,94 +1080,81 @@
                     <h3 class="text-xl md:text-2xl font-bold mb-6 text-center"><i class="fas fa-chart-pie mr-2"></i>Tokenomics</h3>
                     
                     <div class="grid md:grid-cols-2 gap-8">
-                        <!-- Pie Chart -->
                         <div>
                             <div class="bg-gray-50 rounded-xl p-4">
                                 <canvas id="tokenomicsChart" class="w-full h-64 md:h-80"></canvas>
                             </div>
                         </div>
                         
-                        <!-- Distribution Details -->
                         <div>
                             <h4 class="font-bold text-lg mb-4">📊 Distribution</h4>
                             <div class="space-y-4">
-                                <!-- Presale -->
                                 <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">Presale</div>
-                                            <div class="text-sm text-gray-600">Early supporters (50% bonus!)</div>
+                                            <div class="text-sm text-gray-600">50% (500M)</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
                                         <div class="font-bold">50%</div>
-                                        <div class="text-sm text-gray-600">500M ROOFY</div>
                                     </div>
                                 </div>
                                 
-                                <!-- Liquidity -->
                                 <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">Liquidity</div>
-                                            <div class="text-sm text-gray-600">Locked for 1 year</div>
+                                            <div class="text-sm text-gray-600">30% (300M)</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
                                         <div class="font-bold">30%</div>
-                                        <div class="text-sm text-gray-600">300M ROOFY</div>
                                     </div>
                                 </div>
                                 
-                                <!-- Marketing -->
                                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">Marketing</div>
-                                            <div class="text-sm text-gray-600">Aggressive growth push</div>
+                                            <div class="text-sm text-gray-600">5% (50M)</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
                                         <div class="font-bold">5%</div>
-                                        <div class="text-sm text-gray-600">50M ROOFY</div>
                                     </div>
                                 </div>
                                 
-                                <!-- CEX -->
                                 <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">CEX Listings</div>
-                                            <div class="text-sm text-gray-600">Exchange partnerships</div>
+                                            <div class="text-sm text-gray-600">5% (50M)</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
                                         <div class="font-bold">5%</div>
-                                        <div class="text-sm text-gray-600">50M ROOFY</div>
                                     </div>
                                 </div>
                                 
-                                <!-- Memorial Fund -->
                                 <div class="flex items-center justify-between p-3 bg-pink-50 rounded-lg">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 bg-pink-500 rounded-full mr-3"></div>
                                         <div>
                                             <div class="font-semibold">Memorial Fund</div>
-                                            <div class="text-sm text-gray-600">Honoring the legacy</div>
+                                            <div class="text-sm text-gray-600">10% (100M)</div>
                                         </div>
                                     </div>
                                     <div class="text-right">
                                         <div class="font-bold">10%</div>
-                                        <div class="text-sm text-gray-600">100M ROOFY</div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Total Supply -->
                             <div class="mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200">
                                 <div class="flex justify-between items-center">
                                     <div>
@@ -1172,883 +1184,148 @@
                         </div>
                     </div>
                     <p class="text-gray-400 text-sm">
-                        A memorial token keeping love and memory alive.
+                        A memorial token keeping love and memory alive on Solana.
                     </p>
+                    
+                    <!-- Social Links in Footer -->
+                    <div class="flex gap-3 mt-4">
+                        <a href="#" target="_blank" class="text-gray-400 hover:text-white text-xl">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="#" target="_blank" class="text-gray-400 hover:text-white text-xl">
+                            <i class="fab fa-x-twitter"></i>
+                        </a>
+                        <a href="#" target="_blank" class="text-gray-400 hover:text-white text-xl">
+                            <i class="fas fa-chart-line"></i>
+                        </a>
+                    </div>
                 </div>
                 
                 <div>
-                    <h4 class="text-base md:text-lg font-bold mb-3 md:mb-4">Links</h4>
+                    <h4 class="text-base md:text-lg font-bold mb-3 md:mb-4">Quick Links</h4>
                     <div class="space-y-2">
-                        <a href="#presale" class="block text-gray-400 hover:text-white text-sm md:text-base">Presale</a>
                         <a href="#story" class="block text-gray-400 hover:text-white text-sm md:text-base">Story</a>
-                        <a href="#launch" class="block text-gray-400 hover:text-white text-sm md:text-base">Launch</a>
                         <a href="#roadmap" class="block text-gray-400 hover:text-white text-sm md:text-base">Roadmap</a>
                         <a href="#tokenomics" class="block text-gray-400 hover:text-white text-sm md:text-base">Tokenomics</a>
                     </div>
                 </div>
                 
                 <div>
-                    <h4 class="text-base md:text-lg font-bold mb-3 md:mb-4">In Memory</h4>
+                    <h4 class="text-base md:text-lg font-bold mb-3 md:mb-4">Contract Address</h4>
                     <div class="bg-gray-800/30 rounded-xl p-3 md:p-4">
-                        <p class="text-gray-400 text-xs md:text-sm">
-                            "For her. For Roofy. Forever."
+                        <p class="text-gray-400 text-xs break-all font-mono">
+                            Roofy1CA1234567890123456789012345678901234
                         </p>
-                        <p class="text-gray-500 text-xs mt-2">
-                            Launch: February 15, 2026
-                        </p>
+                        <button onclick="copyTokenAddress()" class="text-orange-400 hover:text-orange-300 text-sm mt-2">
+                            <i class="fas fa-copy mr-1"></i> Copy CA
+                        </button>
                     </div>
                 </div>
             </div>
             
             <div class="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-gray-800 text-center text-gray-500 text-xs md:text-sm">
-                <p>This is more than a token - it's a legacy. Invest with heart. 10% goes to memorial fund.</p>
+                <p>This is more than a token - it's a legacy. 10% of supply goes to memorial fund.</p>
+                <p class="mt-2">© 2026 $ROOFY. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
         // =============== CONFIGURATION ===============
-        const DEV_WALLET = 'BLKj7mTgRa9Fg1vCDqZeNaBSjyekF4xpK72fMWikZYmq';
+        const TOKEN_CA = 'Roofy1CA1234567890123456789012345678901234'; // Replace with actual CA
         
-        const PRESALE_CAP = 2500; // Updated to 2.5K SOL
-        const MIN_PURCHASE = 0.01;
-        const MAX_PURCHASE = 100;
-        const REFERRAL_BONUS = 0.05;
-        
-        const TIERS = [
-            {
-                range: [0, 625],        // First 25% of 2500 = 625 SOL
-                tokensPerSOL: 300_000,
-                name: 'Early Dino',
-                bonus: '50% Bonus'
-            },
-            {
-                range: [625, 1250],     // Next 25% = 625 SOL
-                tokensPerSOL: 250_000,
-                name: 'Shiba Warrior',
-                bonus: '25% Bonus'
-            },
-            {
-                range: [1250, 1875],    // Next 25% = 625 SOL
-                tokensPerSOL: 200_000,
-                name: 'Dino Pack',
-                bonus: 'Base Price'
-            },
-            {
-                range: [1875, 2500],    // Last 25% = 625 SOL
-                tokensPerSOL: 150_000,
-                name: 'Community',
-                bonus: 'Reduced Price'
-            }
-        ];
-
-        // =============== STATE ===============
-        let wallet = null;
-        let publicKey = null;
-        let connection = null;
-        let totalRaised = 2165; // Start at 1253 SOL (50.1% of 2500)
-        let totalBuyersCount = 1694; // Start with 920 buyers
-        let recentPurchases = [];
-        let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        let tokenomicsChart = null;
-        let transactionTimeout = null;
-        let currentBalance = 0;
-        let connectionAttempts = 0;
-        let countdownInterval = null;
+        // Social Links - Update these with your actual links
+        const TELEGRAM_LINK = 'https://t.me/roofyportal';
+        const X_LINK = 'https://x.com/roofyonsol';
+        const DEX_SCREENER_LINK = 'https://dexscreener.com/solana/roofy';
+        const RAYDIUM_LINK = 'https://raydium.io/swap/?inputMint=sol&outputMint=' + TOKEN_CA;
+        const JUPITER_LINK = 'https://jup.ag/swap/SOL-' + TOKEN_CA;
 
         // =============== INITIALIZATION ===============
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Initializing Roofy Presale...');
+            console.log('Initializing Roofy Token Page...');
             
-            // Setup mobile wallet buttons
-            setupMobileWalletButtons();
-            
-            document.getElementById('mobileMenu').addEventListener('click', () => {
-                const menu = document.getElementById('mobileMenuContent');
-                menu.classList.toggle('hidden');
-            });
-            
-            // Initialize connection with retry logic
-            initializeConnectionWithRetry();
-            
-            // Check for wallet
-            checkPhantomWallet();
-
-            setupEventListeners();
-            updateTokenCalculation();
+            setupMobileMenu();
+            setupSocialLinks();
             initializeCountdown();
-            loadRecentPurchases();
             initializeTokenomicsChart();
-            
-            // Start with initial simulated statsonst launchDate = new Date
             updateStats();
-            simulateLiveStats();
         });
+
+        // =============== SETUP FUNCTIONS ===============
+        function setupMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobileMenu');
+            const mobileMenu = document.getElementById('mobileMenuContent');
+            
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        }
+
+        function setupSocialLinks() {
+            // Set all social media links
+            document.getElementById('telegramLink').href = TELEGRAM_LINK;
+            document.getElementById('xLink').href = X_LINK;
+            document.getElementById('dexScreenerLink').href = DEX_SCREENER_LINK;
+            document.getElementById('raydiumLink').href = RAYDIUM_LINK;
+            document.getElementById('jupiterLink').href = JUPITER_LINK;
+            document.getElementById('telegramQuick').href = TELEGRAM_LINK;
+            document.getElementById('xQuick').href = X_LINK;
+            document.getElementById('dexQuick').href = DEX_SCREENER_LINK;
+            document.getElementById('buyQuick').href = RAYDIUM_LINK;
+        }
+
+        // =============== TOKEN CA FUNCTIONS ===============
+        function copyTokenAddress() {
+            navigator.clipboard.writeText(TOKEN_CA).then(() => {
+                showNotification('Contract address copied to clipboard!', 'success');
+            }).catch(err => {
+                showNotification('Failed to copy address', 'error');
+            });
+        }
 
         // =============== COUNTDOWN TIMER ===============
         function initializeCountdown() {
-            // Set launch date to February 15, 2026
             const launchDate = new Date('February 15, 2026 20:00:00 GMT').getTime();
             
             function updateCountdown() {
                 const now = new Date().getTime();
                 const distance = launchDate - now;
                 
-                // Calculate days, hours, minutes, seconds
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                 
-                // Update display
                 document.getElementById('days').textContent = days.toString().padStart(2, '0');
                 document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
                 document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
                 document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
                 
-                // If countdown is over
                 if (distance < 0) {
-                    clearInterval(countdownInterval);
                     document.querySelector('.countdown-timer').innerHTML = `
                         <div class="text-3xl font-bold py-4">
-                            🚀 $ROOFY HAS LAUNCHED! 🚀
+                            🚀 $ROOFY IS LIVE! 🚀
                         </div>
                     `;
                 }
             }
             
-            // Initial call
             updateCountdown();
-            
-            // Update every second
-            countdownInterval = setInterval(updateCountdown, 1000);
+            setInterval(updateCountdown, 1000);
         }
 
-        // =============== IMPROVED RPC CONNECTION WITH RETRY ===============
-        async function initializeConnectionWithRetry() {
-            console.log('Setting up Solana connection with Helius RPC...');
-            updateNetworkStatus('Connecting to Solana...', 'connecting');
-            
-            // Use your Helius RPC as primary
-            const HELIUS_RPC = 'https://mainnet.helius-rpc.com/?api-key=ef6c64a9-9800-4de0-aa7c-4c4b93a26f98';
-            
-            // Fallback RPC endpoints
-            const FALLBACK_RPCS = [
-                'https://api.mainnet-beta.solana.com',
-                'https://rpc.ankr.com/solana',
-                'https://solana-api.projectserum.com',
-                'https://solana-mainnet.rpc.extrnode.com'
-            ];
-            
-            try {
-                // Try Helius first
-                console.log('Attempting to connect to Helius RPC...');
-                connection = new solanaWeb3.Connection(
-                    HELIUS_RPC,
-                    {
-                        commitment: 'confirmed',
-                        disableRetryOnRateLimit: false,
-                        confirmTransactionInitialTimeout: 120000,
-                        wsEndpoint: 'wss://mainnet.helius-rpc.com/?api-key=ef6c64a9-9800-4de0-aa7c-4c4b93a26f98'
-                    }
-                );
-                
-                // Test the connection
-                await testConnection();
-                console.log('✅ Successfully connected to Helius RPC');
-                updateNetworkStatus('Connected to Helius RPC', 'connected');
-                
-            } catch (err) {
-                console.error('❌ Helius RPC failed:', err.message);
-                
-                // Try fallbacks
-                for (let i = 0; i < FALLBACK_RPCS.length; i++) {
-                    try {
-                        console.log(`Trying fallback RPC ${i + 1}: ${FALLBACK_RPCS[i]}`);
-                        connection = new solanaWeb3.Connection(
-                            FALLBACK_RPCS[i],
-                            {
-                                commitment: 'confirmed',
-                                disableRetryOnRateLimit: false,
-                                confirmTransactionInitialTimeout: 120000
-                            }
-                        );
-                        
-                        await testConnection();
-                        console.log(`✅ Connected to fallback: ${FALLBACK_RPCS[i]}`);
-                        updateNetworkStatus(`Connected to RPC ${i + 1}`, 'connected');
-                        break;
-                        
-                    } catch (fallbackErr) {
-                        console.log(`❌ Fallback ${i + 1} failed:`, fallbackErr.message);
-                        if (i === FALLBACK_RPCS.length - 1) {
-                            throw new Error('All RPC endpoints failed');
-                        }
-                    }
-                }
-            }
-        }
-
-        // Test connection by getting slot
-        async function testConnection() {
-            if (!connection) throw new Error('No connection object');
-            
-            try {
-                const slot = await connection.getSlot();
-                console.log('Connection test successful, current slot:', slot);
-                return true;
-            } catch (err) {
-                console.error('Connection test failed:', err);
-                throw err;
-            }
-        }
-
-        // =============== NETWORK STATUS UI ===============
-        function updateNetworkStatus(message, type = 'info') {
-            const statusEl = document.getElementById('networkStatus');
-            const textEl = document.getElementById('networkStatusText');
-            
-            statusEl.style.display = 'block';
-            textEl.textContent = message;
-            
-            // Reset classes
-            statusEl.className = 'network-status';
-            
-            switch(type) {
-                case 'connected':
-                    statusEl.classList.add('connected');
-                    break;
-                case 'error':
-                    statusEl.classList.add('error');
-                    break;
-                case 'connecting':
-                    // Default style
-                    break;
-            }
-            
-            // Auto-hide success messages after 5 seconds
-            if (type === 'connected') {
-                setTimeout(() => {
-                    if (statusEl.classList.contains('connected')) {
-                        statusEl.style.display = 'none';
-                    }
-                }, 5000);
-            }
-        }
-
-        // =============== WALLET DETECTION ===============
-        function checkPhantomWallet() {
-            if (window.solana && window.solana.isPhantom) {
-                console.log('✅ Phantom wallet detected');
-                wallet = window.solana;
-                
-                wallet.on('connect', () => {
-                    console.log('Wallet connected:', wallet.publicKey.toString());
-                    handleWalletConnect(wallet.publicKey);
-                });
-                
-                wallet.on('disconnect', () => {
-                    console.log('Wallet disconnected');
-                    handleWalletDisconnect();
-                });
-                
-                if (wallet.isConnected) {
-                    console.log('Wallet already connected');
-                    handleWalletConnect(wallet.publicKey);
-                }
-            } else {
-                console.log('❌ Phantom wallet not detected');
-                if (!isMobile) {
-                    showError('Phantom wallet not detected. Please install Phantom wallet from <a href="https://phantom.app" target="_blank" class="underline">phantom.app</a>');
-                }
-            }
-        }
-
-        // =============== IMPROVED BALANCE CHECKING ===============
-        async function updateWalletBalance() {
-            if (!publicKey || !connection) {
-                console.log('Cannot update balance: no public key or connection');
-                return 0;
-            }
-            
-            try {
-                console.log('Fetching balance for:', publicKey);
-                
-                // Clear previous balance first
-                document.getElementById('balanceAmount').textContent = '0.0000 SOL';
-                
-                // Try with timeout
-                const balancePromise = connection.getBalance(new solanaWeb3.PublicKey(publicKey));
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Balance fetch timeout')), 10000)
-                );
-                
-                const result = await Promise.race([balancePromise, timeoutPromise]);
-                const balance = result / solanaWeb3.LAMPORTS_PER_SOL;
-                
-                console.log(`✅ Balance fetched:`, balance, 'SOL');
-                currentBalance = balance;
-                
-                // Update UI
-                const balanceDisplay = document.getElementById('walletBalance');
-                const balanceAmount = document.getElementById('balanceAmount');
-                
-                if (balanceDisplay && balanceAmount) {
-                    balanceDisplay.style.display = 'flex';
-                    balanceAmount.textContent = `${currentBalance.toFixed(4)} SOL`;
-                    
-                    // Update buy button based on balance
-                    const amountInput = parseFloat(document.getElementById('amount').value) || 0;
-                    const buyButton = document.getElementById('buyButton');
-                    
-                    if (currentBalance < amountInput) {
-                        buyButton.disabled = true;
-                        buyButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>INSUFFICIENT BALANCE';
-                    }
-                }
-                
-                return currentBalance;
-                
-            } catch (err) {
-                console.error('❌ Error fetching balance:', err);
-                currentBalance = 0;
-                
-                // Still show 0 balance but don't block UI
-                document.getElementById('balanceAmount').textContent = 'Error fetching';
-                
-                return 0;
-            }
-        }
-
-        // =============== ERROR HANDLING ===============
-        function showError(message, error = null) {
-            const errorDisplay = document.getElementById('errorDisplay');
-            errorDisplay.classList.remove('hidden');
-            errorDisplay.innerHTML = `
-                <div class="error-message">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-triangle mr-2"></i>
-                        <span class="font-bold">Error</span>
-                    </div>
-                    <p class="mt-2">${message}</p>
-                    ${error ? `<pre class="mt-2 text-xs">${error.toString().substring(0, 150)}...</pre>` : ''}
-                    <button onclick="clearError()" class="mt-3 text-sm underline">Dismiss</button>
-                </div>
-            `;
-            
-            console.error('User error:', message, error);
-        }
-
-        function showSuccess(message) {
-            const successDisplay = document.getElementById('successDisplay');
-            successDisplay.classList.remove('hidden');
-            successDisplay.innerHTML = `
-                <div class="success-message">
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle mr-2"></i>
-                        <span class="font-bold">Success!</span>
-                    </div>
-                    <p class="mt-2">${message}</p>
-                    <button onclick="clearSuccess()" class="mt-3 text-sm underline">Dismiss</button>
-                </div>
-            `;
-            
-            // Auto-hide after 5 seconds
-            setTimeout(clearSuccess, 5000);
-        }
-
-        function clearError() {
-            const errorDisplay = document.getElementById('errorDisplay');
-            errorDisplay.classList.add('hidden');
-            errorDisplay.innerHTML = '';
-        }
-
-        function clearSuccess() {
-            const successDisplay = document.getElementById('successDisplay');
-            successDisplay.classList.add('hidden');
-            successDisplay.innerHTML = '';
-        }
-
-        // =============== WALLET CONNECTION FUNCTION ===============
-        async function connectWallet() {
-            console.log('Connect wallet clicked');
-            
-            if (!window.solana) {
-                if (isMobile) {
-                    showError('Please install Phantom wallet from the App Store or Google Play Store.');
-                } else {
-                    showError('Please install Phantom wallet from <a href="https://phantom.app" target="_blank" class="underline">phantom.app</a>');
-                }
-                return;
-            }
-
-            wallet = window.solana;
-            
-            try {
-                console.log('Requesting wallet connection...');
-                await wallet.connect();
-                console.log('Wallet connection requested');
-            } catch (err) {
-                console.error('Connection error:', err);
-                if (err.code === 4001) {
-                    showError('Connection rejected. Please approve the connection in your wallet.');
-                } else {
-                    showError('Failed to connect wallet. Please try again.', err);
-                }
-            }
-        }
-
-        // =============== WALLET CONNECT/DISCONNECT ===============
-        async function handleWalletConnect(publicKeyObj) {
-            console.log('Handling wallet connect');
-            publicKey = publicKeyObj.toString();
-            
-            const shortAddress = publicKey.slice(0, 4) + '...' + publicKey.slice(-4);
-            
-            // Update navigation button
-            document.getElementById('connectWalletNav').innerHTML = `<i class="fas fa-wallet mr-2"></i>${shortAddress}`;
-            document.getElementById('connectWalletNav').classList.add('wallet-connected');
-            
-            // Update presale section
-            document.getElementById('walletStatus').classList.add('hidden');
-            document.getElementById('walletInfo').classList.remove('hidden');
-            document.getElementById('walletAddress').textContent = shortAddress;
-            document.getElementById('walletBalance').style.display = 'flex';
-            
-            // Update buy button
-            const buyButton = document.getElementById('buyButton');
-            buyButton.disabled = false;
-            buyButton.innerHTML = '<i class="fas fa-bolt mr-2"></i>BUY ROOFY TOKENS';
-            document.getElementById('buyButtonText').textContent = 'BUY ROOFY TOKENS';
-            
-            clearError();
-            showSuccess('Wallet connected successfully!');
-            
-            // Update wallet balance
-            try {
-                await updateWalletBalance();
-                console.log('✅ Balance updated after connect');
-            } catch (err) {
-                console.error('Failed to update balance after connect:', err);
-            }
-        }
-
-        function handleWalletDisconnect() {
-            console.log('Handling wallet disconnect');
-            publicKey = null;
-            currentBalance = 0;
-            
-            // Update navigation button
-            document.getElementById('connectWalletNav').innerHTML = '<i class="fas fa-wallet mr-2"></i>Connect';
-            document.getElementById('connectWalletNav').classList.remove('wallet-connected');
-            
-            // Update presale section
-            document.getElementById('walletStatus').classList.remove('hidden');
-            document.getElementById('walletInfo').classList.add('hidden');
-            
-            // Update buy button
-            const buyButton = document.getElementById('buyButton');
-            buyButton.disabled = true;
-            buyButton.innerHTML = '<i class="fas fa-lock mr-2"></i>CONNECT WALLET';
-            document.getElementById('buyButtonText').textContent = 'CONNECT WALLET';
-            
-            document.getElementById('transactionStatus').classList.add('hidden');
-            clearError();
-        }
-
-        // =============== EVENT LISTENERS ===============
-        function setupEventListeners() {
-            // Connect wallet from navigation
-            document.getElementById('connectWalletNav').addEventListener('click', connectWallet);
-            
-            // Connect wallet from presale section
-            document.getElementById('connectWalletPresale').addEventListener('click', connectWallet);
-
-            // Quick amount buttons
-            document.querySelectorAll('.quick-amount').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.getElementById('amount').value = btn.dataset.amount;
-                    updateTokenCalculation();
-                });
-            });
-
-            // Amount and referral inputs
-            document.getElementById('amount').addEventListener('input', updateTokenCalculation);
-            document.getElementById('referralCode').addEventListener('input', updateTokenCalculation);
-            
-            // Buy button
-            document.getElementById('buyButton').addEventListener('click', handlePurchase);
-        }
-
-        // =============== TOKEN CALCULATION ===============
-        function updateTokenCalculation() {
-            const amount = parseFloat(document.getElementById('amount').value) || 0;
-            const currentTier = getCurrentTier();
-            
-            document.getElementById('currentPrice').textContent = 
-                `${Math.floor(currentTier.tokensPerSOL).toLocaleString()}K`;
-            
-            const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
-            
-            const hasReferral = document.getElementById('referralCode').value.trim().length > 0;
-            const bonusTokens = hasReferral ? Math.floor(baseTokens * REFERRAL_BONUS) : 0;
-            const totalTokens = baseTokens + bonusTokens;
-
-            document.getElementById('baseTokens').textContent = baseTokens.toLocaleString();
-            document.getElementById('totalTokens').textContent = totalTokens.toLocaleString();
-            
-            if (hasReferral && bonusTokens > 0) {
-                document.getElementById('bonusSection').classList.remove('hidden');
-                document.getElementById('bonusTokens').textContent = `+${bonusTokens.toLocaleString()}`;
-            } else {
-                document.getElementById('bonusSection').classList.add('hidden');
-            }
-            
-            // Update buy button based on balance and connection
-            const buyButton = document.getElementById('buyButton');
-            if (!publicKey) {
-                buyButton.disabled = true;
-                buyButton.innerHTML = '<i class="fas fa-lock mr-2"></i>CONNECT WALLET';
-            } else if (currentBalance > 0) {
-                if (currentBalance < amount) {
-                    buyButton.disabled = true;
-                    buyButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>INSUFFICIENT BALANCE';
-                } else if (amount < MIN_PURCHASE) {
-                    buyButton.disabled = true;
-                    buyButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>MIN 0.01 SOL';
-                } else if (amount > MAX_PURCHASE) {
-                    buyButton.disabled = true;
-                    buyButton.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>MAX 100 SOL';
-                } else {
-                    buyButton.disabled = false;
-                    buyButton.innerHTML = '<i class="fas fa-bolt mr-2"></i>BUY ROOFY TOKENS';
-                }
-            }
-        }
-
-        // =============== REAL PURCHASE HANDLING ===============
-        async function handlePurchase() {
-            console.log('Purchase initiated');
-            
-            if (!publicKey) {
-                showError('Please connect your wallet first');
-                return;
-            }
-
-            const amount = parseFloat(document.getElementById('amount').value);
-            
-            if (isNaN(amount) || amount < MIN_PURCHASE) {
-                showError(`Minimum purchase is ${MIN_PURCHASE} SOL`);
-                return;
-            }
-
-            if (amount > MAX_PURCHASE) {
-                showError(`Maximum purchase per transaction is ${MAX_PURCHASE} SOL`);
-                return;
-            }
-
-            if (totalRaised + amount > PRESALE_CAP) {
-                showError(`Purchase would exceed hard cap! Maximum remaining: ${(PRESALE_CAP - totalRaised).toFixed(2)} SOL`);
-                return;
-            }
-
-            // Check balance before proceeding
-            try {
-                await updateWalletBalance();
-                if (currentBalance < amount) {
-                    showError(`Insufficient balance. You have ${currentBalance.toFixed(4)} SOL but need ${amount} SOL`);
-                    return;
-                }
-            } catch (err) {
-                console.error('Balance check failed:', err);
-                // Continue anyway but warn user
-                showError('Could not verify balance. Please ensure you have enough SOL before proceeding.');
-            }
-
-            const buyButton = document.getElementById('buyButton');
-            const originalText = buyButton.innerHTML;
-            buyButton.disabled = true;
-            buyButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-            
-            clearError();
-            clearSuccess();
-
-            if (transactionTimeout) clearTimeout(transactionTimeout);
-            transactionTimeout = setTimeout(() => {
-                showError('Transaction timed out. Please check your wallet and try again.');
-                resetBuyButton(buyButton, originalText);
-            }, 180000); // 180 second timeout
-
-            try {
-                console.log('Creating transaction for amount:', amount, 'SOL');
-                console.log('Sending to dev wallet:', DEV_WALLET);
-                
-                // Get latest blockhash
-                const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
-                
-                // Create transaction
-                const transaction = new solanaWeb3.Transaction().add(
-                    solanaWeb3.SystemProgram.transfer({
-                        fromPubkey: new solanaWeb3.PublicKey(publicKey),
-                        toPubkey: new solanaWeb3.PublicKey(DEV_WALLET),
-                        lamports: Math.floor(amount * solanaWeb3.LAMPORTS_PER_SOL),
-                    })
-                );
-
-                transaction.recentBlockhash = blockhash;
-                transaction.feePayer = new solanaWeb3.PublicKey(publicKey);
-
-                let signature;
-                console.log('Signing transaction...');
-                
-                // Sign and send transaction
-                const signedTransaction = await wallet.signTransaction(transaction);
-                signature = await connection.sendRawTransaction(signedTransaction.serialize());
-                
-                console.log('Transaction sent with signature:', signature);
-                console.log('View on Solana Explorer: https://explorer.solana.com/tx/' + signature);
-                
-                // Show transaction submitted
-                showSuccess('Transaction submitted! Waiting for confirmation...');
-                updateNetworkStatus('Transaction submitted...', 'connecting');
-
-                // Wait for confirmation
-                console.log('Waiting for confirmation...');
-                const confirmation = await connection.confirmTransaction({
-                    signature,
-                    blockhash,
-                    lastValidBlockHeight
-                }, 'confirmed');
-                
-                if (confirmation.value.err) {
-                    throw new Error('Transaction failed: ' + JSON.stringify(confirmation.value.err));
-                }
-                
-                console.log('✅ Transaction confirmed!');
-                clearTimeout(transactionTimeout);
-
-                // Update with REAL purchase
-                totalRaised += amount;
-                totalBuyersCount += 1; // Increment buyer count for real purchase
-                updateStats(); // This updates the progress bar with real data
-                
-                // Add to recent purchases
-                addRecentPurchase(amount, signature, true);
-                
-                // Show success
-                document.getElementById('transactionStatus').classList.remove('hidden');
-                document.getElementById('txHash').textContent = `TX: ${signature.slice(0, 8)}...${signature.slice(-8)}`;
-                document.getElementById('txHash').onclick = () => {
-                    window.open(`https://explorer.solana.com/tx/${signature}`, '_blank');
-                };
-                
-                // Calculate tokens
-                const currentTier = getCurrentTier();
-                const baseTokens = Math.floor(amount * currentTier.tokensPerSOL);
-                const bonus = document.getElementById('referralCode').value.trim() ? 
-                    Math.floor(baseTokens * REFERRAL_BONUS) : 0;
-                const total = baseTokens + bonus;
-                
-                showSuccess(`✅ Purchase Successful! ${total.toLocaleString()} ROOFY tokens will be airdropped after presale`);
-                updateNetworkStatus('✅ Transaction confirmed!', 'connected');
-
-                // Update balance after purchase
-                setTimeout(() => updateWalletBalance(), 5000);
-
-                // Reset form
-                document.getElementById('amount').value = '0.1';
-                document.getElementById('referralCode').value = '';
-                updateTokenCalculation();
-
-            } catch (err) {
-                console.error('❌ Transaction error:', err);
-                clearTimeout(transactionTimeout);
-                
-                let errorMessage = 'Transaction failed. ';
-                
-                if (err.message?.includes('User rejected')) {
-                    errorMessage = 'You rejected the transaction in your wallet.';
-                } else if (err.message?.includes('NotConnectedError')) {
-                    errorMessage = 'Wallet not connected. Please reconnect your wallet.';
-                } else if (err.message?.includes('timeout') || err.message?.includes('Timeout')) {
-                    errorMessage = 'Transaction timed out. Please try again.';
-                } else if (err.message?.includes('blockhash')) {
-                    errorMessage = 'Network error. Please refresh the page and try again.';
-                } else if (err.message?.includes('insufficient funds')) {
-                    errorMessage = 'Insufficient funds. Please add SOL to your wallet.';
-                } else if (err.message?.includes('429')) {
-                    errorMessage = 'Rate limited. Please wait a moment and try again.';
-                } else if (err.message?.includes('WalletSignTransactionError')) {
-                    errorMessage = 'Failed to sign transaction. Please try again.';
-                } else {
-                    errorMessage += 'Please check your wallet and try again.';
-                }
-                
-                showError(errorMessage, err);
-                updateNetworkStatus('❌ Transaction failed', 'error');
-            } finally {
-                resetBuyButton(buyButton, originalText);
-            }
-        }
-
-        function resetBuyButton(button, originalText) {
-            button.disabled = false;
-            button.innerHTML = originalText;
-        }
-
-        // =============== UPDATED STATS FUNCTION ===============
+        // =============== STATS FUNCTIONS ===============
         function updateStats() {
-            const progress = (totalRaised / PRESALE_CAP) * 100;
-            const currentTier = getCurrentTier();
-            
-            // Smooth animation for progress bar
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.width = `${progress}%`;
-            
-            document.getElementById('progressPercent').textContent = `${progress.toFixed(1)}%`;
-            document.getElementById('currentRaised').textContent = `${totalRaised.toFixed(2)} SOL`;
-            document.getElementById('totalRaised').textContent = totalRaised.toFixed(2);
-            document.getElementById('currentPrice').textContent = 
-                `${Math.floor(currentTier.tokensPerSOL).toLocaleString()}K`;
-            
-            // Update total buyers with actual count
-            document.getElementById('totalBuyers').textContent = totalBuyersCount;
-                
-            updateTokenCalculation();
+            // These would be fetched from an API in production
+            document.getElementById('holdersCount').textContent = '2,847';
+            document.getElementById('marketCap').textContent = '$2.5M';
+            document.getElementById('volume24h').textContent = '$125K';
         }
 
-        // =============== SIMULATED LIVE STATS ===============
-        function simulateLiveStats() {
-            // Add some initial simulated purchases
-            setTimeout(() => {
-                const simulatedPurchases = [
-                    { amount: 1.5, time: 'Just now', tx: 'sim_1' },
-                    { amount: 0.8, time: '2 mins ago', tx: 'sim_2' },
-                    { amount: 2.2, time: '5 mins ago', tx: 'sim_3' },
-                    { amount: 0.5, time: '10 mins ago', tx: 'sim_4' },
-                    { amount: 1.2, time: '15 mins ago', tx: 'sim_5' },
-                ];
-                
-                simulatedPurchases.forEach(purchase => {
-                    addRecentPurchase(purchase.amount, purchase.tx, false, purchase.time);
-                });
-            }, 1000);
-            
-            // Continue to add simulated purchases occasionally
-            setInterval(() => {
-                if (Math.random() > 0.7 && totalRaised < PRESALE_CAP) {
-                    const randomAmount = 0.1 + Math.random() * 3;
-                    totalRaised += randomAmount;
-                    totalBuyersCount += 1; // Increment buyer count for simulated purchases too
-                    if (totalRaised > PRESALE_CAP) totalRaised = PRESALE_CAP;
-                    updateStats();
-                    
-                    // Only add simulated purchases if we haven't reached cap
-                    if (totalRaised < PRESALE_CAP) {
-                        addRecentPurchase(randomAmount, `sim_${Date.now()}`, false);
-                    }
-                }
-            }, 15000); // Every 15 seconds
-        }
-
-        // =============== ADD RECENT PURCHASE ===============
-        function addRecentPurchase(amount, txHash, isReal = false, customTime = null) {
-            const now = new Date();
-            const timeString = customTime || now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const currentTier = getCurrentTier();
-            const tokens = Math.floor(amount * currentTier.tokensPerSOL);
-            
-            recentPurchases.unshift({
-                time: timeString,
-                amount: amount.toFixed(2),
-                tokens: tokens.toLocaleString(),
-                tier: currentTier.name.substring(0, 10),
-                txHash: txHash,
-                isReal: isReal
-            });
-            
-            if (recentPurchases.length > 8) {
-                recentPurchases.pop();
-            }
-            
-            loadRecentPurchases();
-        }
-
-        function loadRecentPurchases() {
-            const container = document.getElementById('recentPurchases');
-            container.innerHTML = '';
-            
-            if (recentPurchases.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center text-gray-500 py-4 text-sm">
-                        <i class="fas fa-shopping-cart mr-2"></i>No purchases yet
-                    </div>
-                `;
-                return;
-            }
-            
-            recentPurchases.forEach(purchase => {
-                const purchaseEl = document.createElement('div');
-                purchaseEl.className = 'flex justify-between items-center p-2 hover:bg-orange-50 rounded-lg text-sm cursor-pointer';
-                
-                // Real purchases can be clicked to view on explorer
-                if (purchase.isReal && !purchase.txHash.startsWith('sim_')) {
-                    purchaseEl.onclick = () => {
-                        window.open(`https://explorer.solana.com/tx/${purchase.txHash}`, '_blank');
-                    };
-                    purchaseEl.style.cursor = 'pointer';
-                    purchaseEl.title = 'Click to view transaction';
-                } else {
-                    purchaseEl.style.cursor = 'default';
-                }
-                
-                // Different styling for real vs simulated purchases
-                const indicatorColor = purchase.isReal ? 'bg-green-500' : 'bg-blue-500';
-                const indicatorTitle = purchase.isReal ? 'Real Purchase' : 'Simulated';
-                
-                purchaseEl.innerHTML = `
-                    <div class="flex items-center">
-                        <div class="w-2 h-2 ${indicatorColor} rounded-full mr-2" title="${indicatorTitle}"></div>
-                        <div>
-                            <div class="font-medium">${purchase.time}</div>
-                            <div class="text-xs text-gray-500">${purchase.tier}</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-bold">${purchase.amount} SOL</div>
-                        <div class="text-xs text-orange-600">${purchase.tokens} ROOFY</div>
-                    </div>
-                `;
-                container.appendChild(purchaseEl);
-            });
-        }
-
-        // =============== HELPER FUNCTIONS ===============
-        function getCurrentTier() {
-            for (const tier of TIERS) {
-                if (totalRaised >= tier.range[0] && totalRaised < tier.range[1]) {
-                    return tier;
-                }
-            }
-            return TIERS[TIERS.length - 1];
-        }
-
-        function disconnectWallet() {
-            if (wallet) {
-                wallet.disconnect();
-            }
-            handleWalletDisconnect();
-        }
-
-        function copyTokenAddress() {
-            const message = "$ROOFY launches February 15, 2026 - A tribute, not a coincidence. Token address will be revealed at launch. 🚀";
-            navigator.clipboard.writeText(message).then(() => {
-                showNotification('Launch info copied to clipboard!', 'success');
-            }).catch(err => {
-                showNotification('Failed to copy info', 'error');
-            });
-        }
-
+        // =============== NOTIFICATION ===============
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.className = `fixed top-4 right-4 p-4 rounded-xl shadow-lg z-50 ${
@@ -2073,21 +1350,22 @@
             }, 3000);
         }
 
+        // =============== TOKENOMICS CHART ===============
         function initializeTokenomicsChart() {
             const ctx = document.getElementById('tokenomicsChart').getContext('2d');
             
-            tokenomicsChart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Presale (50%)', 'Liquidity (30%)', 'Marketing (5%)', 'CEX (5%)', "Memorial Fund (10%)"],
+                    labels: ['Presale (50%)', 'Liquidity (30%)', 'Marketing (5%)', 'CEX Listings (5%)', 'Memorial Fund (10%)'],
                     datasets: [{
                         data: [50, 30, 5, 5, 10],
                         backgroundColor: [
-                            '#f97316', // Orange
-                            '#3b82f6', // Blue
-                            '#10b981', // Green
-                            '#8b5cf6', // Purple
-                            '#ec4899'  // Pink
+                            '#f97316',
+                            '#3b82f6',
+                            '#10b981',
+                            '#8b5cf6',
+                            '#ec4899'
                         ],
                         borderWidth: 2,
                         borderColor: '#ffffff'
@@ -2106,45 +1384,47 @@
                                     size: 12
                                 }
                             }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.parsed;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = Math.round((value / total) * 100);
-                                    const tokens = Math.round(value / 100 * 1000000000);
-                                    
-                                    return `${label}: ${percentage}% (${tokens.toLocaleString()} ROOFY)`;
-                                }
-                            }
                         }
                     }
                 }
             });
         }
 
-        // Mobile functions
-        function setupMobileWalletButtons() {
-            const openInPhantomBtn = document.getElementById('openInPhantom');
-            const installPhantomBtn = document.getElementById('installPhantom');
-            
-            if (openInPhantomBtn) {
-                openInPhantomBtn.addEventListener('click', () => {
-                    // Open current URL in Phantom app
-                    window.location.href = 'https://phantom.app/ul/browse/' + encodeURIComponent(window.location.href);
-                });
+        // =============== WALLET CONNECTION (Optional - for future features) ===============
+        let wallet = null;
+        
+        async function connectWallet() {
+            if (!window.solana) {
+                showError('Please install Phantom wallet');
+                return;
             }
-            
-            if (installPhantomBtn) {
-                installPhantomBtn.addEventListener('click', () => {
-                    window.open('https://phantom.app/download', '_blank');
-                });
+
+            try {
+                wallet = window.solana;
+                await wallet.connect();
+                showSuccess('Wallet connected!');
+            } catch (err) {
+                console.error('Connection error:', err);
             }
         }
 
-        updateTokenCalculation();
+        function showError(message) {
+            // Simple error display
+            alert(message);
+        }
+
+        function showSuccess(message) {
+            // Simple success display
+            alert(message);
+        }
+
+        // Setup wallet connect buttons (keeping them for future use)
+        document.addEventListener('DOMContentLoaded', () => {
+            const connectButtons = document.querySelectorAll('#connectWalletNav, #connectWalletPresale');
+            connectButtons.forEach(btn => {
+                if (btn) btn.addEventListener('click', connectWallet);
+            });
+        });
     </script>
 </body>
 </html>
